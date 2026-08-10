@@ -124,6 +124,20 @@ Rules for the draft:
 
 Write the draft to `<SKILL_NAME>/SKILL.md` in the current working directory
 (or show it inline if no file write access).
+
+The file MUST open with a YAML frontmatter block. Use the SKILL_NAME and the
+description from Step 2 answers (or a placeholder if description optimization
+has not run yet — it will be updated in that section). Write it exactly:
+
+```
+---
+name: <SKILL_NAME>
+description: <description — imperative, starting with "Use this skill when...">
+---
+```
+
+Do not omit the frontmatter. Do not place any text before the opening `---`.
+
 Write a one-line summary of the draft to the working file under `## Draft v1`.
 
 ### Step 4 — Review draft with user
@@ -181,6 +195,21 @@ reusable pattern, gotchas section, output template if needed, checklist for
 ordered sequences, under 500 lines.
 
 Write the draft to `<SKILL_NAME>/SKILL.md` (or inline if no file write access).
+
+The file MUST open with a YAML frontmatter block. Use the SKILL_NAME and the
+description from the Step 1–4 answers (or a placeholder if description
+optimization has not run yet — it will be updated in that section). Write it
+exactly:
+
+```
+---
+name: <SKILL_NAME>
+description: <description — imperative, starting with "Use this skill when...">
+---
+```
+
+Do not omit the frontmatter. Do not place any text before the opening `---`.
+
 Write `Draft v1 — from real material` to the working file.
 
 ### Step 3 — Generic baseline (fallback)
@@ -192,7 +221,18 @@ Tell the user:
 >  domain knowledge needs to be added. The skill will not be reliable until
 >  those gaps are filled — but it gives us something concrete to react to."
 
-Write the draft SKILL.md. Mark every section that needs real expertise with:
+Write the draft SKILL.md. The file MUST open with a YAML frontmatter block:
+
+```
+---
+name: <SKILL_NAME>
+description: <description — imperative, starting with "Use this skill when...">
+---
+```
+
+Do not omit the frontmatter. Do not place any text before the opening `---`.
+
+Mark every section that needs real expertise with:
 
 ```
 <!-- [GENERIC BASELINE] Replace this with: <what is needed here> -->
@@ -450,7 +490,7 @@ After the user reports results:
 2. If no single candidate wins cleanly, synthesize the best-performing
    elements and write a final description.
 3. Tell the user which candidate you are recommending and why.
-4. Update the description field in SKILL.md.
+4. Update the `description` field in the frontmatter of SKILL.md.
 5. Write `Description finalized` to the working file.
 
 ## Skill quality checklist
@@ -458,8 +498,12 @@ After the user reports results:
 Run this checklist on the completed SKILL.md before telling the user the skill
 is done. Fix any item that fails — do not skip items.
 
-- [ ] Name matches directory name exactly (lowercase, hyphens only, no
-      consecutive hyphens, no leading or trailing hyphens)
+- [ ] SKILL.md opens with a YAML frontmatter block (the `---` delimiters are
+      present and no text appears before the opening `---`)
+- [ ] Frontmatter contains `name` field matching the directory name exactly
+      (lowercase, hyphens only, no consecutive hyphens, no leading or trailing
+      hyphens)
+- [ ] Frontmatter contains `description` field
 - [ ] Description uses imperative phrasing ("Use this skill when...")
 - [ ] Description covers user intent keywords, not just implementation terms
 - [ ] Description is under 1024 characters
@@ -484,4 +528,4 @@ When all items pass, tell the user:
 >  To install it, move the `<SKILL_NAME>/` folder to your agent's skills
 >  directory (commonly `~/.agents/skills/` — check your harness documentation
 >  for the exact path). Then try a prompt from the test checklist to confirm
->  it activates."
+>  it activates. Now's your change to check and test your SKILL to enhance it even further."
