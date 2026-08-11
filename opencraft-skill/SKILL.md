@@ -9,17 +9,20 @@ description: >
   "let's capture this as a workflow", "make this repeatable", "how do I package
   this for other agents", or "I want my agent to always do X this way."
 compatibility: >
-  Works on any agent harness with file read/write access. Subagent delegation
-  improves eval isolation but is not required. No scripts, no bundled tools.
+  Works on any agent harness with file read access. File write access enables the
+  working file and skill output; both degrade gracefully to inline output when
+  unavailable. No executable scripts bundled. Subagent delegation improves eval
+  isolation but is not required.
+license: MIT
 metadata:
   purpose: harness-agnostic skill creation methodology
-  modes: extract, design
+  modes: extract, design, refine
 ---
 
 # opencraft-skill
 
 A harness-agnostic process for creating Agent Skills. Works in any agent
-environment. No scripts or tooling required — only file read/write access.
+environment. No scripts or tooling required — only file read access.
 
 ## How to use this skill
 
@@ -55,15 +58,19 @@ At the start of every session using this skill, do the following:
 
 Ask the user exactly this question (do not rephrase):
 
-> "Are we (1) turning something you just did into a skill, or
->  (2) designing a new skill from scratch?"
+> "Are we (1) turning something you just did into a skill,
+>  (2) designing a new skill from scratch, or
+>  (3) improving an existing skill based on how it's been performing?"
 
 - If they answer 1 or indicate they just completed a workflow: go to
   **Mode 1: Extract**.
 - If they answer 2 or describe something they want to build: go to
   **Mode 2: Design**.
+- If they answer 3 or describe a skill that isn't working well: go to
+  **Mode 3: Refine**.
 - If unclear: ask "Did you just finish doing the thing this skill would do,
-  or are we planning it out fresh?" — then route based on answer.
+  do you have an existing skill to improve, or are we planning it out fresh?"
+  — then route based on answer.
 
 Write the chosen mode to the working file under `## Mode:`.
 
@@ -115,19 +122,20 @@ Rules for the draft:
 - Include a `## Gotchas` section for every edge case or failure mode the
   user mentioned. Each gotcha is one concrete, specific bullet — not general
   advice ("handle errors appropriately" is not a gotcha).
-- If the user described a specific output format, include a template.
+- If the user described a specific output format, include a template inline if
+  it is short. For longer templates, write the file to `<SKILL_NAME>/assets/`
+  and reference it from SKILL.md.
 - If there is a multi-step sequence that must be followed in order, use a
   numbered checklist.
 - Keep the body under 500 lines. If it is getting long, move detail to
-  conditional instructions ("If X occurs, do Y") rather than expanding
-  every path upfront.
+  `references/` files loaded on demand.
 
 Write the draft to `<SKILL_NAME>/SKILL.md` in the current working directory
 (or show it inline if no file write access).
 
-The file MUST open with a YAML frontmatter block. Use the SKILL_NAME and the
-description from Step 2 answers (or a placeholder if description optimization
-has not run yet — it will be updated in that section). Write it exactly:
+The file MUST open with a YAML frontmatter block. Required fields are `name`
+and `description`. Include `license` if the user's project has a license.
+Write it exactly:
 
 ```
 ---
@@ -161,9 +169,8 @@ not done yet, or want to systematize going forward.
 
 Say to the user:
 
-> "The most effective skills are built from real expertise — specific API
->  quirks, failure modes you have seen, corrections you have had to make.
->  Generic instructions produce generic skills.
+> "Effective skills rely on practical experience with edge cases, failure modes, and corrections—not generic instructions.
+>  It is recommended that you specify things, like you're telling a detailed story.
 >
 >  Do you have any of the following you can share?
 >  - A runbook, checklist, or internal doc for this workflow
@@ -189,17 +196,17 @@ time** before drafting (write each answer to the working file):
     to skip by mistake?"
 4. "Any tools, libraries, or commands the agent should always use (or avoid)?"
 5. "What would you correct if an agent did this task but got it slightly wrong?"
+6. "Are there things the agent reliably gets wrong in this domain even with no
+    special guidance? Those become Gotchas entries."
 
 Then write the draft SKILL.md following the same rules as Mode 1 Step 3:
-reusable pattern, gotchas section, output template if needed, checklist for
-ordered sequences, under 500 lines.
+reusable pattern, gotchas section, `assets/` for complex output templates,
+checklist for ordered sequences, under 500 lines.
 
 Write the draft to `<SKILL_NAME>/SKILL.md` (or inline if no file write access).
 
-The file MUST open with a YAML frontmatter block. Use the SKILL_NAME and the
-description from the Step 1–4 answers (or a placeholder if description
-optimization has not run yet — it will be updated in that section). Write it
-exactly:
+The file MUST open with a YAML frontmatter block. Required fields are `name`
+and `description`. Include `license` if the user's project has a license:
 
 ```
 ---
@@ -217,9 +224,7 @@ Write `Draft v1 — from real material` to the working file.
 If the user has no material and wants to proceed anyway:
 
 Tell the user:
-> "I will produce a starting draft, but I will mark the places where real
->  domain knowledge needs to be added. The skill will not be reliable until
->  those gaps are filled — but it gives us something concrete to react to."
+> "We'll start with a concrete draft highlighting missing specific details, which must be filled before the skill is reliable."
 
 Write the draft SKILL.md. The file MUST open with a YAML frontmatter block:
 
@@ -257,6 +262,28 @@ Show the user the draft and ask:
 Collect feedback. Revise and ask again if needed.
 When the user says it looks right, write `Draft approved` to the working file
 and proceed to **Eval loop**.
+
+## Mode 3: Refine
+
+Use this mode when the user has an existing skill and wants to improve it based
+on observed failures, agent feedback, or eval results.
+
+Read the existing `SKILL.md`. Ask the user three questions one at a time:
+
+1. "What is the skill doing wrong? Describe a specific case — what prompt,
+    what output, what should have happened instead."
+2. "Is this a one-off failure or does it happen consistently?"
+3. "Do you have eval results or execution transcripts from failed runs?"
+
+Write answers to the working file under `## Refine inputs`. Then for each
+failure, identify which instruction (or missing instruction) caused it. Common
+causes: instructions too vague, instructions that don't apply to the current
+task, too many options without a clear default, missing gotcha, or description
+triggering on wrong prompts (route that last one to description optimization).
+
+For each diagnosed issue, propose a specific change with before/after. Ask:
+"Here is what I would change. Anything you would do differently?" Apply approved
+changes, then proceed to **Eval loop** to verify improvements.
 
 ## Eval loop
 
@@ -330,25 +357,36 @@ Collect feedback. Write it to `## Iteration 1 results` in the working file.
 
 Tell the user the following before proceeding (do not skip this notice):
 
-> "Note: I wrote this skill and I am running it in the same session — I have
->  full context of the instructions, which makes this less isolated than a
->  proper eval. Treat this as a directional check, not a rigorous result."
+> "Note: Without isolated subagents, the recommended approach is a fresh session —
+> start a new conversation with the skill installed and run each test prompt there.
+> This gives clean context and results you can trust.
+>
+> If your environment does not support fresh sessions, you can run inline in this
+> session instead, but treat the results as directional only — full context from
+> this session will influence the output."
 
 For each test prompt:
-1. Read the draft SKILL.md.
-2. Apply its instructions to complete the test prompt in this session.
-   (Alternatively, if your environment allows starting a fresh session,
-   do so — it reduces the context-bleed this path warns about.)
-3. Show the output to the user.
-4. Ask: "Does this look right? Thumbs up or down, and any notes?"
+1. If a fresh session is available: start one, install the skill, run the prompt,
+   note the output, return here.
+2. If running inline: read the draft SKILL.md, apply its instructions to complete
+   the test prompt in this session, then show the output to the user.
+3. Ask: "Does this look right? Thumbs up or down, and any notes?"
 
 Write each result to the working file under `## Iteration 1 results`:
 ```
 ## Iteration 1
 - Test prompts run: [list]
-- Path used: B (inline)
+- Path used: B (fresh session / inline)
 - Results: [thumbs up/down + user notes per prompt]
 ```
+
+### Structured evals (optional)
+
+For teams that want repeatable benchmarks: the Agent Skills standard defines a
+structured eval format. After recording test prompts, offer to scaffold
+`evals/evals.json` with `id`, `prompt`, and `expected_output` per test case. Add
+`assertions` after the first round of results. Save grading to
+`<SKILL_NAME>-workspace/iteration-N/eval-<id>/grading.json`.
 
 ### Reading results and iterating
 
@@ -358,6 +396,9 @@ After collecting results from Path A or B:
    specific. "The agent included three paragraphs of explanation before the
    result, when the skill instructs giving the result first" is specific.
 2. For each issue, identify which instruction (or missing instruction) caused it.
+   Also read execution transcripts if available — wasted steps usually mean
+   instructions are too vague, don't apply to the current task, or present too
+   many options without a clear default.
 3. Propose a specific change to the SKILL.md for each issue. Show before/after.
 4. Ask the user: "Here is what I would change. Anything you would do differently?"
 5. Apply approved changes.
@@ -382,9 +423,7 @@ Proceed to **Scripts (optional)**.
 Run this section after the eval loop, before description optimization.
 
 Ask the user:
-> "Are there any steps in this skill that always run the same way,
->  regardless of input? For example: a fixed transformation, a validation
->  check, a command that always runs at a specific point in the workflow."
+> "Does this skill include static steps - like fixed transformations, validation checks, or commands?"
 
 - If no: write `No scripts` to the working file and proceed to
   **Description optimization**.
@@ -430,68 +469,7 @@ When all script candidates are handled, proceed to
 The description field is what determines whether an agent activates the skill.
 Run this section after the eval loop is complete.
 
-### The three principles
-
-Explain these to the user before generating candidates:
-
-1. **Imperative phrasing.** The description should read as an instruction:
-   "Use this skill when..." not "This skill does...". The agent is deciding
-   whether to act — tell it when to act.
-
-2. **User intent, not implementation.** Describe what the user is trying to
-   achieve, not how the skill works internally. The agent matches the
-   description against what the user asked for, not against the skill's steps.
-
-3. **Near-miss negatives.** The description must be specific enough to avoid
-   triggering on adjacent tasks that share keywords. Think about what queries
-   share your keywords but need something different — the description should
-   exclude those without naming them explicitly.
-
-### Generate candidates
-
-Write 2–3 candidate descriptions. For each one:
-- Write the description (under 1024 characters)
-- Write one sentence of rationale: what triggering problem this version solves
-
-Format:
-```
-Candidate 1:
-[description text]
-Rationale: [one sentence]
-
-Candidate 2:
-[description text]
-Rationale: [one sentence]
-```
-
-Show all candidates to the user before moving to the test checklist.
-
-### Manual test checklist
-
-Generate 10 test queries: 5 should trigger this skill, 5 should not.
-
-Rules:
-- Write them as realistic user messages, not abstract descriptions.
-  Bad: "Extract text from PDF". Good: "hey can you pull out all the tables
-  from this quarterly report pdf, it's in ~/Downloads/Q4-report.pdf"
-- Should-trigger queries: vary phrasing, formality, and explicitness. Include
-  at least one where the user does not name the skill's domain directly.
-- Should-not-trigger queries: use near-misses only — queries sharing keywords
-  but needing something different. Weak: "write a fibonacci function" (no
-  overlap). Strong: a query that shares domain terms but needs a different
-  skill or a simpler response. Do not use obviously irrelevant queries.
-
-Present the checklist to the user:
-> "Try each of these in your agent and note whether the skill activated.
->  Come back with the results and I will recommend the best candidate."
-
-After the user reports results:
-1. Tally: which candidate performs best across the 10 queries?
-2. If no single candidate wins cleanly, synthesize the best-performing
-   elements and write a final description.
-3. Tell the user which candidate you are recommending and why.
-4. Update the `description` field in the frontmatter of SKILL.md.
-5. Write `Description finalized` to the working file.
+Read `references/description-optimization.md` and follow its sections in order.
 
 ## Skill quality checklist
 
@@ -522,10 +500,8 @@ is done. Fix any item that fails — do not skip items.
 - [ ] If scripts were added: every script referenced from SKILL.md with exact run command
 - [ ] If a Validator was added: SKILL.md has explicit "if this fails, do X" at the guarded step
 - [ ] If no scripts were added: scripts/ directory does not exist
+- [ ] Run `skills-ref validate <SKILL_NAME>/` if the tool is available; fix any reported errors
 
 When all items pass, tell the user:
-> "The skill is ready. It lives at `<SKILL_NAME>/SKILL.md`.
->  To install it, move the `<SKILL_NAME>/` folder to your agent's skills
->  directory (commonly `~/.agents/skills/` — check your harness documentation
->  for the exact path). Then try a prompt from the test checklist to confirm
->  it activates. Now's your change to check and test your SKILL to enhance it even further."
+> "The skill is ready. It lives at `<SKILL_NAME>/SKILL.md`. Try a prompt from the test checklist to confirm
+>  it activates. Now's your chance to check and test your SKILL to enhance it even further."
