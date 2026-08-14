@@ -2,3 +2,14 @@
 .opencode/
 superpowers/
 plans/
+
+# Python
+**/__pycache__/
+**/*.pyc
+
+# Skill build artifacts
+*.skill
+
+# Runtime output from opencraft-skill sessions
+*-workspace/
+skill-plan-*.md

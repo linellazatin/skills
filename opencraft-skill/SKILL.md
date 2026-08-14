@@ -1,17 +1,22 @@
 ---
 name: opencraft-skill
 description: >
-  Use this skill when the user wants to build, extract, or refine an Agent Skill
-  for any workflow or domain. Trigger even when the user does not say "skill"
-  explicitly — activate on: "let's capture this as a workflow", "make this
-  repeatable", "how do I package this for other agents", "I want my agent to
-  always do X this way", "turn what we just did into something reusable", or
-  "this skill isn't working, help me fix it."
+  Use this skill when the user wants to create, build, extract, design, write,
+  package, or improve an Agent Skill, workflow skill, or reusable skill for any
+  domain. Also trigger when the user says things like: "let's capture this as a
+  workflow", "make this repeatable", "package this for other agents", "I want my
+  agent to always do X", "turn what we just did into something reusable",
+  "this skill isn't working", or "how do I write a skill". Trigger even when the
+  user does not use the word "skill" directly.
 compatibility: >
   Works on any agent harness with file read access. File write access enables the
   working file and skill output; both degrade gracefully to inline output when
-  unavailable. No executable scripts bundled. Subagent delegation improves eval
-  isolation but is not required.
+  unavailable. Core scripts (quick_validate.py, aggregate_benchmark.py,
+  package_skill.py) require Python 3 stdlib only; also runnable via `uv run`.
+  run_eval.py and run_loop.py (eval step) require Claude Code CLI (`claude -p`) —
+  trigger testing is harness-specific. improve_description.py works with any
+  LLM provider: ANTHROPIC_API_KEY, OPENAI_API_KEY, or claude -p fallback.
+  Subagent delegation improves eval isolation but is not required.
 license: MIT
 metadata:
   purpose: harness-agnostic skill creation methodology
@@ -20,8 +25,18 @@ metadata:
 
 # opencraft-skill
 
-A harness-agnostic process for creating Agent Skills. Works in any agent
-environment. No scripts or tooling required — only file read access.
+A harness-agnostic process for creating Agent Skills.
+
+**Bundled scripts** (run with `python3 scripts/<name>.py --help`):
+- `scripts/quick_validate.py` — spec-check frontmatter and line count
+- `scripts/aggregate_benchmark.py` — aggregate `grading.json` files → `benchmark.json`
+- `scripts/package_skill.py` — validate and zip a skill for distribution (stdlib only)
+- Claude Code CLI only: `scripts/run_eval.py`, `scripts/run_loop.py`, `scripts/improve_description.py`
+
+**Bundled agents** (load and delegate):
+- `agents/grader.md` — grades eval assertions; writes `grading.json`
+- `agents/comparator.md` — blind A/B quality judge; writes `comparison.json`
+- `agents/analyzer.md` — benchmark patterns and post-hoc improvement suggestions
 
 ## How to use this skill
 
@@ -111,22 +126,22 @@ Summarize — do not quote verbatim. Write to the working file under
 
 ### Step 2 — Interview for the why
 
-Ask the user these questions **one at a time**. Wait for each answer before
-asking the next. Write each answer to the working file.
+Ask these questions **one at a time**. Send ONE question. Wait for the answer.
+Write it to the working file. Then send the next question. Do not batch them.
 
-1. "What were you ultimately trying to achieve? (Not the steps — the goal)"
-2. "Was the approach we took the one you'd want to use every time, or did
-    you make any compromises you'd rather avoid in future?"
-3. "What should stay specific to this instance vs. what should generalize?
-    For example, were the file names / column names / API endpoints specific
-    to today, or should the skill work for any similar input?"
-4. "Are there edge cases or failure modes you already know about that didn't
-    come up in what we just did?"
-5. "Is there anything the agent consistently gets wrong in this domain that
-    the skill should explicitly call out?"
+- Q1: "What were you ultimately trying to achieve? (Not the steps — the goal)"
+- Q2: "Was the approach we took the one you'd want to use every time, or did
+  you make any compromises you'd rather avoid in future?"
+- Q3: "What should stay specific to this instance vs. what should generalize?
+  Were the file names / column names / API endpoints specific to today, or
+  should the skill work for any similar input?"
+- Q4: "Are there edge cases or failure modes you already know about that didn't
+  come up in what we just did?"
+- Q5: "Is there anything the agent consistently gets wrong in this domain that
+  the skill should explicitly call out?"
 
 If any answer reveals a constraint or gotcha, flag it: "That sounds like a
-gotcha worth putting in the skill — I'll make sure it's in the draft."
+gotcha — I'll put it in the draft."
 
 ### Step 3 — Draft the SKILL.md
 
@@ -192,13 +207,8 @@ Before collecting material, ask these two questions **one at a time**:
 
 Write answers to the working file under `## Scope`. Then ask for material:
 
-> "Effective skills rely on practical experience — not generic instructions.
->  Do you have any of the following you can share?
->  - A runbook, checklist, or internal doc for this workflow
->  - A past example of this task done well (or badly)
->  - Known gotchas or edge cases
->  - Corrections you have made when an agent tried this before
->  - Project-specific conventions (naming, structure, API patterns)"
+Ask: "Do you have anything useful to share? Runbooks, past examples, known gotchas,
+corrections from when agents tried this before, or naming/API conventions."
 
 Wait for the user's response. Do not proceed until they answer.
 
@@ -213,16 +223,17 @@ Wait for the user's response. Do not proceed until they answer.
 ### Step 2 — Draft with material
 
 Read all material the user provided. Then ask these questions **one at a
-time** before drafting (write each answer to the working file):
+time**. Send ONE question, wait for the answer, write it to the working file,
+then send the next. Do not batch them.
 
-1. "What does success look like — what should the agent produce or do?"
-2. "What is the most common way this goes wrong?"
-3. "Are there steps that must happen in a specific order, or that are easy
-    to skip by mistake?"
-4. "Any tools, libraries, or commands the agent should always use (or avoid)?"
-5. "What would you correct if an agent did this task but got it slightly wrong?"
-6. "Are there things the agent reliably gets wrong in this domain even with no
-    special guidance? Those become Gotchas entries."
+- Q1: "What does success look like — what should the agent produce or do?"
+- Q2: "What is the most common way this goes wrong?"
+- Q3: "Are there steps that must happen in a specific order, or that are easy
+  to skip by mistake?"
+- Q4: "Any tools, libraries, or commands the agent should always use (or avoid)?"
+- Q5: "What would you correct if an agent did this task but got it slightly wrong?"
+- Q6: "Are there things the agent reliably gets wrong in this domain even with no
+  special guidance? Those become Gotchas entries."
 
 Write the draft following the same rules as Mode 1 Step 3.
 Write to `<SKILL_NAME>/SKILL.md` (or inline if no write access).
@@ -246,16 +257,7 @@ Tell the user:
 > "We'll draft a skeleton with explicit markers where real expertise is needed.
 > These markers must be replaced before the skill is reliable."
 
-Write the draft. The file MUST open with a YAML frontmatter block:
-
-```
----
-name: <SKILL_NAME>
-description: Use this skill when...
----
-```
-
-Do not omit the frontmatter. Do not place any text before the opening `---`.
+Write the draft (must open with YAML frontmatter — same format as Step 2 above).
 
 Mark every section that needs real expertise with:
 
@@ -301,13 +303,13 @@ file under `## Refine inputs`.
 - Missing gotcha → add it to the Gotchas section
 - Description triggering on wrong prompts → route to description optimization
 
-**Check for structural issues before patching.** If three or more failures
-share the same root cause, or if failures suggest the skill's scope or approach
-is fundamentally wrong, do not patch. Say: "These failures suggest the skill
-needs restructuring — [specific change, e.g. split into two / narrow scope to
-X / change approach from Y to Z]. Want to proceed with that?"
-- If yes: use the existing SKILL.md as material and go to Mode 2 Step 1.
-- If no: continue with targeted patches.
+**Before patching anything, count how many failures share the same root cause.**
+- If 3 or more failures share the same root cause, or if the skill's scope or
+  approach appears fundamentally wrong: do NOT patch. Instead say: "These
+  failures suggest restructuring — [specific change]. Want to proceed with that?"
+  - If yes: treat the existing SKILL.md as source material and go to Mode 2 Step 1.
+  - If no: then patch, but note the risk in the working file.
+- If failures are independent: patch each one.
 
 For each patch, show before/after. Ask: "Here is what I would change. Anything
 you would do differently?" Apply approved changes, then proceed to **Eval loop**.
@@ -369,20 +371,24 @@ Save outputs to: <SKILL_NAME>-workspace/iteration-1/eval-<N>/without_skill/
 ```
 
 After both complete:
-1. Compare outputs side by side.
-2. For each test case, write to the working file:
-   - Did the with-skill output meet the success criteria? (Yes / Partially / No)
-   - What was specifically better or worse vs. baseline?
-   - Any instructions in the skill that seemed ignored or misapplied?
+1. For each eval, load `agents/grader.md` and spawn a grader subagent with the
+   assertions list and the eval's output dirs. Read `references/schemas.md` before
+   writing grading.json — wrong field names cause silent failures in
+   aggregate_benchmark.py. If subagents are unavailable, grade inline using the
+   rules in `agents/grader.md`.
+   Optional: load `agents/comparator.md` for qualitative A/B comparison; writes
+   `comparison.json` alongside grading.json.
+2. Run:
+   ```
+   python3 scripts/aggregate_benchmark.py <SKILL_NAME>-workspace/iteration-1 \
+     --skill-name <SKILL_NAME>
+   # or: uv run scripts/aggregate_benchmark.py ...
+   ```
+   This writes `benchmark.json` with pass rates, tokens, and the skill delta.
 3. Ask: "Here are the results. Does the skill output look right? Anything you
    would change about what it produced?"
 
 Collect feedback. Write it to `## Iteration 1 results` in the working file.
-
-After results are recorded, offer: "Want to lock these into a repeatable
-benchmark? I can scaffold `evals/evals.json` with your prompts and success
-criteria." If yes: scaffold with `id`, `prompt`, `expected_output` per case.
-Add `assertions` after the first round; save grading to `<SKILL_NAME>-workspace/iteration-N/eval-<id>/grading.json`.
 
 ### Path B — inline fallback
 
@@ -443,8 +449,8 @@ Ask:
 
 - If no: write `No scripts` to the working file and proceed to
   **Description optimization**.
-- If yes: read `references/scripts.md` in full. It defines three types
-  (Command, Script, Validator) and authoring rules for each.
+- If yes: **stop and read `references/scripts.md` in full before continuing.**
+  It defines three types (Command, Script, Validator) and authoring rules.
 
 Ask: "Which type best describes what you have in mind? (Name more than one
 if needed.)" Then for each candidate, follow `references/scripts.md` in order:
@@ -463,7 +469,23 @@ Proceed to **Description optimization**.
 
 Run after the eval loop is complete.
 
-Read `references/description-optimization.md` and follow its sections in order.
+**If Claude Code CLI available** (`claude -p "hi" --output-format text` exits 0):
+```
+python3 scripts/run_loop.py --skill-path <SKILL_NAME>/ \
+  --eval-set <evals.json> --model <model> \
+  --holdout 0.4 --max-iterations 5 --verbose
+```
+Apply the best description, then skip to **Skill quality checklist**.
+**If no Claude Code but LLM API available** (ANTHROPIC_API_KEY or OPENAI_API_KEY set):
+Read `references/description-optimization.md` for manual testing. After each round, run
+`python3 scripts/improve_description.py --eval-results <failures.json> --skill-path
+<SKILL_NAME>/ --model <model>` to rewrite the description. Apply and repeat (up to 5×).
+**Otherwise:** read and follow `references/description-optimization.md` in full.
+
+## Packaging
+
+Run `python3 scripts/package_skill.py <SKILL_NAME>/ [output-dir]` to produce a
+distributable `<SKILL_NAME>.skill` file (excludes evals/, build artifacts; stdlib only).
 
 ## Skill quality checklist
 
@@ -493,6 +515,8 @@ Fix every failing item — do not skip any.
 - [ ] If scripts were added: each referenced from SKILL.md with exact run command
 - [ ] If a Validator was added: SKILL.md has explicit "if this fails, do X"
 - [ ] If no scripts were added: `scripts/` directory does not exist
+- [ ] Run `python3 scripts/quick_validate.py <SKILL_NAME>/` (or `uv run`); fix every reported error
+- [ ] If distributing: run `python3 scripts/package_skill.py <SKILL_NAME>/`; must exit 0
 
 When all items pass, tell the user:
 > "The skill is ready. It lives at `<SKILL_NAME>/SKILL.md`. Try a prompt from
