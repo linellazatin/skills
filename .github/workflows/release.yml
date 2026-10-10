@@ -1,0 +1,48 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    uses: ./.github/workflows/validate.yml
+    permissions:
+      contents: read
+
+  release:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+      - name: Extract this version's changelog entries
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: python scripts/release_notes.py "$RELEASE_TAG" --output "$RUNNER_TEMP/release-notes.md"
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          prerelease=()
+          if [[ "${RELEASE_TAG%%+*}" == *-* ]]; then
+            prerelease=(--prerelease)
+          fi
+          gh release create "$RELEASE_TAG" --verify-tag --title "$RELEASE_TAG" \
+            --notes-file "$RUNNER_TEMP/release-notes.md" "${prerelease[@]}"
