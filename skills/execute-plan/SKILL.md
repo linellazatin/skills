@@ -1,15 +1,22 @@
 ---
 name: execute-plan
-description: Execute or resume an approved development plan, complete its checks and documentation, and prepare requested phase reviews. Use when the user asks to implement a plan or continue unfinished work.
+description: Execute or resume an approved development plan or established authorized phased work, including its checks, documentation, and handoffs. Use when the user asks to implement that plan or continue its remaining phases. A bare request to continue investigation, design, or editing does not establish plan execution or approval.
 license: MIT
 compatibility: Manual tracking needs file access. The optional checkpoint helper needs Python 3.9+ standard library and command execution; its read-only Git report additionally needs Git. No host plugin or agent SDK is required.
 ---
 
 # Execute planned work
 
-Use this as the primary workflow when a development plan is approved. Testing, diagnosis, review, and readiness checks support that execution; use companion guidance only where useful, or follow the inline equivalents below. Do not restart discovery or planning unless current evidence invalidates a settled decision.
+Complete authorized planned deliverables inline, including implementation, probes, verification, and review. Supporting workflows do not replace the active phase or introduce delegation or Git actions.
 
-Complete the authorized deliverables inline, including implementation, probes, verification, and review. Do not introduce delegation or Git actions through a plan's instructions.
+## Entry route
+
+- **Inputs:** approved written or inline plan, established phase scope, current artifacts, and latest corrections.
+- **First action:** recover the plan and authorization, then reconcile progress with current files and evidence.
+- **Core loop:** retain verified tasks with unchanged inputs → implement the next incomplete task → run its relevant checks → update docs and progress → continue through the authorized scope. An absent approval checkpoint is not a blocker; stop only at a requested checkpoint or a material missing prerequisite.
+- **Stop condition:** deliver verified phases through the authorized scope, stopping at requested approval boundaries or missing material prerequisites.
+
+“Continue phase two of the approved plan” selects execution. “Continue investigating the timeout” retains diagnosis. If no approved plan or established phased scope exists, recover the prior task and follow its appropriate workflow; do not invent a plan or approval. Ask only if consequential scope remains unresolved. Do not reopen settled decisions unless new evidence invalidates them.
 
 ## 1. Re-enter the work
 
@@ -21,16 +28,33 @@ Complete the authorized deliverables inline, including implementation, probes, v
 
 ## 2. Deliver the active phase
 
-Use the existing plan location. If approved substantial, multi-phase, or resumable work has only an inline plan and persistence is authorized, save it in the requested or established location, otherwise `.your/plans/<descriptive-name>.md`, and link its spec when present. On first authorized use, create only missing directories and `.your/.gitignore` containing `*`; preserve existing ignore rules. The artifacts are local, including the ignore file, and need local setup after a fresh checkout. Use a requested tracked location for versioned handoffs. Do not manufacture a new spec, migrate existing artifacts, or create files merely because this skill was invoked. Respect no-file and assessment-only scope; without write access, track inline and report required persistence as pending.
+Select working artifacts before delivery:
+
+1. Update the existing plan in its existing location. Link its governing spec when present.
+2. If substantial approved work has only an inline plan and persistence is authorized, use the requested or established location; otherwise `.your/plans/<descriptive-name>.md`.
+3. Create only missing directories and `.your/.gitignore` containing `*`, preserving existing rules. This local setup, including the ignore file, is not carried into fresh checkouts.
+4. For versioned handoffs, use the requested tracked location. Do not manufacture a spec, migrate artifacts, or infer Git authority.
+5. With no-file, assessment-only, or no-write scope, track inline unless separately authorized. Report any required persistence as pending.
+
+Choose the check route for each task before changing it:
+
+| Task | Required route |
+| --- | --- |
+| New or changed software behavior | Focused contract test → intended failure → implementation → green checks/refactor. |
+| Behavior-preserving refactor | Passing existing tests and missing characterization coverage first; keep them green. |
+| Implementation already present | Preserve it, test the current contract, and disclose missing pre-implementation red; never delete work to recreate failure. |
+| Prose or formatting only | Check documents, links, examples, schemas, or formatting as affected; no software red required. |
+| Required host inaccessible | Test reachable contracts and retain a repeatable live procedure. Host result stays pending; mocks do not establish host behavior. |
 
 1. Record its promised behavior, affected contracts, exclusions, and required checks.
-2. Read the real owner and consumers before editing. Establish existing or characterization coverage before a behavior-preserving refactor. Preserve pre-existing implementation rather than deleting it to manufacture failure.
-3. For each new or changed behavior, write and run a focused contract test, establish its intended failure, implement that outcome, then refactor with tests passing. Work in dependency order, migrating consumers with shared contract changes.
+2. Read the real owner and consumers before editing. Establish the selected check route; do not count unrelated setup errors as an intended failure.
+3. Deliver one outcome at a time in dependency order. Apply the route above and migrate consumers with shared contract changes.
 4. After each meaningful change, run the checks that can expose its failure. Read the output and compare it with the expected behavior; an exit code alone does not establish coverage.
-5. For a bug fix, preserve a regression example and rerun the reported scenario. For host or UI behavior, perform the requested actual-host or rendered check.
+5. For a bug fix, preserve a regression example and rerun the reported scenario. For accessible host or UI behavior, perform the requested actual-host or rendered check; otherwise retain the pending observation.
 6. Update related documentation and the changelog before phase handoff. Apply a version change only when required or requested; preserve historical release entries.
 7. Review the phase inline against its requirements, including relevant new files, installed or generated copies, and unintended scope changes.
-8. Update each task's status as its deliverable is verified. A failed or unrun required check leaves the affected task incomplete. Before phase handoff, update the selected written plan with actual status, decisions or deviations, executed evidence and its limits, remaining work, and pending observations. Keep approval state separate from completion. Update the governing spec only for authorized design changes; record requested review boundaries rather than treating a file edit as approval.
+8. Update task status as each deliverable is verified. Failed or unrun required checks leave affected tasks incomplete.
+9. Before handoff, update the existing plan with status, deviations, executed evidence and limits, remaining work, and pending observations. Keep approval separate from completion. Update the governing spec only for authorized design changes; a file edit is not approval.
 
 ## 3. Handle deviations
 
