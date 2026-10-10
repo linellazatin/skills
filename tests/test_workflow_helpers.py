@@ -19,8 +19,10 @@ validator = load("validate_skills")
 
 class ReleaseNotesTests(unittest.TestCase):
     def test_exact_version_and_subsections(self):
-        doc = "## 0.20.0\nwrong\n## 0.2.0\n\n### Added\n- right\n## 0.1.0\nold"
-        self.assertEqual(release.extract_notes(doc, "v0.2.0"), "### Added\n- right\n")
+        for heading in ("Added", "New"):
+            with self.subTest(heading=heading):
+                doc = f"## 0.20.0\nwrong\n## 0.2.0\n\n### {heading}\n- right\n## 0.1.0\nold"
+                self.assertEqual(release.extract_notes(doc, "v0.2.0"), f"### {heading}\n- right\n")
 
     def test_brackets_date_and_prerelease(self):
         doc = "## [1.2.3-rc.1] - 2026-10-11\n- preview\n## [1.2.2]\nold"
@@ -41,8 +43,10 @@ class ReleaseNotesTests(unittest.TestCase):
         self.assertIn("- retained", release.extract_notes(doc, "v0.2.0"))
 
     def test_current_changelog(self):
-        notes = release.extract_notes((ROOT / "CHANGELOG.md").read_text(), "v0.2.0")
-        self.assertIn("### Added", notes)
+        changelog = (ROOT / "CHANGELOG.md").read_text()
+        notes = release.extract_notes(changelog, "v0.2.0")
+        expected = changelog.split("## 0.2.0\n", 1)[1].split("\n## ", 1)[0].strip() + "\n"
+        self.assertEqual(notes, expected)
         self.assertNotIn("First beta release", notes)
 
 
