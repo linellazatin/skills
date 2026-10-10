@@ -1,14 +1,21 @@
 ---
 name: test-first
-description: Develop features and fix bugs through test-driven development, using small red-green-refactor cycles and well-designed behavioral tests. Use for direct new or changed behavior, regression fixes, and behavior-preserving refactors, or to support the active phase of an approved plan; prose-only edits need document checks instead.
+description: Implement specified new or changed software behavior and established bug corrections through test-driven development; protect behavior-preserving refactors with characterization tests. Use as direct development or support within an approved phase. Uncertain causes need diagnosis first; prose-only edits use document checks instead.
 license: MIT
 ---
 
 # Develop behavior through tests
 
-For a direct feature or fix, this can be the primary development workflow. During approved plan execution, support the active phase with these test cycles without replacing its scope, task tracking, or requested handoff. A standalone diagnosis or migration keeps its own responsibility and applies the same test-before-change rules inline.
+Use test-driven development by default for new and changed software behavior. Keep execution and review inline; preserve the user's scope and existing work. Within a plan, diagnosis, or migration, these cycles support the active task rather than replacing its tracking or handoff.
 
-Use test-driven development by default for new and changed software behavior: specify one outcome, observe its test fail for the intended reason, implement that outcome, then refactor with the tests passing. Keep execution and review inline. Preserve the user's current scope and existing work.
+## Entry route
+
+- **Inputs:** specified behavior or established correction, current implementation, and inspected test commands.
+- **First action:** choose the special-case route below, then select one input/condition and its independent expected result.
+- **Core cycle:** test one contract → observe intended red → implement the outcome → observe green → refactor only when useful, retaining green.
+- **Stop condition:** the promised behavior and affected checks are observed, with unavailable required checks still explicit. Do not claim a red-green cycle for an exception route.
+
+“Implement this specified flag” or “correct this proven byte-counting defect” selects development. “Find why it fails” selects diagnosis first. “Rewrite the README” needs document checks, not a software test cycle.
 
 ## 1. Select one behavior
 
@@ -55,6 +62,8 @@ Proceed to implementation only after the selected behavior has an understood fai
 5. At the phase boundary, run required regression and consumer checks against the final state. Repeat the reported operation when focused tests cover a narrower layer.
 
 ## Write tests that detect mistakes
+
+Apply the checks relevant to the selected contract; do not turn every item below into an additional test or mandatory tool.
 
 - **Assert the contract:** check returned values, observable state, errors, or externally meaningful effects. A test that merely checks non-null or no exception is insufficient when a precise result is promised.
 - **Make failure diagnostic:** use behavior-based names, explicit expected values, and assertions whose output identifies the mismatch. Keep setup, action, and assertions visibly separate.
