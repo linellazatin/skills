@@ -6,7 +6,15 @@ license: MIT
 
 # Turn an idea into a buildable direction
 
-Produce a design grounded in the user's intended outcome, with visible choices and acceptance examples. Work inline, reuse supplied context, and keep discovery proportional to the decisions still missing.
+Produce a design grounded in the user's intended outcome, with visible choices and acceptance examples. Work inline and keep discovery proportional to missing decisions.
+
+## Entry route
+
+- **Inputs:** intended outcome, existing work, prior decisions, and constraints; identify material missing inputs through inspection first.
+- **First action:** choose unsettled-design, feasibility, or direct-handoff routing below. Reuse supplied answers.
+- **Stop condition:** deliver the scoped design or feasibility conclusion with evidence and open decisions. Continue implementation only within existing authorization.
+
+“Think through offline search; the approach is undecided” selects design exploration. “Break the approved search design into tasks” selects planning. “Find why existing search crashes” selects diagnosis.
 
 ## 1. Identify the decision to make
 
@@ -23,7 +31,9 @@ Produce a design grounded in the user's intended outcome, with visible choices a
 | Design is already agreed and only tasks are needed | Carry it into detailed planning without reopening settled choices. |
 | Expected behavior is known and broken | Investigate the failure; return to design only if the evidence exposes a genuine product or architecture decision. |
 
-Only the unsettled-outcome route follows the full design procedure in sections 2–5. For feasibility, identify the claim, inspect or run the smallest authorized distinguishing check, and return the observation, recommendation, uncertainty, and next action; stop there unless broader design is requested. For clear authorized changes, agreed designs, or known defects, hand off directly to development, planning, or diagnosis using available instructions or an inline equivalent. Do not apply the full design checklist to these routes.
+- **Unsettled outcome:** follow the full design procedure in sections 2–5.
+- **Feasibility:** inspect or run the smallest authorized distinguishing check. Return observation, recommendation, uncertainty, and next action; stop unless broader design is requested.
+- **Direct handoff:** carry clear authorized changes, agreed designs, or known defects into development, planning, or diagnosis using available guidance or inline equivalents. Skip the full design checklist.
 
 ## 2. Resolve the consequential unknowns
 
@@ -34,6 +44,8 @@ Only the unsettled-outcome route follows the full design procedure in sections 2
 5. Use an open question to uncover intent; use a short set of choices when the actual decision is between understood alternatives. If the user delegates the choice, recommend a concrete default and label it as your decision.
 6. Reflect the resulting understanding briefly: outcome, constraints, exclusions, and assumptions. Correct misunderstandings when the user responds; do not turn your assumptions into user-approved requirements.
 7. Stop interviewing when remaining uncertainty is routine implementation detail. If an unknown still changes supported behavior, ownership, or material cost, resolve it or identify it as a blocker instead of quietly choosing for the user.
+
+Example: local-only document search is required, but storage is undecided. “Use an embedded index” is a recommendation, not approval. If the user says “choose the storage,” record it as a delegated choice. If uploading documents would change privacy or cost and is not authorized, keep that decision unresolved; do not treat silence as consent.
 
 ## 3. Choose a viable approach
 
@@ -58,7 +70,7 @@ Recommendation: <choice; deciding tradeoff; assumptions>
 3. State compatibility, migration, installation, or lifecycle obligations affected by the design. Keep shared policy ownership and host-specific responsibilities visible.
 4. Define how the result will be checked: representative behavior, meaningful boundary/error cases, and any required actual-host or rendered observation. Software development proceeds through TDD; unit tests alone cannot establish unobserved host behavior.
 5. Separate user decisions, your recommended defaults, and unresolved material questions. Specify what is excluded from the first increment.
-6. Select the artifact within the requested scope. Keep small, clear, single-session decisions inline. Write a spec for substantial designs with consequential behavior or architecture choices, compatibility obligations, cross-session handoff, or a requested design review. Update the existing relevant spec before creating another; a routine fix or feasibility answer does not require a separate spec. Follow the storage policy below and respect no-file and assessment-only instructions.
+6. Select the artifact: small decisions stay inline; substantial consequential designs, compatibility obligations, resumable handoffs, or requested design reviews use an authorized spec. Update existing specs first; routine fixes and feasibility answers need no extra spec. Apply the storage and authorization branches below.
 
 ```text
 Outcome and why: <user/audience; problem; success>
@@ -73,9 +85,11 @@ Next: <design review, requested planning, or authorized development>
 
 ### Store a written design
 
-Use the requested or established project location first; otherwise use `.your/specs/<descriptive-name>.md` for authorized local working specs. On first use, create only missing directories and `.your/.gitignore` containing `*`; preserve an existing ignore file. Date prefixes are optional. The wildcard also ignores the ignore file, so a fresh checkout needs the local setup again. Local artifacts are not shared through Git; use the requested tracked project location when versioned collaboration is part of the deliverable. Do not migrate existing files or infer commit authority.
-
-A spec records intended behavior, constraints, decisions, exclusions, acceptance, material questions, and its actual review/approval state. Reference the associated plan when one exists; keep execution progress in that plan. Report the saved path at handoff. File creation must be explicitly requested, supported by project convention, or required for the authorized deliverable; skill invocation alone is insufficient. Without write access or with a no-file instruction, provide the design inline and identify any required persistence as pending.
+1. Update the existing relevant spec in the requested or established location first. For an authorized new local spec, use `.your/specs/<descriptive-name>.md`; date prefixes are optional.
+2. Create only missing directories and `.your/.gitignore` containing `*`. Preserve existing ignore rules. The ignore file is itself ignored; fresh checkouts need local setup again.
+3. For versioned collaboration, use the requested tracked location. Do not migrate files or infer commit authority.
+4. File creation needs an explicit request, project convention, or the authorized deliverable. For assessment-only, no-file, or no-write work, provide the design inline unless separately authorized; report required persistence as pending.
+5. Record behavior, constraints, decisions, exclusions, acceptance, material questions, and actual review/approval state. Link the associated plan when present; execution progress stays in that plan. Report the saved path at handoff.
 
 ## 5. Check the design and hand it off
 
