@@ -32,6 +32,11 @@ python3 skills/craft-skill/scripts/quick_validate.py skills/plan-work
 python3 skills/craft-skill/tests/test_run_eval.py
 python3 skills/execute-plan/tests/test_checkpoints.py
 
+# Run the repository CI checks (PyYAML is only required for these checks)
+python3 -m pip install PyYAML==6.0.3
+python3 scripts/validate_skills.py
+python3 -m unittest discover -s tests -v
+
 # Confirm CLI discovery without installing
 npx --yes skills add . --list
 
@@ -40,6 +45,8 @@ git diff --check
 ```
 
 For prose-only changes, check factual consistency, local links, resource paths, and whitespace. For helper changes, run the affected regression suite. For distribution changes, inspect package contents and test installation in an isolated temporary destination, preserving supporting files and licenses. Metadata validation is limited structural evidence; helper tests and discovery do not establish native harness activation or model compliance. Performance claims require controlled execution evidence.
+
+GitHub validation runs on PRs and pushes to `main`, and is reused by `v*` tag releases. Release notes come from the exact matching changelog version section; missing, duplicate or empty sections fail publication. Maintain the workflows and their helpers under `.github/workflows/`, `scripts/` and `tests/`. Skills CLI discovery uses pinned `skills@1.7.2 add . --list`, because installation has no `--dry-run` flag.
 
 ## Installation
 
