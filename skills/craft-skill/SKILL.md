@@ -1,6 +1,6 @@
 ---
 name: craft-skill
-description: Create, extract, refine, validate, or package a reusable Agent Skill. Use when capturing a completed workflow, designing instructions for future tasks, or correcting a skill's decisions, scope, or activation behavior.
+description: Create, extract, assess, refine, validate, or package a reusable Agent Skill. Use to capture completed workflows as skills, design reusable instructions, or evaluate and improve skill triggers and procedures. Ordinary product development, code review, and readiness checks are not skill-authoring tasks.
 compatibility: Core instructions need file read access; write access enables edits and saved evidence, otherwise use inline output. Bundled validation, aggregation, and packaging use Python standard library. Trigger evaluation uses Claude Code CLI; description improvement needs a supported LLM provider. These integrations and isolated-agent evaluation are optional.
 license: MIT
 metadata:
@@ -10,14 +10,24 @@ metadata:
 
 # Craft a reusable skill
 
-This is a meta skill for authoring and evaluating reusable skills, not a phase every engineering task must enter. Write instructions that change agent decisions, then verify them against realistic requests. Preserve the user's scope, supplied material, and chosen execution mode.
+Write reusable instructions that change agent decisions and verify them against realistic requests. This meta skill is not a routine engineering phase.
+
+## Entry route
+
+- **Inputs:** requested reusable outcome, supplied history or examples, existing skill when relevant, and authorization to assess or edit.
+- **First action:** read those inputs and select a mode. Capture completed work → Extract; create future guidance → Design; assess or improve existing guidance → Refine.
+- **Stop condition:** deliver the requested assessment, draft, revision, or package with evidence and limits. Missing consequential domain facts keep the affected guidance provisional.
+
+Track inline or in an existing record by default. A requested skill file is the deliverable; an extra plan or spec is a separate artifact. Before adding one, establish both a substantial or resumable need and writing authority. Creating a skill does not automatically require a planning file.
+
+“Assess these skills' triggers without editing” selects assessment-only Refine. “Review the app's code” belongs to code review. Reuse existing answers and preserve the user's execution mode.
 
 ## 1. Establish the assignment
 
 1. Read the request, existing skill if any, available examples, corrections, and project instructions. Reuse answers already present; do not begin a fixed interview when the scope is known.
 2. Record the repeatable outcome, intended users, adjacent tasks excluded, available capabilities, and requested destination.
 3. If a consequential input is missing, ask one focused question and wait before dependent work. Continue independent investigation; do not ask about tools you can inspect directly.
-4. Use an existing plan or task list to track scope, evidence, changes, and checks. For substantial, resumable skill work, use an authorized written plan in the requested or established location, otherwise `.your/plans/<descriptive-name>.md`; use `.your/specs/` for an authorized consequential design. On first authorized use, create only missing directories and `.your/.gitignore` containing `*`, preserving existing ignore rules. These are local artifacts, including the ignored ignore file; choose a requested tracked location for versioned collaboration. Invocation alone does not authorize files; honor assessment-only and no-file instructions and track inline without write access. Keep behavioral eval records in their documented schema locations, not an automatic `.your/tests/`.
+4. Track scope, evidence, changes, and checks in the existing plan or task list. Select any new artifact using the policy below.
 5. If the request is a one-time action or a trivial prompt without reusable decisions, explain that and offer the direct task. If the user explicitly wants a reusable skill, proceed within that scope.
 6. Select the mode below. State the selected mode briefly; ask for confirmation only when the intended mode changes the work and remains ambiguous.
 
@@ -25,7 +35,15 @@ This is a meta skill for authoring and evaluating reusable skills, not a phase e
 | --- | --- | --- |
 | Capture work already performed | Extract | Generalized procedure grounded in actual actions and user corrections |
 | Create a skill for future work | Design | Scoped procedure with examples, decisions, and observable success conditions |
-| Improve an existing skill | Refine | Changes tied to observed failures or a specified instruction-quality defect |
+| Assess or improve an existing skill | Refine | Findings or authorized changes tied to failures or instruction-quality defects |
+
+### Select working artifacts
+
+1. Use existing artifacts and the requested or established location first. Keep small tasks inline.
+2. Only when both artifact need and writing authority are established, use a written plan for substantial or resumable skill work; the fallback is `.your/plans/<descriptive-name>.md`. Use `.your/specs/` for an authorized consequential design. Otherwise continue inline; do not create a file merely to organize the work.
+3. On first authorized use, create only missing directories and `.your/.gitignore` containing `*`. Preserve existing ignore rules. The wildcard also ignores the ignore file; fresh checkouts need local setup again.
+4. For versioned collaboration, use the requested tracked location. Do not infer migration or Git authority.
+5. For assessment-only, no-file, or no-write work, track inline unless artifact writing is separately authorized. Report required persistence as pending. Keep behavioral evals in their documented schema locations; do not create `.your/tests/` by default.
 
 ## 2. Build the evidence for the selected mode
 
@@ -47,7 +65,7 @@ This is a meta skill for authoring and evaluating reusable skills, not a phase e
 
 1. Identify the requested quality defect or a concrete failure: prompt, actual outcome, expected outcome, and available artifacts.
 2. Locate the instruction that caused or allowed it. Classify the cause: vague action, missing decision, wrong scope, excessive mandatory process, missing failure branch, or misrouting.
-3. If several failures share one cause or the scope is wrong, restructure the affected workflow. Otherwise make a focused correction; avoid accumulating unrelated universal rules.
+3. If several failures share one cause or the scope is wrong, recommend restructuring the affected workflow. Otherwise identify a focused correction. Apply it only when editing is authorized; do not accumulate unrelated universal rules.
 4. For an instruction-quality request without a failed execution, inspect the current procedure against realistic cases. Label those checks as author review, not independent behavioral evaluation.
 5. Preserve supported metadata, resource links, scripts, and established contracts unless the correction requires changing them. Inspect callers before removing resources.
 
@@ -71,10 +89,11 @@ This is a meta skill for authoring and evaluating reusable skills, not a phase e
 3. Inspect available execution capabilities and authorization. If the user requests inline work, keep all testing and review inline. Use an isolated agent only when available and authorized; never make delegation a requirement.
 4. Apply the draft to the cases in a temporary or otherwise authorized workspace. Capture decisions, outputs, checks, and mistakes. If doing an instruction walkthrough rather than executing a task, label it explicitly.
 5. If comparing variants, hold the task, inputs, capabilities, and scoring criteria fixed. Separate independent runs from author walkthroughs influenced by this conversation.
-6. Map each failure to a specific instruction, revise that instruction, and repeat the affected cases. Stop when required cases meet their criteria or report a named unresolved limitation.
+6. Map each failure to a specific instruction. In assessment-only work, report the correction without editing. When revision is authorized, revise and repeat affected cases. Stop when required cases meet their criteria or report a named unresolved limitation.
 7. Do not claim improved model performance from metadata validation or an inline review. Report the actual evaluation method and its limits.
 
-For automated evaluation artifacts, read [JSON schemas](references/schemas.md) before writing them. Use the exact `assertion_results` contract in `grading.json`; the aggregator cannot establish correctness from an incorrectly shaped record. Load only the relevant grading resources: [grader](agents/grader.md) for assertions, [comparator](agents/comparator.md) for controlled comparisons, or [analyzer](agents/analyzer.md) for diagnosis. These can guide inline review; loading them does not authorize delegation.
+- Before writing automated evaluation artifacts, read [JSON schemas](references/schemas.md). Use `assertion_results` in `grading.json`; an incorrectly shaped record cannot establish correctness.
+- Load only relevant guidance: [grader](agents/grader.md) for assertions, [comparator](agents/comparator.md) for controlled comparisons, or [analyzer](agents/analyzer.md) for diagnosis. These resources can guide inline review; they do not authorize delegation.
 
 ## 5. Handle optional tools
 
@@ -99,7 +118,10 @@ Optional provider integrations:
 | `scripts/improve_description.py` | Supported LLM provider and command execution | Description proposals from recorded results |
 | `scripts/run_loop.py` | Claude Code CLI for evaluation; supported provider for improvement | Repeated trigger/improvement loop |
 
-Run these only within the task's authorization and cost constraints. The trigger evaluator registers a temporary Claude command surrogate; its scores do not measure the complete skill body, competition among the installed skill catalog, or native selection in Codex, Pi, or another harness. Keep execution errors unscored and resolve them before comparing descriptions. Without these integrations, review descriptions and cases manually and disclose the lack of measured trigger results. A missing optional integration does not block core authoring or validation.
+1. Run integrations only within authorization and cost constraints. A missing integration does not block core authoring or validation.
+2. Treat trigger-evaluator results as temporary Claude command-surrogate measurements, not full-body behavior, catalog competition, or native activation in other harnesses.
+3. Keep execution errors unscored. Resolve them before comparing descriptions.
+4. Without integrations, review cases manually and disclose that activation remains unmeasured. For direct calls to another model, record the actual protocol and distinguish simulated routing from native activation.
 
 ## Completion check
 
@@ -112,4 +134,4 @@ Run these only within the task's authorization and cost constraints. The trigger
 - [ ] License notices accompany any retained material that requires them.
 - [ ] Packaging was inspected if requested; no publication or Git action was inferred.
 
-Return the changed skill paths, decisions improved, validation method/results, and unresolved evaluation limits. Say whether the skill is ready for the requested use or still needs a named trial. Do not force another approval loop when the user already authorized the revision.
+Return findings or changes, affected skill paths, validation method/results, and evaluation limits. For assessment-only work, state that no paths changed. Distinguish readiness for the requested use from any pending model or harness trial. Do not force repeated approval for authorized revisions.
