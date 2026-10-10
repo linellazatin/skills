@@ -1,12 +1,21 @@
 ---
 name: plan-work
-description: Turn requirements or an agreed design into executable development phases with dependencies, priorities, implementation steps, and checks. Use for task breakdown, substantial fixes, refactors, multi-package changes, or revising an implementation plan. Resolve remaining design decisions as needed; open-ended ideation belongs to strategy and design exploration.
+description: Produce or revise an implementation plan from requirements or an agreed design, with ordered tasks, dependencies, and acceptance checks. Use when the requested result is task breakdown or planning a fix, refactor, or multi-package change. Executing an approved plan, diagnosing a failure, and reporting defects in a plan are different primary workflows.
 license: MIT
 ---
 
 # Plan work
 
 Deliver an implementation outline another agent can execute without reconstructing this conversation.
+
+## Entry route
+
+- **Inputs:** requirements or design, current artifacts, constraints, and requested planning or execution scope.
+- **First action:** inspect the relevant work and recover settled decisions; identify missing choices before sequencing dependent tasks.
+- **Core loop:** map the producer and each real consumer → order characterization, implementation and consumer migration → specify acceptance checks and docs. Planning-only scope means describe these implementation steps without executing them, not omit them.
+- **Stop condition:** every requirement has executable steps and a check, or a named unresolved prerequisite. End at the plan unless implementation is already authorized.
+
+“Revise the migration plan for a new constraint” selects planning. “Review the plan for omissions without revising it” selects defect review. “Execute the approved plan” selects execution. An unconfirmed cause gets an investigation task before a promised fix.
 
 ## 1. Establish scope
 
@@ -28,11 +37,18 @@ Deliver an implementation outline another agent can execute without reconstructi
 
 1. Order phases by dependencies and priority. Give each phase one reviewable outcome; combine trivial edits that share the same verification.
 2. Identify existing source paths and affected contracts. Use a proposed path only when a new file is actually needed; mark it as proposed.
-3. Write steps as actions on those paths, including consumer migration and compatibility handling. For new or changed behavior, order each slice as a contract test, an observed intended failure, implementation, and a green refactor/check. For behavior-preserving refactors, establish existing or characterization tests first and keep them passing.
+3. Write steps as actions on those paths, including consumer migration and compatibility handling. Select checks using the routes below.
 4. Define a check for each promised outcome: setup, exact inspected command or interaction, expected observable result, and the surface it reaches.
 5. Include affected README, changelog, manuals, diagrams, and requested version work. Do not add a release or Git action without its separate authorization.
 6. Include the requested review boundary. If phase approval was requested, state what the reviewer will receive and where execution stops; otherwise allow authorized work to continue.
 7. If a required runtime cannot be reached, mark its check as pending and name the setup or access needed. Do not replace a host requirement with a unit test.
+
+| Planned work | Check sequence |
+| --- | --- |
+| New or changed software behavior | Contract test → intended failing observation → implementation → green checks/refactor. |
+| Behavior-preserving refactor | Existing tests and missing characterization coverage → structural change with tests passing. |
+| Implementation already present | Preserve it; check the contract and disclose any missing pre-change observation. |
+| Prose or formatting only | Relevant document, link, example, or formatting checks; no manufactured software failure. |
 
 Use this record for each substantial phase; shorten it for small tasks:
 
@@ -50,9 +66,14 @@ Handoff: <deliverables; stop for approval only if requested>
 
 ### Select and save the artifact
 
-Keep a small, clear, single-session plan inline or in the existing task record. Save a written plan for substantial, multi-phase, resumable, or reviewable implementation work within the requested authorization. Update the existing relevant plan before creating another. Link the governing spec when present; do not require a separate spec for a settled routine fix. Include the outcome, scope, decisions, dependencies, affected paths, ordered tests and implementation, checks, phase status, deviations, and unresolved observations. Specs define the intended result; plans track its delivery.
+- Keep small, clear, single-session plans inline or in the existing task record. Save substantial, multi-phase, resumable, or reviewable plans within authorization.
+- Update the existing relevant plan first. Link its governing spec when present; a settled routine fix needs no separate spec.
+- Record outcome, scope, decisions, dependencies, paths, ordered tests/implementation, checks, phase status, deviations, and unresolved observations. Specs define intent; plans track delivery.
 
-Use the requested or established project location first; otherwise use `.your/plans/<descriptive-name>.md`. On first authorized use, create only missing directories and `.your/.gitignore` containing `*`; preserve an existing ignore file. Date prefixes are optional. These files, including the ignore file, are local and are not carried by Git into a fresh checkout. Use a requested tracked location for versioned collaboration; do not migrate files or infer Git authority. Explicit requests, project conventions, or the authorized deliverable must justify file creation; invocation alone does not. For assessment-only or no-file requests, keep the result inline unless artifact writing is separately authorized. Without write access, disclose any required persistence as pending.
+1. Use the requested or established location first. For an authorized new local plan, the fallback is `.your/plans/<descriptive-name>.md`; date prefixes are optional.
+2. Create only missing directories and `.your/.gitignore` containing `*`. Preserve existing ignore rules. All local artifacts, including the ignore file, need setup again in a fresh checkout.
+3. For versioned collaboration, use the requested tracked location. Do not migrate files or infer Git authority.
+4. File creation needs an explicit request, project convention, or the authorized deliverable. For assessment-only, no-file, or no-write work, keep the result inline unless separately authorized; report required persistence as pending.
 
 Keep permanent regression tests in the project's normal test locations and disposable probes in temporary workspaces. Do not create `.your/tests/` or additional working directories without an actual need. Plans and specs are working records, not substitutes for shipped documentation or current verification.
 
