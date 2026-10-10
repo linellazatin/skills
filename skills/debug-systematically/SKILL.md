@@ -1,12 +1,20 @@
 ---
 name: debug-systematically
-description: Diagnose a bug, failing check, regression, integration issue, or performance problem using the actual inputs, code, and runtime. Use when the cause is uncertain or a proposed fix needs evidence.
+description: Diagnose a bug, failing check, regression, integration issue, or performance problem when the cause is uncertain or a proposed explanation needs evidence. Use actual inputs, code, and runtime observations. An established correction needing implementation belongs to development; diagnosis can support an active approved plan without replacing it.
 license: MIT
 ---
 
 # Diagnose the reported behavior
 
 For a troubleshooting or fix response, lead with a short TL;DR. State observed facts separately from hypotheses and missing observations.
+
+## Entry route
+
+- **Inputs:** reported operation, expected/actual behavior, relevant artifacts, and diagnosis-only or remediation authorization.
+- **First action:** establish the mode, capture the actual failure, and identify the boundary the reproduction must reach.
+- **Stop condition:** diagnosis ends with a supported cause or bounded uncertainty and next observation. A fix needs regression, original-scenario, and affected-consumer evidence; missing host checks remain pending.
+
+“Find why reload fails; no edits” selects diagnosis-only. “The byte-counting cause is proven; implement this correction” selects development with regression coverage. If this skill is already active and the cause is established, carry that evidence into the authorized fix branch without repeating speculative diagnosis.
 
 Use relevant existing specs or plans to recover intended behavior and prior evidence, then verify against current artifacts and user corrections. In authorized remediation, update the existing record with the supported cause, correction, checks, and gaps when artifact edits are within scope. Diagnosis-only work does not create or update planning files unless report writing is separately authorized.
 
@@ -15,7 +23,7 @@ Use relevant existing specs or plans to recover intended behavior and prior evid
 1. Read the requested outcome and existing authorization. Use **diagnosis-only** for investigation or assessment requests; use **diagnose-and-fix** when remediation is already authorized.
 2. Record the problem, relevant evidence, allowed scope, and requested output in the existing task notes. A review handoff inherits the review's scope; discovering a defect does not authorize fixing it.
 3. Keep diagnosis-only work read-only in the target checkout and persistent environment. Run appropriate non-destructive checks; use a disposable workspace for experiments that require changes. Do not alter product code, tests, docs, or settings to finish a diagnosis.
-4. Follow sections 1 and 2 in either mode, then use only the matching section 3 branch and completion checklist. Do not require implementation evidence to complete a diagnosis.
+4. Follow sections 1 and 2 while a cause needs investigation, then the matching section 3 branch. If existing evidence already establishes the cause, verify that it still applies and enter the authorized fix branch directly. Diagnosis completion never requires an implementation.
 
 ## 1. Capture the failure
 
@@ -64,8 +72,8 @@ Diagnosis-only completion:
 ### Diagnose-and-fix
 
 1. Check whether the request authorizes remediation. If assessment-only, report the diagnosis and proposed correction without editing.
-2. Before changing the cause, run a behavior-reaching regression test and observe failure for the reported defect, not setup errors. Then apply the correction, rerun the same test, and refactor only with checks passing. If implementation already exists, preserve it and disclose the missing pre-fix observation. If the actual host is unavailable, test the reachable contract and retain a repeatable live procedure with the host result marked pending; do not substitute mock success for host evidence.
-3. Apply one coherent correction at its owning boundary. Do not add unrelated refactors, broaden the product's role, or change a test expectation merely to match faulty behavior.
+2. Select the test route: a new fix needs a behavior-reaching regression failure, not a setup error. Existing implementation must be preserved, with any missing pre-fix observation disclosed. An inaccessible host needs reachable-contract tests and a repeatable live procedure; keep its result pending.
+3. Apply one coherent correction at its owning boundary, rerun the regression, and refactor only with checks passing. Do not add unrelated refactors, broaden the product's role, or change an expectation merely to match faulty behavior.
 4. Rerun the regression and original scenario. If either still fails, return to the explanation with the new evidence; do not stack an unverified workaround onto the patch.
 5. Run required checks for affected callers. Compare current installed/generated copies where the original problem involved loading or packaging.
 6. Remove only investigation artifacts you introduced and no longer need. Update affected operational docs and changelog before reporting the fix ready.
@@ -78,4 +86,4 @@ Diagnose-and-fix completion:
 - [ ] Affected consumers and required documentation are checked.
 - [ ] Unavailable runtime checks or intermittent limits are explicit.
 
-Return `TL;DR`, then the mode, cause or bounded uncertainty, proposed or applied correction, checks actually performed, planned checks, and remaining gaps. If only a workaround was established, state its operating conditions and what remains unresolved. Never turn a direct runner pass into a claim about an unobserved loaded host. A completed diagnosis report can still contain an unresolved cause or an unfixed defect; say so explicitly.
+Return `TL;DR`, mode, cause or bounded uncertainty, proposed/applied correction, executed checks, planned checks, and gaps. A workaround needs its operating conditions and unresolved cause stated. Diagnosis completion can leave a cause unresolved or a defect unfixed; a direct runner pass never establishes an unobserved host result.
