@@ -110,7 +110,7 @@ QUERIES_FILE="${1:?Usage: $0 <queries.json>}"
 SKILL_NAME="my-skill"
 RUNS=3
 
-# Returns 0 if the skill was invoked, 1 otherwise.
+# Return 0 for observed invocation, 1 for completed non-invocation, and 2 for an execution/detection error.
 # Replace this function with detection logic for your agent client:
 #   - Check tool call logs, verbose output, or session transcripts
 #   - Look for evidence that SKILL.md was read or the skill tool was called
@@ -125,7 +125,8 @@ check_triggered() {
   # Example — any CLI agent with a --verbose or --trace flag:
   # your-agent --skill-dir ~/.agents/skills --verbose -p "$query" 2>&1 \
   #   | grep -q "skill:$SKILL_NAME"
-  echo "Implement for your client" && return 1
+  echo "Implement for your client; evaluation is unavailable" >&2
+  return 2
 }
 
 count=$(jq length "$QUERIES_FILE")
@@ -133,21 +134,32 @@ for i in $(seq 0 $((count - 1))); do
   query=$(jq -r ".[$i].query" "$QUERIES_FILE")
   should_trigger=$(jq -r ".[$i].should_trigger" "$QUERIES_FILE")
   triggers=0
+  completed=0
+  errors=0
 
   for run in $(seq 1 $RUNS); do
-    check_triggered "$query" && triggers=$((triggers + 1))
+    check_triggered "$query"
+    outcome=$?
+    case "$outcome" in
+      0) triggers=$((triggers + 1)); completed=$((completed + 1)) ;;
+      1) completed=$((completed + 1)) ;;
+      *) errors=$((errors + 1)) ;;
+    esac
   done
 
   jq -n \
     --arg query "$query" \
     --argjson should_trigger "$should_trigger" \
     --argjson triggers "$triggers" \
-    --argjson runs "$RUNS" \
-    '{query: $query, should_trigger: $should_trigger, triggers: $triggers, runs: $runs, trigger_rate: ($triggers / $runs)}'
+    --argjson runs "$completed" \
+    --argjson errors "$errors" \
+    '{query: $query, should_trigger: $should_trigger, triggers: $triggers, runs: $runs, errors: $errors, trigger_rate: (if $errors > 0 or $runs == 0 then null else $triggers / $runs end)}'
 done | jq -s '.'
 ```
 
-> **Tip**: If your agent client supports it, stop a run early once the outcome is clear — the agent either consulted the skill or started working without it. This significantly reduces time and cost.
+This is an adapter template, not a ready-made harness evaluator. Replace `check_triggered` and verify the client's logs and exit behavior before scoring. The default stub produces unscored errors, not successful negative cases. Resolve errors before comparing candidates. Native skill selection and the bundled Claude command-surrogate evaluator measure different conditions.
+
+> **Tip**: Observing invocation can establish selection early. Starting unrelated work does not prove non-selection if the skill could be consulted later; observe completed runs before declaring valid non-invocation.
 
 ---
 

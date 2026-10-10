@@ -1,6 +1,6 @@
 # Agent Skills Guide
 
-Complete reference extracted from https://agentskills.io — all guidelines, specifications, and best practices for creating agent skills.
+Local reference adapted from https://agentskills.io, with examples and implementation guidance. It is a maintained snapshot, not a guarantee of current upstream content or universal client behavior. For this repository, the selected skill's instructions and the user's current scope govern execution; examples do not authorize delegation, provider costs, file creation, or Git operations.
 
 ---
 
@@ -81,15 +81,15 @@ Instructions for the agent go here.
 
 ## For Skill Sessions
 
-When building or reviewing a skill, work through these in order:
+Use the relevant steps for the authorized task; this is not a mandatory pipeline for every edit:
 
 1. **Draft** — start from real expertise, not generic LLM output
 2. **Structure** — coherent scope, moderate detail, clear defaults
-3. **Scripts** — self-contained, no interactive prompts, structured output, helpful `--help`
+3. **Scripts, when needed** — self-contained, no interactive prompts, structured output, helpful `--help`
 4. **Description** — imperative, intent-focused, specific enough to not over-trigger
-5. **Eval** — 2–3 test cases with/without skill, grade assertions, check execution traces
+5. **Evaluation** — choose realistic cases and observable criteria before grading. Use controlled independent runs when authorized and available; label inline walkthroughs as author review.
 6. **Iterate** — feed failed assertions + human feedback + traces back into the skill
-7. **Description eval** — 20 trigger queries (10 positive, 10 negative near-misses), train/validation split, optimization loop
+7. **Description evaluation, when activation needs investigation** — use matching and near-miss cases, fixed scoring, and authorized harness execution. Sample sizes are examples; without execution, disclose that trigger rates remain unmeasured.
 
 ---
 
@@ -101,7 +101,7 @@ When building or reviewing a skill, work through these in order:
 
 | Skill | Location | Description |
 |-------|----------|-------------|
-| `opencraft-skill` | `~/.agents/skills/opencraft-skill/` | Harness-agnostic meta-skill for creating Agent Skills. Two modes: Extract (turn a completed workflow into a skill) and Design (build from scratch). Tiered evals, process-only description optimization. No bundled scripts or tooling — works on any harness with file read/write access. Built using this guide as its methodology basis. |
+| `craft-skill` | `~/.agents/skills/craft-skill/` | Harness-agnostic meta-skill for creating Agent Skills. Three modes: Extract, Design, and Refine. Bundled validation, packaging, benchmarking, and description optimization; automated trigger evaluation requires Claude Code CLI. Built using this guide as its methodology basis. |
 
 ---
 

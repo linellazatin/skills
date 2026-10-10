@@ -17,7 +17,8 @@ Eval set JSON format:
     {"query": "unrelated message", "should_trigger": false}
   ]
 
-Exit 0 = eval ran. Exit 1 = error.
+Measures a temporary Claude command surrogate, not full skill execution or other harnesses.
+Execution failures remain unscored. Exit 0 = valid eval ran. Exit 1 = error.
 """
 
 import argparse
@@ -85,84 +86,69 @@ def run_single_query(
         )
 
         triggered = False
-        start_time = time.time()
+        start_time = time.monotonic()
         buffer = ""
         pending_tool_name = None
         accumulated_json = ""
 
         try:
-            while time.time() - start_time < timeout:
-                if process.poll() is not None:
-                    remaining = process.stdout.read()
-                    if remaining:
-                        buffer += remaining.decode("utf-8", errors="replace")
-                    break
-
-                ready, _, _ = select.select([process.stdout], [], [], 1.0)
+            while time.monotonic() - start_time < timeout:
+                ready, _, _ = select.select([process.stdout], [], [], min(0.1, timeout))
                 if not ready:
                     continue
-
                 chunk = os.read(process.stdout.fileno(), 8192)
                 if not chunk:
-                    break
+                    raise RuntimeError("Evaluator exited without a completed result")
                 buffer += chunk.decode("utf-8", errors="replace")
 
                 while "\n" in buffer:
                     line, buffer = buffer.split("\n", 1)
-                    line = line.strip()
-                    if not line:
-                        continue
                     try:
                         event = json.loads(line)
                     except json.JSONDecodeError:
                         continue
 
-                    # Early detection via stream events.
                     if event.get("type") == "stream_event":
                         se = event.get("event", {})
-                        se_type = se.get("type", "")
+                        se_type = se.get("type")
                         if se_type == "content_block_start":
                             cb = se.get("content_block", {})
-                            if cb.get("type") == "tool_use":
-                                tool_name = cb.get("name", "")
-                                if tool_name in ("Skill", "Read"):
-                                    pending_tool_name = tool_name
-                                    accumulated_json = ""
-                                else:
-                                    return False
-                        elif se_type == "content_block_delta" and pending_tool_name:
+                            pending_tool_name = cb.get("name") if cb.get("type") == "tool_use" else None
+                            accumulated_json = ""
+                        elif se_type == "content_block_delta" and pending_tool_name in ("Skill", "Read"):
                             delta = se.get("delta", {})
                             if delta.get("type") == "input_json_delta":
                                 accumulated_json += delta.get("partial_json", "")
-                                if clean_name in accumulated_json:
-                                    return True
-                        elif se_type in ("content_block_stop", "message_stop"):
-                            if pending_tool_name:
-                                return clean_name in accumulated_json
-                            if se_type == "message_stop":
-                                return False
-
-                    # Fallback: full assistant message.
+                        elif se_type == "content_block_stop":
+                            if pending_tool_name in ("Skill", "Read"):
+                                try:
+                                    tool_input = json.loads(accumulated_json)
+                                except json.JSONDecodeError:
+                                    tool_input = {}
+                                key = "skill" if pending_tool_name == "Skill" else "file_path"
+                                triggered |= clean_name in tool_input.get(key, "")
+                            pending_tool_name = None
+                            accumulated_json = ""
                     elif event.get("type") == "assistant":
-                        message = event.get("message", {})
-                        for item in message.get("content", []):
+                        for item in event.get("message", {}).get("content", []):
                             if item.get("type") != "tool_use":
                                 continue
-                            tool_name = item.get("name", "")
+                            tool_name = item.get("name")
                             tool_input = item.get("input", {})
-                            if tool_name == "Skill" and clean_name in tool_input.get("skill", ""):
-                                triggered = True
-                            elif tool_name == "Read" and clean_name in tool_input.get("file_path", ""):
-                                triggered = True
-                            return triggered
+                            if tool_name in ("Skill", "Read"):
+                                key = "skill" if tool_name == "Skill" else "file_path"
+                                triggered |= clean_name in tool_input.get(key, "")
                     elif event.get("type") == "result":
+                        if event.get("is_error"):
+                            raise RuntimeError("Harness reported an evaluation error")
                         return triggered
+            raise TimeoutError("Trigger evaluation timed out before completion")
         finally:
             if process.poll() is None:
                 process.kill()
-                process.wait()
+            process.wait()
+            process.stdout.close()
 
-        return triggered
     finally:
         if command_file.exists():
             command_file.unlink()
@@ -197,6 +183,7 @@ def run_eval(
 
         query_triggers: dict = {}
         query_items: dict = {}
+        query_errors: dict = {}
         for future in as_completed(future_to_info):
             item = future_to_info[future]
             query = item["query"]
@@ -206,30 +193,35 @@ def run_eval(
                 query_triggers[query].append(future.result())
             except Exception as e:
                 print(f"Warning: query failed: {e}", file=sys.stderr)
-                query_triggers[query].append(False)
+                query_errors.setdefault(query, []).append(str(e))
 
     results = []
     for query, triggers in query_triggers.items():
         item = query_items[query]
-        trigger_rate = sum(triggers) / len(triggers)
+        errors = query_errors.get(query, [])
+        trigger_rate = sum(triggers) / len(triggers) if triggers else None
         should_trigger = item["should_trigger"]
-        passed = trigger_rate >= trigger_threshold if should_trigger else trigger_rate < trigger_threshold
+        passed = None if errors else (trigger_rate >= trigger_threshold if should_trigger else trigger_rate < trigger_threshold)
         results.append({
             "query": query,
             "should_trigger": should_trigger,
             "trigger_rate": trigger_rate,
             "triggers": sum(triggers),
             "runs": len(triggers),
+            "attempted_runs": len(triggers) + len(errors),
+            "errors": errors,
             "pass": passed,
         })
 
-    passed_count = sum(1 for r in results if r["pass"])
+    passed_count = sum(r["pass"] is True for r in results)
+    failed_count = sum(r["pass"] is False for r in results)
+    error_count = sum(r["pass"] is None for r in results)
     total = len(results)
     return {
         "skill_name": skill_name,
         "description": description,
         "results": results,
-        "summary": {"total": total, "passed": passed_count, "failed": total - passed_count},
+        "summary": {"total": total, "passed": passed_count, "failed": failed_count, "errors": error_count},
     }
 
 
@@ -276,10 +268,12 @@ def main() -> None:
         s = output["summary"]
         print(f"Results: {s['passed']}/{s['total']} passed", file=sys.stderr)
         for r in output["results"]:
-            status = "PASS" if r["pass"] else "FAIL"
+            status = "ERROR" if r["pass"] is None else ("PASS" if r["pass"] else "FAIL")
             print(f"  [{status}] rate={r['triggers']}/{r['runs']} expected={r['should_trigger']}: {r['query'][:70]}", file=sys.stderr)
 
     print(json.dumps(output, indent=2))
+    if output["summary"]["errors"]:
+        sys.exit(1)
 
 
 if __name__ == "__main__":

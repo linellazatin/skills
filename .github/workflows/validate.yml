@@ -1,0 +1,41 @@
+name: Validate skills
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Install validation dependency
+        run: python -m pip install PyYAML==6.0.3
+      - name: Validate every skill's frontmatter and structure
+        run: python scripts/validate_skills.py
+      - name: Test workflow helpers
+        run: python -m unittest discover -s tests -v
+      - name: Test bundled helpers
+        run: |
+          python skills/craft-skill/tests/test_run_eval.py
+          python skills/execute-plan/tests/test_checkpoints.py
+      - name: Skills CLI discovery dry run (no installation)
+        env:
+          DISABLE_TELEMETRY: '1'
+        # add has no --dry-run; --list is its supported non-installing equivalent.
+        run: npx --yes skills@1.7.2 add . --list

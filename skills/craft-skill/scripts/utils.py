@@ -1,4 +1,4 @@
-"""Shared utilities for opencraft-skill automation scripts (Tier 2)."""
+"""Shared utilities for craft-skill automation scripts (Tier 2)."""
 
 from pathlib import Path
 

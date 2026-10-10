@@ -1,11 +1,10 @@
 # Description optimization reference
 
-Load this file when you reach the Description optimization section.
-Work through all sections in order.
+Read this file when activation or neighboring-task misrouting needs investigation. Use recorded failures to decide what to change; do not run an optimization loop for every skill edit.
 
 ## The three principles
 
-Explain these to the user before generating candidates:
+Apply these criteria when generating candidates:
 
 1. **Imperative phrasing.** The description should read as an instruction:
    "Use this skill when..." not "This skill does...". The agent is deciding
@@ -23,7 +22,7 @@ Explain these to the user before generating candidates:
 
 ## Generate candidates
 
-Write 5 candidate descriptions. For each one:
+Start with the current description and a small number of materially different candidates. For each one:
 - Write the description (under 1024 characters)
 - Write one sentence of rationale: what triggering problem this version solves
 
@@ -38,16 +37,13 @@ Candidate 2:
 Rationale: [one sentence]
 ```
 
-Show all candidates to the user before moving to the test checklist.
+Record candidates and their intended improvement. Continue already authorized refinement; request a user decision only when a candidate changes the intended scope.
 
 ## Manual test checklist
 
-Generate ~20 test queries: 8–10 that should trigger and 8–10 that should not.
+Choose realistic matching requests and near-misses that exercise the scope boundary. Use enough cases to cover the observed failure and meaningful phrasing variations; a larger measured study can use roughly balanced matching and non-matching sets.
 
-Model behavior is nondeterministic — the same query may trigger the skill on one
-run and not the next. Run each query at least 3 times and compute a trigger rate
-(fraction of runs where the skill was invoked). A should-trigger query passes if
-its trigger rate is above 0.5; a should-not-trigger query passes if below 0.5.
+If authorized harness execution is available, repeat cases and record invocation outcomes. Fix the repetition count and acceptance threshold before comparing candidates; report rates and sample sizes. If execution is unavailable, inspect the intended routing manually and label it an instruction review, not a measured trigger rate.
 
 Rules:
 - Write them as realistic user messages, not abstract descriptions.
@@ -66,18 +62,15 @@ use ~60% as the train set to identify failures and guide revisions, and hold
 train-set failures to drive changes. A description that wins on the train set
 but drops on the validation set is overfit — revise more broadly.
 
-Present the checklist to the user:
-> "Try each of these in your agent with the skill installed and note whether the
-> skill activated. Come back with the results and I will recommend the best
-> candidate."
+Run authorized cases directly where possible. If only the user can access the target harness, provide the exact prompts and requested observations, complete other available checks, and record the host evaluation as pending.
 
 ## Reading results and selecting a description
 
-After the user reports results:
+After actual results are available:
 1. Tally trigger rates: which candidate performs best across the train-set queries?
 2. Check the validation set: does the best train-set performer hold up?
 3. If no single candidate wins cleanly, synthesize the best-performing elements
    and write a final description.
 4. Tell the user which candidate you are recommending and why.
 5. Update the `description` field in the frontmatter of SKILL.md.
-6. Write `Description finalized` to the working file.
+6. Record the chosen description, evidence, and limits in the existing task record. If only manual inspection was possible, state that activation performance remains unmeasured.

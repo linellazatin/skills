@@ -14,7 +14,7 @@ The implementation details vary based on two factors:
 
 ## The Core Principle: Progressive Disclosure
 
-Every skills-compatible agent follows the same three-tier loading strategy:
+The recommended progressive-disclosure design uses three tiers; actual client discovery and loading behavior can differ:
 
 | Tier            | What's loaded                | When                                  | Token cost                   |
 | --------------- | ---------------------------- | ------------------------------------- | ---------------------------- |
@@ -75,7 +75,7 @@ Practical scanning rules:
 
 When two skills share the same `name`, apply a deterministic precedence rule.
 
-**Universal convention: project-level skills override user-level skills.**
+Choose and document precedence explicitly. Project-level skills overriding user-level skills is one useful policy, not a guarantee across clients.
 
 Within the same scope, first-found or last-found is acceptable — pick one and be consistent. Log a warning when a collision occurs.
 

@@ -1,11 +1,37 @@
 # Changelog
 
-All notable changes to this project are documented here.
+## 0.2.0
 
-Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
-Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+### New
 
----
+- Added eight standalone engineering skills:
+  - `strategize`: clarify intent, assess feasibility, compare approaches, and define acceptance conditions.
+  - `plan-work`: produce dependency-ordered phases with implementation, verification, documentation, and handoff steps.
+  - `execute-plan`: resume approved work inline, track phase outcomes, and complete checks and documentation.
+  - `debug-systematically`: establish a supported cause, with separate diagnosis-only and authorized-fix branches.
+  - `design-modules`: assess or migrate ownership and interfaces using caller contracts, change locality, dependency-aware checks, and compatibility obligations.
+  - `review-code`: report evidence-backed findings and evaluate feedback while preserving assessment and remediation scope.
+  - `test-first`: develop behavior through red-green-refactor cycles and protect refactors with meaningful characterization coverage.
+  - `verify-work`: establish scoped readiness from current code, documentation, packages, and runtime evidence.
+- Added `execute-plan` and planning check routes for prose-only work, existing implementation, behavior-preserving refactors, and inaccessible hosts, preserving pending evidence instead of manufacturing failing tests or readiness.
+- Added an optional standard-library checkpoint helper for `execute-plan`: named check logs, plan-revision isolation, phase handoffs, and read-only Git reports.
+- Added conditional written specs and plans with existing-artifact/location precedence, an ignored `.your/specs/` and `.your/plans/` fallback, and phase evidence updates. Kept permanent regression tests in normal project test locations.
+- Required need and authorization before extra working artifacts, characterization of uncovered consumers before migration, and preservation of established execution approval. Distinguished unavailable host evidence from failed behavior and kept verification-only requests free of corrective edits.
+- Added collection history, writing methodology, workflow evidence, skill-selection guidance, and documentation of verification limits.
+- Added GitHub PR/main validation for strict skill frontmatter, helper regressions and non-installing Skills CLI discovery, plus validated `v*` tag releases using only the matching changelog section and marking prerelease tags appropriately.
+- Added a repository guide in `CLAUDE.md`, referenced by `AGENTS.md`, covering authoring, validation, and installation conventions.
+
+### Changed
+
+- Renamed and refactored `opencraft-skill` as `craft-skill`, retaining Extract, Design, and Refine modes. Reused supplied context, kept core work portable and inline, and made interviews, providers, and isolated evaluation conditional.
+- Aligned `craft-skill` grading paths, measured timing records, raw-data analysis, and comparison criteria with its evaluation contracts. Separated behavioral and trigger schemas and documented surrogate measurement limits.
+- Clarified installation layouts, helper paths, provider requirements, and optional evaluation in the README and reference guide.
+
+### Fixed
+
+- Kept `craft-skill` assessment-only refinement read-only through revision and evaluation steps, reporting findings without claiming changed paths.
+- Corrected the trigger evaluator to inspect later tool events and leave failed or incomplete executions unscored; rejected invalid scores before description optimization.
+- Corrected guide navigation links and removed obsolete backup-preservation notes.
 
 ## [0.1.0] — 2026-08-14
 

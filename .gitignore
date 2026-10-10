@@ -1,6 +1,8 @@
+# tools
 .pi/
 .opencode/
-superpowers/
+.claude/
+.nanomneme/
 plans/
 
 # Python
@@ -10,6 +12,6 @@ plans/
 # Skill build artifacts
 *.skill
 
-# Runtime output from opencraft-skill sessions
+# Runtime output from craft-skill sessions
 *-workspace/
 skill-plan-*.md

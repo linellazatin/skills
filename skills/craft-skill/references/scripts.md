@@ -1,13 +1,10 @@
-# Script guidance for opencraft-skill
+# Script guidance for craft-skill
 
-Load this file when the user has identified script candidates in the
-Scripts (optional) section. Work through the four sections in order
-for each script candidate.
+Read this file only when repeated deterministic work justifies a helper. Use the existing task inputs and inspected capabilities; ask only for unresolved choices that change the helper's contract.
 
 ## Section 1 — Confirm the type
 
-Re-read the candidate the user described. Confirm which type it is before
-proceeding. If you are unsure, ask the user one clarifying question.
+Classify the candidate from its required outcome. If that outcome remains ambiguous after inspection, ask one focused question before implementation.
 
 **Command** — the logic already exists as a system tool or package. You
 invoke it inline in SKILL.md. Nothing to write or bundle.
@@ -29,13 +26,11 @@ sure Y is correct" or "we should check that the output is valid before
 moving on."
 Example: `scripts/validate_schema.py`, `scripts/check_required_fields.py`
 
-If the candidate fits more than one type, ask: "Should this produce output
-for the user, or just check that something is correct before the next step?"
-Output for user → Script. Check before next step → Validator.
+If the helper both produces an artifact and validates it, define both outputs and failure behavior. Use a separate validator only when a read-only gate has an independent use.
 
 ## Section 2 — Select a language
 
-Ask the user: "What runtimes are available in your environment?"
+Inspect available runtimes and the skill's target environments. Reuse existing supported runtimes; ask the user only when deployment availability is unknown and affects portability.
 
 Map their answer to a recommendation:
 
@@ -49,9 +44,9 @@ Map their answer to a recommendation:
 | Ruby                 | Ruby + bundler      | `require 'bundler/inline'; gemfile { gem 'pkg' }` |
 | Bash only            | Bash                | No deps — limited to system tools               |
 
-If unsure: use Python + PEP 723 if uv is available, Bash otherwise.
+If no supported runtime can be established, document a manual fallback or resolve the missing runtime decision before writing a mandatory helper. Do not assume shell availability makes a shell script portable.
 
-Always pin versions explicitly. "Latest" is not a version.
+For external dependencies, use the project's reproducibility policy and verify versions before prescribing them. Standard-library or installed project commands do not need invented package pins.
 
 ## Section 3 — Authoring rules
 
@@ -95,10 +90,8 @@ Never mix them. An agent parsing stdout must get clean structured data.
   Good: print(f"Processing {filename}...", file=sys.stderr)
         print(json.dumps(result))
 
-**Rule 4 — Idempotent by default.**
-Running the script twice with the same inputs must produce the same result
-and must not fail on the second run. Use "create if not exists", "upsert",
-and "overwrite" patterns. Never assume a clean slate.
+**Rule 4 — Define repeat and overwrite behavior.**
+If the operation is intended to be repeatable, make repeated execution safe. If it creates history or has non-repeatable effects, document those effects and the retry boundary. Do not overwrite user-owned output merely to make a second run succeed.
 
   Bad:  os.mkdir(output_dir)           # fails if dir exists
   Good: os.makedirs(output_dir, exist_ok=True)
@@ -110,7 +103,7 @@ referencing the script from SKILL.md.
 
 ### Command checklist
 
-- [ ] Version is pinned in the command (e.g. `ruff@0.8.0`, not `ruff`)
+- [ ] External dependency versions follow project policy; installed command names and flags were verified.
 - [ ] Any prerequisites (runtime, package manager) are stated in SKILL.md
       near the command, e.g. "Requires Node.js 18+ and npm"
 - [ ] The command is simple enough to express in one line with flags.
@@ -124,11 +117,10 @@ referencing the script from SKILL.md.
 - [ ] No interactive prompts anywhere in the script
 - [ ] Structured data written to stdout; all other output to stderr
 - [ ] Exit code 0 on success, non-zero on any failure
-- [ ] Distinct exit codes for distinct failure types if there are multiple
-      (e.g. 1 = missing input, 2 = invalid format, 3 = network error)
+- [ ] Failure diagnostics distinguish the causes the caller must act on; document distinct exit codes when callers depend on them.
 - [ ] Output size is bounded — if output could be large, default to a
       summary or a row limit, and support `--output FILE` or `--limit N`
-- [ ] Running the script twice with the same inputs does not fail
+- [ ] Repeat, retry, and overwrite behavior is tested according to the documented contract.
 - [ ] Script is referenced from the correct step in SKILL.md with the
       exact command to run it, e.g.:
         ```bash

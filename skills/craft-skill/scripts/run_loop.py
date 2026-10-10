@@ -100,6 +100,8 @@ def run_loop(
             model=model,
         )
         eval_elapsed = time.time() - t0
+        if all_results["summary"].get("errors", 0):
+            raise RuntimeError("Trigger evaluation has unscored execution errors; resolve them before optimizing")
 
         train_queries = {q["query"] for q in train_set}
         train_list = [r for r in all_results["results"] if r["query"] in train_queries]
