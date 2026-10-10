@@ -42,7 +42,7 @@ Even a single pass of execute-then-revise noticeably improves quality.
 
 > **Tip**: Read agent execution traces, not just final outputs. If the agent wastes time on unproductive steps, common causes are: instructions too vague (agent tries several approaches), instructions that don't apply to the current task (agent follows them anyway), or too many options without a clear default.
 
-For a structured approach, see [Evaluating Skill Output Quality](04-evaluating-skills.md).
+For a structured approach, see [Evaluating Skill Output Quality](05-evaluating-skills.md).
 
 ---
 
@@ -267,11 +267,11 @@ The key ingredient is step 3: a validation script that checks the plan against t
 
 When iterating on a skill, compare execution traces across test cases. If the agent independently reinvents the same logic each run — building charts, parsing a specific format, validating output — write a tested script once and bundle it in `scripts/`.
 
-See [Using Scripts in Skills](06-using-scripts.md) for details.
+See [Using Scripts in Skills](07-using-scripts.md) for details.
 
 ---
 
 ## Next Steps
 
-- **[Evaluating skill output quality](04-evaluating-skills.md)** — Set up test cases, grade results, and iterate systematically.
-- **[Optimizing skill descriptions](05-optimizing-descriptions.md)** — Test and improve your skill's `description` field so it triggers on the right prompts.
+- **[Evaluating skill output quality](05-evaluating-skills.md)** — Set up test cases, grade results, and iterate systematically.
+- **[Optimizing skill descriptions](06-optimizing-descriptions.md)** — Test and improve your skill's `description` field so it triggers on the right prompts.

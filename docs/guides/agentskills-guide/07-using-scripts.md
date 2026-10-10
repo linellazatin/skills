@@ -82,7 +82,7 @@ go run github.com/golangci/golangci-lint/cmd/golangci-lint@v1.62.0 run
 
 ## Referencing Scripts from `SKILL.md`
 
-Use **relative paths from the skill directory root** to reference bundled files. The agent resolves these automatically.
+Use relative paths from the skill directory root to document bundled files. Resolve them against the actual installed skill location before calling a tool; automatic resolution depends on the client.
 
 List available scripts in `SKILL.md` so the agent knows they exist:
 
@@ -95,7 +95,7 @@ List available scripts in `SKILL.md` so the agent knows they exist:
 
 Then instruct the agent to run them:
 
-```markdown
+````markdown
 ## Workflow
 
 1. Run the validation script:
@@ -107,9 +107,9 @@ Then instruct the agent to run them:
    ```bash
    python3 scripts/process.py --input results.json
    ```
-```
+````
 
-> **Note**: Script execution paths (in code blocks) are relative to the **skill directory root**, because the agent runs commands from there. The same relative-path convention works in support files like `references/*.md`.
+> **Note**: These command examples assume the working directory is the skill root. From another directory, use an absolute script path or an explicit authorized working directory. Resolve resource paths in support documents against the documented skill root; do not assume shell commands automatically change directories.
 
 ---
 

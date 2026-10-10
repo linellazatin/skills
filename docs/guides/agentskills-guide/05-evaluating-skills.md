@@ -45,7 +45,7 @@ Store test cases in `evals/evals.json` inside your skill directory:
 - **Cover edge cases.** At least one prompt should test a boundary condition — a malformed input, an unusual request, or an ambiguous instruction.
 - **Use realistic context.** Real users mention file paths, column names, and personal context. "Process this data" is too vague to test anything useful.
 
-Don't define specific pass/fail checks yet — just prompts and expected outputs. Add assertions after you see what the first run produces.
+Define the required outcomes and pass/fail criteria before scored comparisons. Exploratory runs can reveal missing checks, but revise the case and rerun both configurations with the same criteria rather than grading one output under newly invented rules.
 
 ---
 
@@ -81,7 +81,7 @@ The main file you author is `evals/evals.json`. The other JSON files are produce
 
 ### Spawning Runs
 
-Each eval run should start with a **clean context** — no leftover state from previous runs. In environments that support subagents, each child task starts fresh naturally. Without subagents, use a separate session for each run.
+Controlled comparisons need equivalent inputs, capabilities, and independent contexts. Use fresh sessions or explicitly authorized isolation and verify what context is inherited; a subagent is not automatically independent. When only an inline walkthrough is available, preserve the user's execution mode and label it as author review rather than an independent performance benchmark.
 
 For each run, provide:
 - The skill path (or no skill for the baseline)
@@ -125,7 +125,7 @@ This lets you measure what the skill costs (tokens, time) vs. what it buys (pass
 
 ## Writing Assertions
 
-Assertions are verifiable statements about what the output should contain or achieve. Add them **after** you see your first round of outputs.
+Assertions are verifiable statements about what the output should contain or achieve. Fix them before scored runs; use exploratory observations to improve the next controlled iteration.
 
 **Good assertions:**
 - `"The output file is valid JSON"` — programmatically verifiable
@@ -231,7 +231,7 @@ The `delta` tells you what the skill costs and what it buys. A skill that adds 1
 
 After computing benchmarks:
 
-- **Remove assertions that always pass in both configurations.** They don't reflect actual skill value.
+- **Review assertions that always pass in both configurations.** They may not distinguish variants, but retain important correctness and regression obligations.
 - **Investigate assertions that always fail in both.** Either the assertion is broken, the test is too hard, or it's checking the wrong thing.
 - **Study assertions that pass with the skill but fail without.** This is where the skill is adding value — understand *why*.
 - **Tighten instructions when results are inconsistent across runs.** High `stddev` on the same eval = flaky eval or ambiguous instructions. Add examples or more specific guidance.

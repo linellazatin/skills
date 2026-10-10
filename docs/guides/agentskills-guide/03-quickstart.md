@@ -22,7 +22,7 @@ The directory name becomes the skill's `name`. Use lowercase letters, numbers, a
 
 Create `SKILL.md` inside the directory:
 
-```markdown
+````markdown
 ---
 name: roll-dice
 description: Roll one or more dice and return the results. Use when the user asks to roll dice, simulate a dice roll, or generate a random number like a die.
@@ -45,7 +45,7 @@ Default is 1 die with 6 sides if no arguments are provided.
 ## Output
 
 The script prints each roll result and the total. Report these results to the user.
-```
+````
 
 ## Step 3: Add the Script
 
@@ -90,7 +90,7 @@ The agent should activate the `roll-dice` skill, run the script, and report the 
 
 ## Next Steps
 
-- **[Best practices](03-best-practices.md)** — How to write skills that are well-scoped and effective.
-- **[Optimizing descriptions](05-optimizing-descriptions.md)** — Test and improve your skill's description so it activates on the right prompts.
+- **[Best practices](04-best-practices.md)** — How to write skills that are well-scoped and effective.
+- **[Optimizing descriptions](06-optimizing-descriptions.md)** — Test and improve your skill's description so it activates on the right prompts.
 - **[Specification](02-specification.md)** — The complete format reference for `SKILL.md` files.
 - **Example skills**: https://github.com/anthropics/skills
