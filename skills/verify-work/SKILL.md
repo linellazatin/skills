@@ -6,9 +6,20 @@ license: MIT
 
 # Establish readiness
 
-Use this as the primary workflow for completion and readiness claims. Defect review is a supporting check, not a substitute for covering every requested requirement. During approved execution, return the evidence and gaps to the active phase without replacing its scope or handoff.
-
 Tie each readiness claim to a current artifact and an observation that reaches the claimed behavior.
+
+## Entry route
+
+- **Inputs:** requested deliverables, acceptance conditions, current artifacts, and required check environments.
+- **First action:** map each requirement to an artifact, check, expected result, and coverage limit.
+- **Core loop:** inspect current inputs → obtain relevant evidence → classify each requirement as established, failed, partial, or unverified.
+- **Stop condition:** all required items are established for the named scope, or report incomplete readiness with missing observations. Verification does not authorize publication.
+
+An inaccessible test host means **unverified**, not a failed product or failed reload. Name the missing host observation; do not invent a run or infer its outcome. Passing mocks cannot replace required host acceptance. Continue reachable checks and report incomplete readiness.
+
+Verification alone authorizes checks and findings, not corrective edits. Apply fixes only within already authorized implementation scope; otherwise propose the correction and retain the failed or unverified status.
+
+“Are all release requirements ready?” selects verification. “Review this patch for defects only” selects review. Defect review supports readiness but does not replace requirement coverage. During approved execution, return results to the active phase without replacing its scope or handoff. For small document-only work, verify the affected document contracts without adding unrelated host gates.
 
 Include relevant existing specs and plans in the requirement map, including ignored working files that Git reports omit. Check their claims against current code and user corrections. When artifact updates are authorized, record actual results and pending observations in the existing plan; assessment-only work reports discrepancies inline. Do not create a separate planning document merely to perform verification.
 
