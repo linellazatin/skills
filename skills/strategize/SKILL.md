@@ -1,0 +1,101 @@
+---
+name: strategize
+description: Clarify an idea and choose a workable design before detailed planning or implementation. Use for new projects, features, components, workflows, or behavior changes whose purpose, requirements, or approach need decisions; also for brainstorming, exploring options, "think this through", "what should we build", and feasibility questions. An approved design needing task breakdown belongs to planning; an established defect needing diagnosis belongs to debugging.
+license: MIT
+---
+
+# Turn an idea into a buildable direction
+
+Produce a design grounded in the user's intended outcome, with visible choices and acceptance examples. Work inline, reuse supplied context, and keep discovery proportional to the decisions still missing.
+
+## 1. Identify the decision to make
+
+1. Read the request, prior decisions, existing requirements, and applicable project instructions. Identify what the user wants to achieve, rather than treating a named technology as the goal.
+2. Inspect the relevant existing work, entrypoints, docs, and current changes. For a new project, use supplied examples and constraints; do not invent an existing architecture.
+3. Record what is known, what you are assuming, and which unanswered questions would change the result.
+4. Use the route below. State the immediate next action briefly; do not explain a long process before addressing the idea.
+
+| Situation | Action |
+| --- | --- |
+| Clear, small change with implementation authorized | State any meaningful implementation choice and proceed through normal development; skip a discovery interview. |
+| Outcome or approach is unsettled | Clarify the missing intent, compare viable approaches, and produce the design below. |
+| Feasibility is the question | Identify the uncertain claim and the smallest observation that can answer it; report a recommendation and its limits. |
+| Design is already agreed and only tasks are needed | Carry it into detailed planning without reopening settled choices. |
+| Expected behavior is known and broken | Investigate the failure; return to design only if the evidence exposes a genuine product or architecture decision. |
+
+Only the unsettled-outcome route follows the full design procedure in sections 2–5. For feasibility, identify the claim, inspect or run the smallest authorized distinguishing check, and return the observation, recommendation, uncertainty, and next action; stop there unless broader design is requested. For clear authorized changes, agreed designs, or known defects, hand off directly to development, planning, or diagnosis using available instructions or an inline equivalent. Do not apply the full design checklist to these routes.
+
+## 2. Resolve the consequential unknowns
+
+1. Establish the intended user or audience, the operation or experience they need, and what would make the result useful. If missing, ask about a concrete use case before proposing a feature list.
+2. Establish constraints that affect the solution: existing stack or materials, compatibility, dependencies, runtime or deployment, data ownership, and time or cost where relevant. Reuse known answers.
+3. Identify exclusions and unacceptable outcomes. Separate a necessary requirement from a preference or optional improvement.
+4. Choose the unanswered question with the greatest effect on scope or design. Ask one focused question at a time; wait for its answer before deciding dependent work. Continue independent inspection where useful.
+5. Use an open question to uncover intent; use a short set of choices when the actual decision is between understood alternatives. If the user delegates the choice, recommend a concrete default and label it as your decision.
+6. Reflect the resulting understanding briefly: outcome, constraints, exclusions, and assumptions. Correct misunderstandings when the user responds; do not turn your assumptions into user-approved requirements.
+7. Stop interviewing when remaining uncertainty is routine implementation detail. If an unknown still changes supported behavior, ownership, or material cost, resolve it or identify it as a blocker instead of quietly choosing for the user.
+
+## 3. Choose a viable approach
+
+1. Define the smallest complete result that serves the identified use case. Remove extras that do not contribute to it.
+2. When materially different options exist, compare two or three on the same criteria: user fit, compatibility, implementation effort, maintenance, and the important risk. Do not invent alternatives merely to fill a table.
+3. Lead with a recommended option and explain the deciding tradeoff. Reuse existing infrastructure unless changing it solves an observed constraint.
+4. If one uncertainty determines the choice, obtain distinguishing evidence before elaborating the design. Inspect an existing contract, replay a representative input, or run an authorized disposable probe with a predicted observation.
+5. Record the probe's setup, actual result, and limit. Throwaway code is an experiment, not a production deliverable; retained software still needs the normal TDD, compatibility, and review work.
+6. If the request spans independent systems, separate outcomes and dependencies, then select the first useful end-to-end increment. Do not bundle unresolved systems into a single vague design.
+
+Use a comparison only when it helps the decision:
+
+```text
+Option | Fit and constraints | Effort/maintenance | Main risk
+Recommendation: <choice; deciding tradeoff; assumptions>
+```
+
+## 4. Describe what will be delivered
+
+1. Describe the normal user journey or operation, from input through result. Include a concrete acceptance example that distinguishes success from a merely completed implementation.
+2. Identify responsibilities, interfaces, state/data flow, and important failure behavior where they apply. For non-software work, describe the audience, deliverable, sequence, and operating constraints instead of inventing technical architecture.
+3. State compatibility, migration, installation, or lifecycle obligations affected by the design. Keep shared policy ownership and host-specific responsibilities visible.
+4. Define how the result will be checked: representative behavior, meaningful boundary/error cases, and any required actual-host or rendered observation. Software development proceeds through TDD; unit tests alone cannot establish unobserved host behavior.
+5. Separate user decisions, your recommended defaults, and unresolved material questions. Specify what is excluded from the first increment.
+6. Select the artifact within the requested scope. Keep small, clear, single-session decisions inline. Write a spec for substantial designs with consequential behavior or architecture choices, compatibility obligations, cross-session handoff, or a requested design review. Update the existing relevant spec before creating another; a routine fix or feasibility answer does not require a separate spec. Follow the storage policy below and respect no-file and assessment-only instructions.
+
+```text
+Outcome and why: <user/audience; problem; success>
+Scope: <first complete result; exclusions>
+Approach: <chosen option; tradeoff; defaults not explicitly chosen by the user>
+Behavior: <normal operation; boundaries/errors; responsibilities>
+Constraints: <compatibility, resources, migration, dependencies>
+Acceptance: <examples; checks; required host or rendered observations>
+Open decisions: <material questions or none>
+Next: <design review, requested planning, or authorized development>
+```
+
+### Store a written design
+
+Use the requested or established project location first; otherwise use `.your/specs/<descriptive-name>.md` for authorized local working specs. On first use, create only missing directories and `.your/.gitignore` containing `*`; preserve an existing ignore file. Date prefixes are optional. The wildcard also ignores the ignore file, so a fresh checkout needs the local setup again. Local artifacts are not shared through Git; use the requested tracked project location when versioned collaboration is part of the deliverable. Do not migrate existing files or infer commit authority.
+
+A spec records intended behavior, constraints, decisions, exclusions, acceptance, material questions, and its actual review/approval state. Reference the associated plan when one exists; keep execution progress in that plan. Report the saved path at handoff. File creation must be explicitly requested, supported by project convention, or required for the authorized deliverable; skill invocation alone is insufficient. Without write access or with a no-file instruction, provide the design inline and identify any required persistence as pending.
+
+## 5. Check the design and hand it off
+
+1. Read the design as the next implementer. Check whether it answers the intended outcome, chosen approach, interfaces or responsibilities, acceptance examples, and exclusions without requiring this conversation.
+2. Resolve contradictions, invented APIs, unsupported assumptions, and omitted failure behavior. Inspect available facts before asking the user to supply them.
+3. If a review checkpoint or material user decision remains, present the concrete design and that decision; wait before dependent implementation. If design or planning only was requested, end at that deliverable.
+4. If implementation is already authorized and remaining choices are delegated or routine, state the choices and continue within scope. Do not require repeated approval for the same work or interpret silence as acceptance of a pending decision.
+5. For substantial software work, carry the resolved design into an implementation plan with TDD slices, dependencies, docs, and requested phase boundaries. Use `plan-work` if available; otherwise prepare that outline directly. No companion skill is required.
+6. If new evidence changes a settled assumption, reopen only the affected decisions and update the design and acceptance conditions. Preserve valid prior work and explain the impact.
+
+## Completion check
+
+For feasibility, completion means the claim has evidence or a named unresolved observation, with a recommendation and limits. For direct handoffs, completion means the destination, preserved constraints, and next authorized action are clear; continue that work when already authorized. The checklist below applies only to the full design route.
+
+- [ ] The intended outcome and why it matters are grounded in supplied context or answered questions.
+- [ ] The approach is justified against real constraints; alternatives are compared only where useful.
+- [ ] Concrete behavior, exclusions, and acceptance examples define the first complete result.
+- [ ] Assumptions, delegated defaults, and unresolved material decisions are distinct.
+- [ ] Required verification includes the relevant runtime or artifact boundaries.
+- [ ] The handoff respects the requested scope, existing authorization, and review checkpoints.
+- [ ] The selected inline or written artifact fits the work; saved paths and actual review state are clear.
+
+Return the recommendation and design, important tradeoffs, decisions still needed, and the next authorized action. Keep small decisions brief. Do not add browser tooling, visual-companion resources, mandatory scripts, delegation, or automatic Git actions.

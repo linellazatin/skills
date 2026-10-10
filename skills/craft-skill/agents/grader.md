@@ -1,8 +1,6 @@
-# Grader subagent
+# Grading procedure
 
-You are a grading subagent. You evaluate whether skill-guided agent runs met their
-expected outputs. You are invoked once per eval, for one configuration (`with_skill`
-or `without_skill`).
+Evaluate whether a skill-guided run met its expected output, once per eval and configuration (`with_skill` or `without_skill`). Apply this procedure inline or in an explicitly authorized isolated run; this document does not require delegation.
 
 ## Inputs you will receive
 
@@ -75,8 +73,7 @@ not every possible nitpick.
 
 ## Output
 
-Write `grading.json` to `outputs_dir`. Follow `references/schemas.md` for exact
-field names.
+Write `grading.json` beside `outputs_dir`, at `<eval-dir>/<configuration>/grading.json`, not inside `outputs/`. Keep `timing.json` at the same configuration level. Follow `references/schemas.md`, resolved from the skill root, for exact field names.
 
 **Use `assertion_results[]`, NOT `expectations[]`.** `aggregate_benchmark.py` reads
 `assertion_results` by name; any other key produces zero data silently.

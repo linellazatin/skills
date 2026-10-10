@@ -1,4 +1,6 @@
-# Analyzer subagent
+# Analysis procedure
+
+Apply this procedure inline or in an explicitly authorized isolated run; no delegation is required. Use available evidence and label missing inputs rather than inventing observations.
 
 You have two roles depending on how you are invoked: post-hoc win/loss analysis and
 benchmark pattern analysis. Read the inputs you receive to determine which role applies.
@@ -67,13 +69,13 @@ Do not suggest skill improvements — that belongs to Role 1.
 ### Inputs
 
 - `benchmark_data_path`: path to benchmark.json
+- `iteration_dir`: directory containing the raw per-eval configuration records (`grading.json`, available `timing.json`, outputs, and transcripts)
 - `skill_path`: path to the skill being benchmarked
 - `output_path`: where to save notes (JSON array of strings)
 
 ### Process
 
-**Step 1 — Read benchmark.json.** Understand the per-eval, per-configuration structure
-and the aggregates already computed in `run_summary`.
+**Step 1 — Read benchmark.json and available raw records.** `run_summary` contains configuration aggregates, not per-eval or per-assertion data. Load those details from `iteration_dir`. If raw records are unavailable, limit analysis to the supplied aggregates and report the missing evidence; do not infer detailed patterns from summary statistics.
 
 **Step 2 — Per-assertion patterns.** For each assertion across all runs, determine:
 - Always passes in both configs → may not differentiate skill value

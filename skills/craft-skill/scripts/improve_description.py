@@ -35,6 +35,8 @@ def improve_description(
     iteration: int | None = None,
 ) -> str:
     """Call Claude to produce an improved description based on eval failures."""
+    if eval_results.get("summary", {}).get("errors", 0) or any(r.get("pass") is None or r.get("errors") for r in eval_results["results"]):
+        raise ValueError("Resolve unscored execution errors before improving a description")
     failed_triggers = [r for r in eval_results["results"] if r["should_trigger"] and not r["pass"]]
     false_triggers = [r for r in eval_results["results"] if not r["should_trigger"] and not r["pass"]]
 

@@ -1,7 +1,6 @@
 # JSON schemas
 
-This document defines the exact field contracts for every data file opencraft-skill
-produces. Agents and scripts must follow these schemas exactly — wrong field names
+This document defines the field contracts for behavioral evaluation records and the separate trigger-evaluation inputs and results. Agents and scripts must follow these schemas exactly — wrong field names
 cause silent failures (aggregate_benchmark.py, for example, silently skips
 grading.json files that use `results` instead of `assertion_results`).
 
@@ -9,7 +8,7 @@ grading.json files that use `results` instead of `assertion_results`).
 
 ## evals.json
 
-Defines the test cases for a skill. Write inline in the working file, or save to
+Defines behavioral execution cases for a skill; this object is not input to `run_eval.py` or `run_loop.py`. Write inline in the working file, or save to
 `<skill-workspace>/evals.json`.
 
 ```json
@@ -36,6 +35,23 @@ Defines the test cases for a skill. Write inline in the working file, or save to
 - `evals[].prompt`: Realistic user prompt — not a test description
 - `evals[].expected_output`: Human-readable success description (briefs the grader)
 - `evals[].assertions`: Verifiable statements; each must be checkable from output files
+
+---
+
+## Trigger evaluation input and results
+
+`run_eval.py` and `run_loop.py` accept a separate JSON array, not the behavioral `evals.json` object:
+
+```json
+[
+  {"query": "Create a reusable skill from this workflow", "should_trigger": true},
+  {"query": "Run this workflow once without creating a skill", "should_trigger": false}
+]
+```
+
+Each `query` is a unique realistic request; `should_trigger` is a Boolean. Use matching requests and near-misses. The evaluator registers a temporary Claude command surrogate, so scores do not establish full-body behavior, installed-catalog competition, or native activation in other harnesses.
+
+Each result contains `query`, `should_trigger`, `trigger_rate`, `triggers`, `runs`, `attempted_runs`, `errors`, and `pass`. `runs` counts completed evaluations; `attempted_runs` also includes errors. With no completed runs, `trigger_rate` is `null`. If any attempt errors, `pass` is `null` and the case is unscored, even if some attempts completed. `errors` contains error messages. Otherwise `pass` is a Boolean determined by the configured threshold. Summary counts `total`, `passed`, `failed`, and `errors` count cases; unscored cases are neither passed nor failed. The CLI emits its report and exits nonzero for execution errors; the optimization loop and direct description improver reject invalid scores before calling a provider.
 
 ---
 
@@ -111,9 +127,7 @@ benchmark. Always use `assertion_results`.
 
 Wall-clock timing for a single eval run. Located at `<eval-dir>/<config>/timing.json`.
 
-**How to capture:** When a subagent task completes, the task completion event includes
-`total_tokens` and `duration_ms`. Save these immediately — they are not available
-after the fact. In Path B (inline), record an approximate token count from the session.
+**How to capture:** Use actual per-run telemetry exposed by the harness and measured elapsed time. Availability and retention depend on the client; do not assume task-completion events contain both fields. Omit unavailable fields, and omit `timing.json` when neither is measured. Do not substitute whole-session counts or token estimates for run measurements. If estimates are useful, label them in separate notes excluded from aggregation.
 
 ```json
 {
@@ -123,8 +137,8 @@ after the fact. In Path B (inline), record an approximate token count from the s
 ```
 
 **Fields:**
-- `total_tokens`: Integer. Total tokens (input + output) for the run.
-- `duration_ms`: Integer. Wall-clock elapsed time in milliseconds.
+- `total_tokens`: Optional integer. Measured total tokens (input + output) for this run.
+- `duration_ms`: Optional integer. Measured wall-clock elapsed time in milliseconds for this run.
 
 `aggregate_benchmark.py` reads `total_tokens` and `duration_ms`. Do not use
 `tokens`, `duration_seconds`, or any other field name — they are silently ignored.
