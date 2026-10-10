@@ -1,16 +1,23 @@
 ---
 name: review-code
-description: Review code, working-tree changes, extensions, or documentation against requirements and report prioritized, actionable findings. Also use to evaluate review feedback before applying it. Assessment-only requests stay read-only; completion or release-readiness claims require verification across the requested requirements.
+description: Review code, changes, extensions, documentation, or implementation plans against requirements and report prioritized defects or omissions. Also evaluate review feedback before accepting it. Assessment stays read-only. Revising a plan and establishing completion or release readiness are different primary outcomes.
 license: MIT
 ---
 
 # Assess the current work
 
-Use this as the primary workflow for defect assessment or review feedback. A request to establish completion or release readiness belongs to requirement-by-requirement verification; review findings support that decision but do not certify readiness. Perform either task inline if companion guidance is unavailable.
-
 Produce findings tied to actual behavior and scope. Do not change files in an assessment-only review.
 
-Read relevant existing specs and plans as requirements and progress records, checking them against current code and newer user corrections. Update their findings, decisions, or verification gaps only when artifact edits are authorized. Do not create a spec or plan for every review; assessment-only and no-file requests remain inline unless report writing is separately requested. Ignored working artifacts need explicit inspection because Git diffs omit them.
+## Entry route
+
+- **Inputs:** review surface or feedback, requirements, current revision/artifacts, and allowed remediation scope.
+- **First action:** establish the contract and requested surfaces before judging differences.
+- **Stop condition:** return supported findings or no actionable findings, executed checks, and coverage gaps. Assessment completion is not product readiness.
+
+“Review the migration plan for missing checks” selects review. “Revise the plan to include another adapter” selects planning. “Are all deliverables ready?” selects verification. Review can support verification or execution without replacing their requirements. Use inline equivalents when companion guidance is unavailable.
+
+- Check existing specs and plans against current code and newer user corrections. Inspect ignored working artifacts directly; Git diffs omit them.
+- Update findings, decisions, or verification gaps in those artifacts only when edits are authorized. Assessment-only and no-file requests remain inline unless report writing is separately requested; do not create a plan or spec for every review.
 
 ## 1. Define the review surface
 
@@ -30,8 +37,8 @@ Read relevant existing specs and plans as requirements and progress records, che
 ### Carry scope into supporting investigation
 
 1. Use deeper diagnosis only when a concrete failure needs explanation, and ownership analysis only when evidence exposes a boundary or shared-rule problem. These are conditional investigations, not a mandatory skill chain or delegation.
-2. If using `debug-systematically` or `design-modules`, pass the problem, relevant artifacts, known evidence, allowed scope, and expected return. For an assessment-only review, select diagnosis-only or assess/propose respectively. If those skills are unavailable, perform the scoped investigation inline using the same boundaries.
-3. In assessment-only mode, keep the target checkout and persistent settings unchanged. Use non-destructive checks or an isolated disposable reproduction; do not add a production fix, refactor, regression test, or doc update to complete the assessment. For explicitly authorized remediation, pass that scope to the supporting investigation and use its implementation branch; changes remain limited to the authorized remedy.
+2. Carry the problem, artifacts, evidence, scope, and expected return into the inline investigation. For assessment-only review, use diagnosis-only or assess/propose. Companion skills are optional; their absence does not change the scope.
+3. Keep assessment-only work read-only in the target checkout and persistent environment. Use non-destructive checks or disposable reproductions; add no product fix, test, refactor, or doc update. If remediation is explicitly authorized, use the matching implementation branch and limit changes to that remedy.
 4. Bring the conclusion back into this review: supported finding or bounded uncertainty, affected consumers, executed evidence, proposed correction, planned verification, and remaining limits. Keep planned checks visibly distinct from passing results.
 5. Reassess the finding's priority and confidence using that evidence. Report unresolved concerns as questions or gaps rather than upgrading a hypothesis into a confirmed defect.
 
@@ -64,9 +71,10 @@ Correction: <smallest supported remedy; no unauthorized edit>
 ## 4. Handle feedback or authorized fixes
 
 1. For a review comment, verify its claimed trigger and contract against current code before accepting it.
-2. If the claim is supported and remediation is authorized, observe a focused regression test fail for the intended defect before correcting behavior, then rerun it and keep it green through cleanup. For behavior-preserving refactors, establish passing existing or characterization coverage first. Preserve already implemented work and disclose missing pre-change observations; use document checks for prose-only edits and mark unavailable host checks pending. Make only the scoped correction, verify affected consumers, and reassess the findings.
-3. If unsupported, explain the evidence and leave the behavior unchanged. If material intent is ambiguous, present the decision needed before editing.
-4. Respect separately requested source and documentation review boundaries. Do not infer Git authority from acceptance of findings.
+2. If unsupported, explain the evidence and leave behavior unchanged. If material intent is ambiguous, resolve that decision before editing. Supported feedback alone does not authorize remediation.
+3. For authorized remediation, select checks first: intended regression red for changed behavior; passing characterization for refactors; document checks for prose. Preserve existing work and disclose missing pre-change observations. Unavailable host checks stay pending.
+4. Apply only the scoped correction, establish green, verify affected consumers, and reassess findings.
+5. Respect separately requested source and documentation review boundaries. Do not infer Git authority from acceptance of findings.
 
 ## Completion check
 
@@ -77,4 +85,4 @@ Correction: <smallest supported remedy; no unauthorized edit>
 - [ ] Supporting investigations preserve the original scope; proposed remedies and planned checks are distinct from work performed.
 - [ ] Validation scope and remaining runtime gaps are disclosed.
 
-Return prioritized findings first, followed by executed checks, planned verification, and gaps. State the covered scope and whether material questions remain. Assessment completion means the report is complete for that scope, not that the product is correct or release-ready. Identify an author self-review honestly; do not imply an independent reviewer inspected the work. End assessment-only work at the report; planning or remediation needs its own request or existing authorization.
+Return prioritized findings, executed checks, planned verification, and gaps. State coverage and material questions. Label author self-review honestly; do not imply independence or product readiness. End assessment-only work at the report; planning or remediation needs an explicit request or existing authorization.
