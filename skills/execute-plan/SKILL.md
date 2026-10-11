@@ -100,6 +100,6 @@ python /path/to/execute-plan/scripts/checkpoints.py handoff /project/plan.md pha
 ```
 
 - If a check returns nonzero, inspect its log, resolve the cause, and repeat the affected check; do not hand off as ready.
-- If the plan changes, inspect stale status and start a checkpoint for the revised phase; preserve valid implementation work.
+- If the plan changes, inspect the saved/current diff. Use the reference's explicit reconciliation route only for progress-only edits with unchanged check inputs; material changes require a fresh start and rerun. Preserve valid implementation work; reconciliation is a caller attestation, not verification.
 - `awaiting_review` records a handoff, not approval. Its Git report lists current staged/unstaged changes and untracked paths; inspect committed changes and untracked contents separately when in scope.
 - Without Python or command access, maintain the same named checks and handoff record manually. The helper is optional.

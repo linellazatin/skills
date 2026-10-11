@@ -1,17 +1,45 @@
 #!/usr/bin/env python3
 """Record inline phase checks. Python 3.9+, standard library only."""
 import argparse
+import difflib
 import hashlib
 import json
 import math
 import subprocess
 import sys
 import time
+from itertools import islice
 from pathlib import Path
 
 
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def snapshot_bytes(state, folder):
+    snapshot = folder / ("plan-" + state["revision"] + ".txt")
+    if state.get("plan_snapshot") != str(snapshot):
+        return None
+    try:
+        data = snapshot.read_bytes()
+    except FileNotFoundError:
+        return None
+    return data if hashlib.sha256(data).hexdigest() == state["revision"] else None
+
+
+def plan_change(state, folder, data, revision):
+    old = snapshot_bytes(state, folder)
+    change = {"from_revision": state["revision"], "to_revision": revision,
+              "from_snapshot": state.get("plan_snapshot"), "diff": None,
+              "snapshot_available": old is not None, "truncated": False}
+    if old is not None:
+        lines = list(islice(difflib.unified_diff(
+            old.decode("utf-8", errors="replace").splitlines(),
+            data.decode("utf-8", errors="replace").splitlines(),
+            fromfile=state["plan_snapshot"], tofile=state["plan"], lineterm=""), 201))
+        text = "\n".join(lines[:200])
+        change.update(diff=text[:16000], truncated=len(lines) > 200 or len(text) > 16000)
+    return change
 
 
 def main(argv=None):
@@ -20,29 +48,44 @@ def main(argv=None):
     if "--" in argv:
         split = argv.index("--")
         argv, command = argv[:split], argv[split + 1:]
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=["status", "start", "check", "handoff", "review"])
-    parser.add_argument("plan", type=Path)
-    parser.add_argument("phase", nargs="?")
-    parser.add_argument("--workdir", type=Path)
-    parser.add_argument("--summary", default="")
-    parser.add_argument("--label")
-    parser.add_argument("--check", action="append", default=[])
-    parser.add_argument("--timeout", type=float, default=300)
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        epilog="Example: checkpoints.py status /project/plan.md. Inspect its diff and revisions before "
+               "reconcile; material changes require start and rerun. No checkout freshness is certified.")
+    parser.add_argument("action", choices=["status", "start", "check", "reconcile", "handoff", "review"])
+    parser.add_argument("plan", type=Path, help="existing plan file")
+    parser.add_argument("phase", nargs="?", help="active phase; optional for status/review")
+    parser.add_argument("--workdir", type=Path, help="check directory for start (default: current directory)")
+    parser.add_argument("--summary", default="", help="outcome, handoff, or reconciliation reason (default: empty)")
+    parser.add_argument("--label", help="check label (default: none)")
+    parser.add_argument("--check", action="append", default=[], help="required handoff label; repeatable (default: none)")
+    parser.add_argument("--timeout", type=float, default=300, help="check timeout in seconds (default: 300)")
+    parser.add_argument("--from-revision", help="inspected checkpoint digest for reconcile (default: none)")
+    parser.add_argument("--to-revision", help="inspected current plan digest for reconcile (default: none)")
+    parser.add_argument("--progress-only", action="store_true",
+                        help="attest only progress changed and checked inputs are unchanged (default: false)")
     args = parser.parse_args(argv)
     if command and args.action != "check":
         parser.error("only check accepts an execution command")
     if args.workdir and args.action != "start":
         parser.error("--workdir is set when starting the phase")
+    if args.action != "reconcile" and (args.from_revision is not None or args.to_revision is not None or args.progress_only):
+        parser.error("revision flags and --progress-only are only for reconcile")
+    if args.action == "reconcile" and (not args.from_revision or not args.to_revision or
+                                        not args.progress_only or not args.summary.strip()):
+        parser.error("reconcile requires --from-revision, --to-revision, --progress-only, and a nonempty --summary reason")
     plan = args.plan.resolve(strict=True)
-    revision = digest(plan)
+    plan_data = plan.read_bytes()
+    revision = hashlib.sha256(plan_data).hexdigest()
     folder = plan.parent / ".workflow" / hashlib.sha256(str(plan).encode()).hexdigest()[:16]
     state_file = folder / "checkpoint.json"
     state = json.loads(state_file.read_text()) if state_file.exists() else {}
     if args.action == "status":
-        print(json.dumps({"state": state, "stale": bool(state) and state["revision"] != revision}, indent=2))
+        stale = bool(state) and state["revision"] != revision
+        print(json.dumps({"state": state, "stale": stale, "current_revision": revision,
+                          "plan_change": plan_change(state, folder, plan_data, revision) if stale else None}, indent=2))
         return 0
-    if args.action != "start" and (not state or state["revision"] != revision):
+    if args.action != "start" and (not state or (args.action != "reconcile" and state["revision"] != revision)):
         parser.error("start a phase for this plan revision first")
     if args.action not in ("review",) and not args.phase:
         parser.error("phase is required")
@@ -63,7 +106,10 @@ def main(argv=None):
         with handle:
             handle.write(str(time.time()))
         state = json.loads(state_file.read_text()) if state_file.exists() else {}
-        if args.action != "start" and (not state or state["revision"] != revision or
+        if digest(plan) != revision:
+            parser.error("plan changed; inspect status before continuing")
+        if args.action != "start" and (not state or
+                                       (args.action != "reconcile" and state["revision"] != revision) or
                                        (args.phase and args.phase != state["phase"])):
             parser.error("checkpoint changed; inspect status before continuing")
         if args.action == "start":
@@ -72,14 +118,35 @@ def main(argv=None):
             workdir = (args.workdir or Path.cwd()).resolve(strict=True)
             if not workdir.is_dir():
                 parser.error("workdir must be a directory")
-            state = {"plan": str(plan), "revision": revision, "phase": args.phase,
-                     "workdir": str(workdir), "summary": args.summary, "status": "working", "checks": {}}
+            snapshot = folder / ("plan-" + revision + ".txt")
+            snapshot.write_bytes(plan_data)
+            state = {"plan": str(plan), "revision": revision, "plan_snapshot": str(snapshot), "phase": args.phase,
+                     "workdir": str(workdir), "summary": args.summary, "status": "working", "checks": {},
+                     "reconciliations": []}
+            save()
+        elif args.action == "reconcile":
+            if args.from_revision != state["revision"] or args.to_revision != revision:
+                parser.error("revisions do not match checkpoint/current plan; inspect status before reconciling")
+            if state["revision"] == revision:
+                parser.error("plan is unchanged; no reconciliation needed")
+            if snapshot_bytes(state, folder) is None:
+                parser.error("checkpoint snapshot missing or corrupt; start a fresh phase and rerun checks")
+            snapshot = folder / ("plan-" + revision + ".txt")
+            snapshot.write_bytes(plan_data)
+            record = {"from_revision": state["revision"], "to_revision": revision,
+                      "from_snapshot": state["plan_snapshot"], "to_snapshot": str(snapshot),
+                      "reason": args.summary.strip(), "recorded": time.time(),
+                      "attestation": "caller-declared progress-only; checked inputs unchanged"}
+            state.setdefault("reconciliations", []).append(record)
+            state.update(revision=revision, plan_snapshot=str(snapshot), status="working")
+            state.pop("handoff", None)
             save()
         elif args.action == "check":
             if not args.label or not command or not math.isfinite(args.timeout) or args.timeout <= 0:
                 parser.error("check requires --label, a positive finite timeout, and -- PROGRAM ARGS")
             log = folder / ("check-" + str(time.time_ns()) + ".log")
-            evidence = {"argv": command, "log": str(log), "result": "running", "started": time.time()}
+            evidence = {"argv": command, "log": str(log), "plan_revision": revision,
+                        "result": "running", "started": time.time()}
             state["checks"][args.label] = evidence
             state["status"] = "working"
             save()
