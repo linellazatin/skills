@@ -27,7 +27,7 @@ Track inline or in an existing record by default. A requested skill file is the 
 1. Read the request, existing skill if any, available examples, corrections, and project instructions. Reuse answers already present; do not begin a fixed interview when the scope is known.
 2. Record the repeatable outcome, intended users, adjacent tasks excluded, available capabilities, and requested destination.
 3. If a consequential input is missing, ask one focused question and wait before dependent work. Continue independent investigation; do not ask about tools you can inspect directly.
-4. Track scope, evidence, changes, and checks in the existing plan or task list. Select any new artifact using the policy below.
+4. Track scope, evidence, changes, and checks in the active same-scope plan or task list. Select any new artifact using the policy below.
 5. If the request is a one-time action or a trivial prompt without reusable decisions, explain that and offer the direct task. If the user explicitly wants a reusable skill, proceed within that scope.
 6. Select the mode below. State the selected mode briefly; ask for confirmation only when the intended mode changes the work and remains ambiguous.
 
@@ -39,11 +39,12 @@ Track inline or in an existing record by default. A requested skill file is the 
 
 ### Select working artifacts
 
-1. Use existing artifacts and the requested or established location first. Keep small tasks inline.
-2. Only when both artifact need and writing authority are established, use a written plan for substantial or resumable skill work; the fallback is `.your/plans/<descriptive-name>.md`. Use `.your/specs/` for an authorized consequential design. Otherwise continue inline; do not create a file merely to organize the work.
-3. On first authorized use, create only missing directories and `.your/.gitignore` containing `*`. Preserve existing ignore rules. The wildcard also ignores the ignore file; fresh checkouts need local setup again.
-4. For versioned collaboration, use the requested tracked location. Do not infer migration or Git authority.
-5. For assessment-only, no-file, or no-write work, track inline unless artifact writing is separately authorized. Report required persistence as pending. Keep behavioral evals in their documented schema locations; do not create `.your/tests/` by default.
+1. Use the requested or established location and naming convention first. Resume unfinished same-scope work in its existing artifact across sessions. Keep small tasks inline; a new session alone does not justify a new file.
+2. Only when both artifact need and writing authority are established, use a written plan for substantial or resumable skill work; the fallback is `.your/plans/YYYY-MM-DD-<descriptive-name>.md`. An authorized consequential design uses `.your/specs/YYYY-MM-DD-<descriptive-name>.md`. Use the creation date and retain it during updates; do not automatically rename existing files or overwrite a namesake.
+3. For newly authorized work after task-plan/spec closure, create a linked dated successor when persistence is warranted; preserve the closed record instead of appending another workstream. Update a living canonical spec for authorized contract changes rather than creating competing contracts. Keep active artifacts concise with actionable steps/decisions and evidence links, not transcripts. At closure record outcome, actual acceptance state, and gaps once; checked steps do not close pending required work, evidence, or acceptance.
+4. On first authorized use, create only missing directories and `.your/.gitignore` containing `*`. Preserve existing ignore rules. The wildcard also ignores the ignore file; fresh checkouts need local setup again.
+5. For versioned collaboration, use the requested tracked location. Do not infer migration or Git authority.
+6. For assessment-only, no-file, or no-write work, track inline unless artifact writing is separately authorized. Report required persistence as pending. Keep behavioral evals in their documented schema locations; do not create `.your/tests/` by default.
 
 ## 2. Build the evidence for the selected mode
 

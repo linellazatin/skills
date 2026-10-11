@@ -1,6 +1,6 @@
 ---
 name: strategize
-description: Clarify an idea and choose a workable design before detailed planning or implementation. Use for new projects, features, components, workflows, or behavior changes whose purpose, requirements, or approach need decisions; also for brainstorming, exploring options, "think this through", "what should we build", and feasibility questions. An approved design needing task breakdown belongs to planning; an established defect needing diagnosis belongs to debugging.
+description: Clarify an idea and choose a workable design before detailed planning or implementation. Use for new projects, features, components, workflows, or behavior changes whose purpose, requirements, or approach need decisions; also for brainstorming, exploring options, "think this through", "what should we build", and feasibility questions. An approved design needing task breakdown belongs to planning; a specified change or proven correction needing implementation belongs to development; an uncertain failure cause belongs to diagnosis.
 license: MIT
 ---
 
@@ -14,26 +14,24 @@ Produce a design grounded in the user's intended outcome, with visible choices a
 - **First action:** choose unsettled-design, feasibility, or direct-handoff routing below. Reuse supplied answers.
 - **Stop condition:** deliver the scoped design or feasibility conclusion with evidence and open decisions. Continue implementation only within existing authorization.
 
-“Think through offline search; the approach is undecided” selects design exploration. “Break the approved search design into tasks” selects planning. “Find why existing search crashes” selects diagnosis.
+### Route card
+
+Use the row matching the requested result; linked examples are optional.
+
+| Condition | Next action and minimum evidence | Stop or handoff |
+| --- | --- | --- |
+| [Outcome or approach unsettled](references/worked-examples.md#local-only-search) | Recover intent and constraints; resolve consequential unknowns; recommend an approach with an acceptance example. | Scoped design through sections 2–5; implementation only within existing authority. |
+| [Feasibility only](references/worked-examples.md#unavailable-lifecycle-observation) | Identify the uncertain claim and one distinguishing observation; record its result or why unavailable. | Bounded conclusion and next observation; no forced full design. |
+| [Settled design needing tasks](references/worked-examples.md#settled-design-or-specified-change) | Carry known decisions and acceptance into dependency-ordered planning. | Plan; no new discovery interview or unauthorized implementation. |
+| Specified change or proven correction, implementation authorized | Inspect the settled contract and consumers; develop with scoped checks and a delivery outline when substantial. | Verified authorized work or named gap; size alone does not reopen design or diagnosis. |
+| Broken behavior, cause uncertain | Capture actual/expected behavior and the failing boundary. | Diagnosis; reopen design only if evidence exposes a material choice. |
 
 ## 1. Identify the decision to make
 
 1. Read the request, prior decisions, existing requirements, and applicable project instructions. Identify what the user wants to achieve, rather than treating a named technology as the goal.
 2. Inspect the relevant existing work, entrypoints, docs, and current changes. For a new project, use supplied examples and constraints; do not invent an existing architecture.
 3. Record what is known, what you are assuming, and which unanswered questions would change the result.
-4. Use the route below. State the immediate next action briefly; do not explain a long process before addressing the idea.
-
-| Situation | Action |
-| --- | --- |
-| Clear, small change with implementation authorized | State any meaningful implementation choice and proceed through normal development; skip a discovery interview. |
-| Outcome or approach is unsettled | Clarify the missing intent, compare viable approaches, and produce the design below. |
-| Feasibility is the question | Identify the uncertain claim and the smallest observation that can answer it; report a recommendation and its limits. |
-| Design is already agreed and only tasks are needed | Carry it into detailed planning without reopening settled choices. |
-| Expected behavior is known and broken | Investigate the failure; return to design only if the evidence exposes a genuine product or architecture decision. |
-
-- **Unsettled outcome:** follow the full design procedure in sections 2–5.
-- **Feasibility:** inspect or run the smallest authorized distinguishing check. Return observation, recommendation, uncertainty, and next action; stop unless broader design is requested.
-- **Direct handoff:** carry clear authorized changes, agreed designs, or known defects into development, planning, or diagnosis using available guidance or inline equivalents. Skip the full design checklist.
+4. Use the entry route card. State the immediate next action briefly; do not explain a long process before addressing the idea. For a direct handoff, use available guidance or an inline equivalent; skip the full design checklist.
 
 ## 2. Resolve the consequential unknowns
 
@@ -70,7 +68,7 @@ Recommendation: <choice; deciding tradeoff; assumptions>
 3. State compatibility, migration, installation, or lifecycle obligations affected by the design. Keep shared policy ownership and host-specific responsibilities visible.
 4. Define how the result will be checked: representative behavior, meaningful boundary/error cases, and any required actual-host or rendered observation. Software development proceeds through TDD; unit tests alone cannot establish unobserved host behavior.
 5. Separate user decisions, your recommended defaults, and unresolved material questions. Specify what is excluded from the first increment.
-6. Select the artifact: small decisions stay inline; substantial consequential designs, compatibility obligations, resumable handoffs, or requested design reviews use an authorized spec. Update existing specs first; routine fixes and feasibility answers need no extra spec. Apply the storage and authorization branches below.
+6. Select the artifact: small decisions stay inline; substantial consequential designs, compatibility obligations, resumable handoffs, or requested design reviews use an authorized spec. Resume an active same-scope spec or update the relevant living canonical spec; do not append new work to a closed task-scoped spec. Routine fixes and feasibility answers need no extra spec. Apply the storage and authorization branches below.
 
 ```text
 Outcome and why: <user/audience; problem; success>
@@ -85,11 +83,12 @@ Next: <design review, requested planning, or authorized development>
 
 ### Store a written design
 
-1. Update the existing relevant spec in the requested or established location first. For an authorized new local spec, use `.your/specs/<descriptive-name>.md`; date prefixes are optional.
-2. Create only missing directories and `.your/.gitignore` containing `*`. Preserve existing ignore rules. The ignore file is itself ignored; fresh checkouts need local setup again.
-3. For versioned collaboration, use the requested tracked location. Do not migrate files or infer commit authority.
-4. File creation needs an explicit request, project convention, or the authorized deliverable. For assessment-only, no-file, or no-write work, provide the design inline unless separately authorized; report required persistence as pending.
-5. Record behavior, constraints, decisions, exclusions, acceptance, material questions, and actual review/approval state. Link the associated plan when present; execution progress stays in that plan. Report the saved path at handoff.
+1. Use the requested or established location and naming convention first. Resume unfinished same-scope designs across sessions in their existing spec. For newly authorized design work after task-spec closure, create a linked successor when a written spec is warranted; preserve the closed record. Update a [living canonical product spec](references/worked-examples.md#living-spec-versus-closed-task-spec) when its contract changes instead of creating competing contracts.
+2. For an authorized new local spec, use `.your/specs/YYYY-MM-DD-<descriptive-name>.md` with its creation date; retain that date during updates. Do not automatically rename existing files or overwrite a same-day namesake; choose a distinct descriptive name.
+3. Create only missing directories and `.your/.gitignore` containing `*`. Preserve existing ignore rules. The ignore file is itself ignored; fresh checkouts need local setup again.
+4. For versioned collaboration, use the requested tracked location. Do not migrate files or infer commit authority.
+5. File creation needs an explicit request, project convention, or the authorized deliverable. For assessment-only, no-file, or no-write work, provide the design inline unless separately authorized; report required persistence as pending.
+6. Keep the spec focused on behavior, constraints, decisions, exclusions, acceptance, and material questions; link evidence rather than accumulating transcripts. At task-spec closure, record the outcome, actual acceptance state, and remaining gaps once. Required open decisions, evidence, or acceptance cannot be closed merely because listed steps are complete. Link the associated plan when present; execution progress stays in that plan. Report the saved path at handoff.
 
 ## 5. Check the design and hand it off
 

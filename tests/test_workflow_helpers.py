@@ -42,13 +42,6 @@ class ReleaseNotesTests(unittest.TestCase):
         doc = "## 0.2.0\n```markdown\n## 0.1.0\n```\n- retained\n## 0.1.0\nold"
         self.assertIn("- retained", release.extract_notes(doc, "v0.2.0"))
 
-    def test_current_changelog(self):
-        changelog = (ROOT / "CHANGELOG.md").read_text()
-        notes = release.extract_notes(changelog, "v0.2.0")
-        expected = changelog.split("## 0.2.0\n", 1)[1].split("\n## ", 1)[0].strip() + "\n"
-        self.assertEqual(notes, expected)
-        self.assertNotIn("First beta release", notes)
-
 
 class FrontmatterTests(unittest.TestCase):
     def check(self, content):

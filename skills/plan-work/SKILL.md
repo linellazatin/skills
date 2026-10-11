@@ -15,13 +15,22 @@ Deliver an implementation outline another agent can execute without reconstructi
 - **Core loop:** map the producer and each real consumer → order characterization, implementation and consumer migration → specify acceptance checks and docs. Planning-only scope means describe these implementation steps without executing them, not omit them.
 - **Stop condition:** every requirement has executable steps and a check, or a named unresolved prerequisite. End at the plan unless implementation is already authorized.
 
-“Revise the migration plan for a new constraint” selects planning. “Review the plan for omissions without revising it” selects defect review. “Execute the approved plan” selects execution. An unconfirmed cause gets an investigation task before a promised fix.
+### Route card
+
+Use the row matching the requested result; linked examples are optional.
+
+| Condition | Next action and minimum evidence | Stop or handoff |
+| --- | --- | --- |
+| [Requirements/design ready for task breakdown](references/worked-examples.md#shared-contract-migration) | Map each requirement to owners, consumers, ordered actions, and an observable check. | Executable plan; implement only if separately authorized. |
+| [Cause, command, or API unconfirmed](references/worked-examples.md#unconfirmed-integration-command) | Put investigation before dependent work; name the missing observation and its decision. | Provisional affected tasks, not an invented fix or command. |
+| [Small prose-only plan](references/worked-examples.md#inline-document-plan) | Use a short inline sequence and document/link checks. | No software red or extra artifact. |
+| Review-only or approved execution requested | Preserve the existing contract and scope; route to defect review or execution respectively. | Findings without revision, or authorized delivery; do not substitute another plan. |
 
 ## 1. Establish scope
 
 1. Read the request, existing plan, applicable project instructions, and relevant source entrypoints.
 2. Record the requested outcome, affected users or callers, supported environments, and explicit exclusions.
-3. Identify the assignment: assessment, planning, or implementation. If only planning is requested, do not edit implementation files.
+3. Identify the assignment: assessment, planning, or implementation. If only planning is requested, do not edit implementation files. Under no-write scope, inspect checks' cache/output effects; use verified suppression/redirection or a disposable copy, labeling its coverage. A passing exit or unchanged Git status does not establish no writes.
 4. Carry forward decisions and authorization already supplied. Ask only for missing choices that change supported behavior, compatibility, architecture, or cost.
 5. Inspect the current working tree; identify existing work and unrelated edits. Plan around them rather than assuming a clean checkout.
 
@@ -67,10 +76,11 @@ Handoff: <deliverables; stop for approval only if requested>
 ### Select and save the artifact
 
 - Keep small, clear, single-session plans inline or in the existing task record. Save substantial, multi-phase, resumable, or reviewable plans within authorization.
-- Update the existing relevant plan first. Link its governing spec when present; a settled routine fix needs no separate spec.
+- Resume the existing plan for unfinished same-scope work, including across sessions. For [newly authorized work after closure](references/worked-examples.md#successor-after-closure), create a linked successor when a written plan is warranted; do not append a new workstream to the closed plan. Link its governing spec when present; a settled routine fix needs no separate spec.
+- Keep the active plan concise: actionable phases, acceptance checks, status, blockers, and evidence links rather than transcripts or repeated historical reports. At closure, record the outcome, actual acceptance state, and remaining gaps once. Checked steps do not establish closure while required work, evidence, or acceptance remains pending.
 - Record outcome, scope, decisions, dependencies, paths, ordered tests/implementation, checks, phase status, deviations, and unresolved observations. Specs define intent; plans track delivery.
 
-1. Use the requested or established location first. For an authorized new local plan, the fallback is `.your/plans/<descriptive-name>.md`; date prefixes are optional.
+1. Use the requested or established location and naming convention first. For an authorized new local plan, the fallback is `.your/plans/YYYY-MM-DD-<descriptive-name>.md`, using its creation date. Keep that date during updates; do not automatically rename existing files. A same-day name collision needs a distinct descriptive name, not overwriting another record.
 2. Create only missing directories and `.your/.gitignore` containing `*`. Preserve existing ignore rules. All local artifacts, including the ignore file, need setup again in a fresh checkout.
 3. For versioned collaboration, use the requested tracked location. Do not migrate files or infer Git authority.
 4. File creation needs an explicit request, project convention, or the authorized deliverable. For assessment-only, no-file, or no-write work, keep the result inline unless separately authorized; report required persistence as pending.

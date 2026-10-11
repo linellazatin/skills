@@ -1,53 +1,56 @@
 # Project guide
 
-This repository contains portable Agent Skills for engineering workflows and `craft-skill`, a meta skill for creating and evaluating skills. The skills are Markdown instructions with optional helpers, not an application or a harness plugin.
+Portable engineering Agent Skills plus `craft-skill` for creating/evaluating skills: standalone Markdown instructions and optional helpers, not an application or harness plugin.
 
-## Repository layout
+## Layout
 
-- `skills/<name>/SKILL.md`: metadata, triggers, and standalone workflow instructions.
-- `skills/<name>/references/`, `agents/`, `assets/`, and `scripts/`: optional resources shipped with that skill.
-- `skills/<name>/tests/`: deterministic helper regression tests where present.
-- `README.md`: skill catalog, installation, artifact policy, and writing methodology.
-- `CHANGELOG.md`: release history; `0.2.0` introduces eight engineering skills and renames/refactors `opencraft-skill` as `craft-skill`.
+- `skills/<name>/SKILL.md`: metadata, triggers, standalone workflow.
+- Each skill's `references/`, `agents/`, `assets/`, `scripts/`: optional shipped resources; `tests/`: deterministic helper regressions where present.
+- `README.md`: catalog, installation, artifact policy, writing methodology.
+- `CHANGELOG.md`: release history; 0.2.0 added eight engineering skills and renamed/refactored `opencraft-skill` as `craft-skill`.
 - `docs/guides/`: Agent Skills format and implementation guidance.
-- `.your/specs/` and `.your/plans/`: ignored local working artifacts when substantial work warrants written records. Preserve existing artifact locations first. The local wildcard ignore setup is not distributed by Git.
+- `.your/specs/`, `.your/plans/`: ignored local records for substantial work; their wildcard ignore setup is not distributed by Git.
 
-## Authoring conventions
+## Authoring
 
-Read the affected skill and its referenced resources before editing. Keep each skill independently usable, with relative resource paths and optional supporting workflows. Core instructions must describe capabilities rather than require a particular harness, provider, plugin, or subagent system. Declare helper requirements and retain manual fallbacks.
+- Read affected skills and referenced resources before editing. Preserve standalone use, relative resource paths and optional supporting workflows. Core instructions describe capabilities without requiring a harness, provider, plugin or subagent system; helpers declare requirements and retain manual fallbacks.
+- Triggers target requested results and distinguish neighboring workflows. Procedures specify ordered actions, observable evidence, failure recovery and completion criteria. Reuse context and decisions; separate assessment from authorized implementation.
+- Execute inline. Git writes/commits, publishing and installation into real user directories require user authorization.
+- Keep prose concise and paragraphs unwrapped; prefer existing files over new docs. Permanent tests belong in normal test directories; disposable probes in temporary workspaces. Update related docs/current changelog for behavior, scope, tooling or installation changes; preserve historical releases.
 
-Write triggers around the requested result and distinguish neighboring workflows. Procedures should specify ordered actions, observable evidence, failure recovery, and completion criteria. Reuse supplied context, preserve established decisions, and keep assessment separate from authorized implementation. Execute work inline; Git writes, commits, publishing, and installation into real user directories require appropriate user authorization.
+## Working records
 
-Keep prose concise and paragraphs unwrapped. Prefer existing files over new documentation. Keep permanent tests in normal test directories and disposable probes in temporary workspaces. Update related documentation and the current changelog when behavior, skill scope, tooling, or installation changes; preserve historical release entries.
+- Requested or established locations and project naming conventions take precedence. New fallback plans/specs use `YYYY-MM-DD-<descriptive-name>.md`; retain creation dates and don't automatically rename existing files. Resume unfinished same-scope work across sessions; small work stays inline.
+- Preserve closed records. New authorized work needing persistence gets a linked successor; living canonical specs receive authorized contract updates, not competing contracts.
+- Keep active records concise with evidence links. Record closure outcome, actual acceptance and gaps once; don't hide required pending work, evidence or acceptance.
+- Only execute-plan's optional helper creates `.workflow/` beside the selected plan. Manual tracking needs none; `status` creates no files.
 
 ## Validation
 
-Run checks appropriate to the change from the repository root:
+Run relevant checks from the repository root:
 
 ```bash
-# Validate a changed skill's supported metadata and structure
+# Changed skill: supported metadata/structure
 python3 skills/craft-skill/scripts/quick_validate.py skills/plan-work
-
-# Run affected helper regressions
+# Affected helper regressions
 python3 skills/craft-skill/tests/test_run_eval.py
 python3 skills/execute-plan/tests/test_checkpoints.py
-
-# Run the repository CI checks (PyYAML is only required for these checks)
+# Repository CI; PyYAML required only here
 python3 -m pip install PyYAML==6.0.3
 python3 scripts/validate_skills.py
 python3 -m unittest discover -s tests -v
-
-# Confirm CLI discovery without installing
+# Discovery without installation
 npx --yes skills add . --list
-
-# Check patch whitespace
+# Whitespace
 git diff --check
 ```
 
-For prose-only changes, check factual consistency, local links, resource paths, and whitespace. For helper changes, run the affected regression suite. For distribution changes, inspect package contents and test installation in an isolated temporary destination, preserving supporting files and licenses. Metadata validation is limited structural evidence; helper tests and discovery do not establish native harness activation or model compliance. Performance claims require controlled execution evidence.
-
-GitHub validation runs on PRs and pushes to `main`, and is reused by `v*` tag releases. Release notes come from the exact matching changelog version section; missing, duplicate or empty sections fail publication. Maintain the workflows and their helpers under `.github/workflows/`, `scripts/` and `tests/`. Skills CLI discovery uses pinned `skills@1.7.2 add . --list`, because installation has no `--dry-run` flag.
+- Prose: factual consistency, local links, resource paths, whitespace. Helpers: affected regressions. Distribution: package contents and isolated temporary installation, preserving supporting files/licenses.
+- Metadata proves limited structure; helper tests/discovery don't establish native activation or model compliance. Performance claims need controlled execution evidence.
+- Retain synthetic release-note extraction/rejection tests, not permanent wording assertions. Check actual version-note extraction when preparing releases.
+- GitHub validates PRs and pushes to `main`; `v*` tag releases reuse validation. Notes use the exact matching changelog section; missing, duplicate or empty sections block publication. Workflows/helpers live in `.github/workflows/`, `scripts/`, `tests/`.
+- Pinned discovery: `skills@1.7.2 add . --list`; installation has no `--dry-run` flag.
 
 ## Installation
 
-Vercel Labs' `npx skills add` is the recommended installer; manual copy and persistent-checkout symlinks remain supported. No custom npm package or harness bootstrap is required. Use explicit skill, agent, and scope selections in installation checks; never use broad `--all` against the user's environment. See [README.md](README.md#using-these-skills) for commands and the current remote publication caveat.
+Vercel Labs' `npx skills add` is recommended; manual copy and persistent-checkout symlinks remain supported. No custom npm package or harness bootstrap. Installation checks specify skill, agent and scope; never use broad `--all` against the user's environment. [README](README.md#using-these-skills) covers commands and the current remote publication caveat.

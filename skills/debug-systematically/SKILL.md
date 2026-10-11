@@ -14,15 +14,23 @@ For a troubleshooting or fix response, lead with a short TL;DR. State observed f
 - **First action:** establish the mode, capture the actual failure, and identify the boundary the reproduction must reach.
 - **Stop condition:** diagnosis ends with a supported cause or bounded uncertainty and next observation. A fix needs regression, original-scenario, and affected-consumer evidence; missing host checks remain pending.
 
-“Find why reload fails; no edits” selects diagnosis-only. “The byte-counting cause is proven; implement this correction” selects development with regression coverage. If this skill is already active and the cause is established, carry that evidence into the authorized fix branch without repeating speculative diagnosis.
+### Route card
 
-Use relevant existing specs or plans to recover intended behavior and prior evidence, then verify against current artifacts and user corrections. In authorized remediation, update the existing record with the supported cause, correction, checks, and gaps when artifact edits are within scope. Diagnosis-only work does not create or update planning files unless report writing is separately authorized.
+Choose the evidence/scope route; linked examples are optional.
+
+| Condition | Next action and minimum evidence | Stop or handoff |
+| --- | --- | --- |
+| [Cause uncertain](references/worked-examples.md#reload-registration-boundary) | Establish diagnosis-only or authorized-fix mode; capture actual/expected behavior and probe one falsifiable explanation at its boundary. | Supported cause or bounded uncertainty; no patch in diagnosis-only mode. |
+| [Prediction contradicted or runtime unavailable](references/worked-examples.md#contradicted-timeout-explanation) | Reject unsupported hypotheses; name the next distinguishing observation and what is missing. | Stop speculative retries; do not invent a cause or runtime result. |
+| [Cause already established](references/worked-examples.md#established-byte-counting-cause) | Verify evidence still applies; carry it into regression-first correction only when remediation is authorized. | Diagnosis proposal if read-only; otherwise fix with original/consumer checks. |
+
+Use relevant existing specs or plans to recover intended behavior and prior evidence, then verify against current artifacts and user corrections. In authorized remediation, update the active same-scope record with the supported cause, correction, checks, and gaps when artifact edits are within scope. Resume unfinished work across sessions; do not append new work to a closed task record. A linked successor needs both persistence need and authorization; update living canonical specs only for authorized contract changes. Diagnosis-only work does not create or update planning files unless report writing is separately authorized.
 
 ## Select the mode
 
 1. Read the requested outcome and existing authorization. Use **diagnosis-only** for investigation or assessment requests; use **diagnose-and-fix** when remediation is already authorized.
 2. Record the problem, relevant evidence, allowed scope, and requested output in the existing task notes. A review handoff inherits the review's scope; discovering a defect does not authorize fixing it.
-3. Keep diagnosis-only work read-only in the target checkout and persistent environment. Run appropriate non-destructive checks; use a disposable workspace for experiments that require changes. Do not alter product code, tests, docs, or settings to finish a diagnosis.
+3. Keep diagnosis-only work read-only in the target checkout and persistent environment. Inspect checks' cache/output effects; use verified suppression/redirection or a disposable workspace for required writes, labeling its coverage. A passing exit or unchanged Git status does not establish no writes. Do not alter product code, tests, docs, or settings to finish a diagnosis.
 4. Follow sections 1 and 2 while a cause needs investigation, then the matching section 3 branch. If existing evidence already establishes the cause, verify that it still applies and enter the authorized fix branch directly. Diagnosis completion never requires an implementation.
 
 ## 1. Capture the failure

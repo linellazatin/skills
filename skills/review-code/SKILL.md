@@ -14,10 +14,19 @@ Produce findings tied to actual behavior and scope. Do not change files in an as
 - **First action:** establish the contract and requested surfaces before judging differences.
 - **Stop condition:** return supported findings or no actionable findings, executed checks, and coverage gaps. Assessment completion is not product readiness.
 
-“Review the migration plan for missing checks” selects review. “Revise the plan to include another adapter” selects planning. “Are all deliverables ready?” selects verification. Review can support verification or execution without replacing their requirements. Use inline equivalents when companion guidance is unavailable.
+### Route card
+
+Choose the requested assessment; linked examples are optional. Supporting review retains the active workflow's scope; no companion skill is required.
+
+| Condition | Next action and minimum evidence | Stop or handoff |
+| --- | --- | --- |
+| [Defect review of code/docs/changes](references/worked-examples.md#supported-default-regression) | Establish the contract; trace a concrete trigger through owner, caller, and guards. | Supported location/trigger/consequence finding or no actionable findings; no edits inferred. |
+| [Review feedback to evaluate](references/worked-examples.md#rejected-empty-input-feedback) | Test the claimed mismatch against current code and evidence before accepting it. | Reject unsupported feedback; propose supported remedies without unauthorized fixes. |
+| [Plan omissions, no revision](references/worked-examples.md#plan-review-not-revision) | Compare requirements/consumers with planned steps and checks. | Findings; proposed checks are not executed evidence, and the plan stays unchanged. |
+| Plan revision or readiness decision requested | Route to planning or requirement-level verification respectively. | Do not substitute defect findings for a revised plan or readiness coverage. |
 
 - Check existing specs and plans against current code and newer user corrections. Inspect ignored working artifacts directly; Git diffs omit them.
-- Update findings, decisions, or verification gaps in those artifacts only when edits are authorized. Assessment-only and no-file requests remain inline unless report writing is separately requested; do not create a plan or spec for every review.
+- Update findings, decisions, or verification gaps in active same-scope artifacts only when edits are authorized. Closed task records remain history, not a destination for new work; a linked successor needs persistence need and authorization. Living canonical specs may receive authorized contract updates. Assessment-only and no-file requests remain inline unless report writing is separately requested; do not create a plan or spec for every review.
 
 ## 1. Define the review surface
 
@@ -30,7 +39,7 @@ Produce findings tied to actual behavior and scope. Do not change files in an as
 
 1. Trace important inputs through changed code and affected consumers. Check compatibility, errors, configuration defaults, ownership, and host/lifecycle behavior where relevant.
 2. Compare README, manuals, settings, commands, installation steps, and diagrams in scope with current implementation. Verify actual defaults and paths rather than trusting neighboring prose.
-3. Run appropriate non-destructive checks or reproductions when they add evidence. A source-derived finding can stand without runtime access; label it as such.
+3. Run appropriate checks or reproductions when they add evidence. Inspect their cache/output effects first; use verified suppression/redirection or a disposable copy under no-write scope, labeling its coverage. A passing exit or unchanged Git status does not establish no writes. A source-derived finding can stand without runtime access; label it as such.
 4. For each suspected problem, identify the concrete trigger and consequence. Inspect enough surrounding code to rule out an existing guard or intentional contract.
 5. Exclude cosmetic preferences unless requested or necessary for correctness. Keep optional improvements separate from confirmed regressions.
 

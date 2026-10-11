@@ -15,9 +15,18 @@ Reduce the number of places needed to change one rule while preserving the contr
 - **Migration gate:** run existing tests and add missing characterization for every affected consumer before moving its code. Keep those tests green during migration; do not postpone missing coverage until after the move.
 - **Stop condition:** assessment delivers supported ownership choices and compatibility checks; migration additionally needs verified consumers and artifact wiring. Retain the current structure when no concrete problem justifies change.
 
-“Assess which module should own this duplicated rule” selects ownership analysis. “Plan the already-agreed migration” selects planning. “Find why the adapter fails” selects diagnosis unless evidence establishes an ownership problem.
+### Route card
 
-Read relevant existing specs and plans before reopening design choices. Reconcile them with current callers and user corrections; update decisions, migration steps, and checks only when artifact edits are authorized. An architectural assessment does not automatically create a new spec or plan. Carry approved consequential design into the existing artifact or an authorized written deliverable without duplicating it.
+Choose the requested ownership outcome; linked examples are optional.
+
+| Condition | Next action and minimum evidence | Stop or handoff |
+| --- | --- | --- |
+| [Concrete ownership/interface problem, assessment requested](references/worked-examples.md#shared-rule-and-host-boundaries) | Trace one operation; map owners, caller obligations, and compatibility checks before recommending a boundary. | Supported proposal or uncertainty; no migration. |
+| [Similar code, no shared-policy problem established](references/worked-examples.md#similar-code-different-contracts) | Compare actual contracts and host obligations; test whether one rule truly needs multiple edits. | Retain existing structure when similarity alone is the justification. |
+| [Agreed migration, implementation authorized](references/worked-examples.md#characterize-before-migration) | Characterize each affected consumer before moving code; preserve public compatibility and keep checks green. | Verified migration or named gap; no new package authority inferred. |
+| Only task breakdown or unexplained failure requested | Carry settled ownership into planning, or investigate the failure first. | No reopened architecture or invented ownership defect. |
+
+Read relevant existing specs and plans before reopening design choices. Reconcile them with current callers and user corrections; update decisions, migration steps, and checks only when artifact edits are authorized. An architectural assessment does not automatically create a new spec or plan. Carry approved consequential design into the active same-scope artifact or an authorized written deliverable without duplicating it. Resume unfinished work across sessions; keep closed task records as history. New work after closure uses a linked successor only when persistence is warranted and authorized; living canonical specs remain the contract owner.
 
 Treat a function, class, package, or larger slice as a module with a caller-facing contract. Its interface includes caller obligations beyond signatures. Judge useful behavior against that burden, and locality by where changes and checks concentrate. Use project terminology; implementation size and vocabulary alone do not establish good design.
 
@@ -25,7 +34,7 @@ Treat a function, class, package, or larger slice as a module with a caller-faci
 
 1. Use **assess/propose** when the user requests an architectural assessment or recommendation. Use **refactor/migrate** only when implementation is already authorized.
 2. Record the problem, affected boundaries, evidence, allowed scope, and requested output. A supporting review investigation inherits the original assessment scope; finding a design problem does not authorize a refactor.
-3. In assess/propose mode, inspect and run appropriate non-destructive checks without changing source, contracts, configuration, packaging, or documentation. Keep any necessary experiment isolated from the target checkout.
+3. In assess/propose mode, inspect without changing source, contracts, configuration, packaging, or documentation. Inspect checks' cache/output effects; use verified suppression/redirection or a disposable copy for required writes, labeling its coverage. A passing exit or unchanged Git status does not establish no writes.
 4. Follow sections 1 and 2 in either mode. Use the matching section 3 branch and completion checklist; do not require an implemented migration to complete a recommendation.
 
 ## 1. Map the current ownership

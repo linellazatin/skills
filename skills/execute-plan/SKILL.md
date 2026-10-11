@@ -16,22 +16,31 @@ Complete authorized planned deliverables inline, including implementation, probe
 - **Core loop:** retain verified tasks with unchanged inputs → implement the next incomplete task → run its relevant checks → update docs and progress → continue through the authorized scope. An absent approval checkpoint is not a blocker; stop only at a requested checkpoint or a material missing prerequisite.
 - **Stop condition:** deliver verified phases through the authorized scope, stopping at requested approval boundaries or missing material prerequisites.
 
-“Continue phase two of the approved plan” selects execution. “Continue investigating the timeout” retains diagnosis. If no approved plan or established phased scope exists, recover the prior task and follow its appropriate workflow; do not invent a plan or approval. Ask only if consequential scope remains unresolved. Do not reopen settled decisions unless new evidence invalidates them.
+### Route card
+
+Use the row matching current work; linked examples are optional.
+
+| Condition | Next action and minimum evidence | Stop or handoff |
+| --- | --- | --- |
+| [Approved phase has an incomplete remainder](references/worked-examples.md#resume-with-unchanged-evidence) | Retain tasks with unchanged inputs; implement the next task and check its promised outcome. | Continue authorized scope; stop at requested checkpoints or material prerequisites. |
+| [Inputs changed or required runtime unavailable](references/worked-examples.md#stale-copy-and-unavailable-host) | Rerun affected checks against current artifacts; keep unavailable observations pending. | Affected requirement incomplete, not falsely verified. |
+| [Only plan progress changed](references/worked-examples.md#record-progress-without-losing-evidence) | Inspect the full old/current diff and check inputs; use optional explicit reconciliation only if unchanged. | Retained check provenance and awaiting-review handoff, not approval. |
+| No approved plan or established phased scope | Recover the prior task and its authority; continue that workflow, asking only for consequential missing scope. | No invented plan or approval; do not reopen valid decisions. |
 
 ## 1. Re-enter the work
 
 1. Read the selected plan, its governing spec when present, current requirements, project instructions, and latest user corrections. Reconcile stale notes with actual artifacts; newer explicit user corrections control, and unresolved material conflicts stop only dependent work.
 2. Inspect the working tree and relevant artifacts. Identify completed, incomplete, and uncertain deliverables using current files and check results.
 3. If a previous result's inputs changed, mark its evidence stale and rerun the affected check. Do not restart completed work merely because a progress note is missing.
-4. Record all remaining phases in the existing task list or plan. Mark the next phase active; preserve unrelated edits. Update a written plan in place when one exists instead of maintaining competing progress files.
+4. Record remaining phases in the active same-scope task list or plan, even when resuming from another session. Mark the next phase active; preserve unrelated edits. Do not append newly authorized work to a closed plan; select a successor only when a written plan is warranted.
 5. Confirm prerequisites for that phase. If a required decision or dependency is missing, resolve it before dependent implementation; continue independent authorized work where possible.
 
 ## 2. Deliver the active phase
 
 Select working artifacts before delivery:
 
-1. Update the existing plan in its existing location. Link its governing spec when present.
-2. If substantial approved work has only an inline plan and persistence is authorized, use the requested or established location; otherwise `.your/plans/<descriptive-name>.md`.
+1. Resume unfinished same-scope work in its existing plan and location. For new authorized work after closure, use a linked successor when persistence is warranted; preserve the closed record. Link its governing spec when present. Update a living canonical spec for authorized contract changes rather than creating competing specs.
+2. If substantial approved work has only an inline plan and persistence is authorized, use the requested or established location and naming convention; otherwise `.your/plans/YYYY-MM-DD-<descriptive-name>.md`, using the creation date. Retain that date during updates; do not automatically rename existing files or overwrite a namesake. A new plan path has separate checkpoint storage; do not transfer old checks as verification of the new scope.
 3. Create only missing directories and `.your/.gitignore` containing `*`, preserving existing rules. This local setup, including the ignore file, is not carried into fresh checkouts.
 4. For versioned handoffs, use the requested tracked location. Do not manufacture a spec, migrate artifacts, or infer Git authority.
 5. With no-file, assessment-only, or no-write scope, track inline unless separately authorized. Report any required persistence as pending.
@@ -54,7 +63,7 @@ Choose the check route for each task before changing it:
 6. Update related documentation and the changelog before phase handoff. Apply a version change only when required or requested; preserve historical release entries.
 7. Review the phase inline against its requirements, including relevant new files, installed or generated copies, and unintended scope changes.
 8. Update task status as each deliverable is verified. Failed or unrun required checks leave affected tasks incomplete.
-9. Before handoff, update the existing plan with status, deviations, executed evidence and limits, remaining work, and pending observations. Keep approval separate from completion. Update the governing spec only for authorized design changes; a file edit is not approval.
+9. Before handoff, update the active plan concisely with status, deviations, evidence links and limits, remaining work, and pending observations; do not accumulate transcripts or repeat historical reports. At closure, record outcome, actual acceptance state, and remaining gaps once. Checked steps do not close unresolved required work, evidence, or acceptance. Keep approval separate from completion. Update the governing spec only for authorized design changes; a file edit is not approval.
 
 ## 3. Handle deviations
 
@@ -91,7 +100,7 @@ If the user requested approval between phases, stop at that boundary. Otherwise 
 
 ## Optional checkpoint helper
 
-For longer work, read [helper usage and evidence limits](references/checkpoints.md) before using it. Resolve the script relative to this skill folder; use an existing plan with any text format, including a plan under `.your/plans/`. The helper's logs supplement the written plan. Permanent regression tests stay in normal project test locations; disposable probes use temporary workspaces, with no default `.your/tests/`.
+For longer work, read [helper usage and evidence limits](references/checkpoints.md) before using it. Resolve the script relative to this skill folder; use an existing plan with any text format, including a plan under `.your/plans/`. The helper's logs supplement the written plan. Its writing commands create checkpoint JSON, plan snapshots, and check logs in `.workflow/` beside the selected plan, wherever that plan lives. Manual tracking needs no such directory; `status` creates no files. Permanent regression tests stay in normal project test locations; disposable probes use temporary workspaces, with no default `.your/tests/`.
 
 ```sh
 python /path/to/execute-plan/scripts/checkpoints.py start /project/plan.md phase-one --workdir /project --summary "Approved phase outcome"
@@ -100,6 +109,6 @@ python /path/to/execute-plan/scripts/checkpoints.py handoff /project/plan.md pha
 ```
 
 - If a check returns nonzero, inspect its log, resolve the cause, and repeat the affected check; do not hand off as ready.
-- If the plan changes, inspect stale status and start a checkpoint for the revised phase; preserve valid implementation work.
+- If the plan changes, inspect the saved/current diff. Use the reference's explicit reconciliation route only for progress-only edits with unchanged check inputs; material changes require a fresh start and rerun. Preserve valid implementation work; reconciliation is a caller attestation, not verification.
 - `awaiting_review` records a handoff, not approval. Its Git report lists current staged/unstaged changes and untracked paths; inspect committed changes and untracked contents separately when in scope.
 - Without Python or command access, maintain the same named checks and handoff record manually. The helper is optional.

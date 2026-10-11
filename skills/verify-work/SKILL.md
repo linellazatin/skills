@@ -19,9 +19,18 @@ An inaccessible test host means **unverified**, not a failed product or failed r
 
 Verification alone authorizes checks and findings, not corrective edits. Apply fixes only within already authorized implementation scope; otherwise propose the correction and retain the failed or unverified status.
 
-“Are all release requirements ready?” selects verification. “Review this patch for defects only” selects review. Defect review supports readiness but does not replace requirement coverage. During approved execution, return results to the active phase without replacing its scope or handoff. For small document-only work, verify the affected document contracts without adding unrelated host gates.
+### Route card
 
-Include relevant existing specs and plans in the requirement map, including ignored working files that Git reports omit. Check their claims against current code and user corrections. When artifact updates are authorized, record actual results and pending observations in the existing plan; assessment-only work reports discrepancies inline. Do not create a separate planning document merely to perform verification.
+Choose the acceptance scope; linked examples are optional. During execution, return results to the active phase without replacing its handoff.
+
+| Condition | Next action and minimum evidence | Stop or handoff |
+| --- | --- | --- |
+| [Readiness across declared deliverables](references/worked-examples.md#source-package-and-doc-evidence) | Map every requirement to current artifacts and actual checks; classify established, failed, partial, or unverified. | Ready only for the named scope when all required items are established. |
+| [Required observation missing or evidence too narrow](references/worked-examples.md#missing-host-is-not-product-failure) | Record the supported part and exact missing observation; keep reachable checks going. | Incomplete readiness; unavailable is not failed behavior, and mocks cannot replace host acceptance. |
+| [Document-only verification](references/worked-examples.md#document-only-scope) | Check affected commands, defaults, and links against the document contract. | Scoped document result; no unrelated host gate or corrective edit inferred. |
+| Defect review only | Trace the requested surface against its contract and report findings. | Review, not a readiness claim; review alone cannot establish all requirement coverage. |
+
+Include relevant existing specs and plans in the requirement map, including ignored working files that Git reports omit. Check their claims against current code and user corrections. When artifact updates are authorized, record actual results and pending observations in the active same-scope plan, including cross-session work; assessment-only work reports discrepancies inline. Closed task records remain history; new work uses a linked successor only when persistence is warranted and authorized. Update living canonical specs only for authorized contract changes. Do not create a separate planning document merely to perform verification.
 
 ## 1. Build the verification map
 
@@ -36,7 +45,7 @@ Requirement/surface | Current artifact | Check and expected observation | Actual
 
 ## 2. Obtain current evidence
 
-1. Run the required project checks and read their results. Investigate failures before continuing dependent verification.
+1. Run the required project checks and read their results. Under no-write scope, inspect their cache/output effects; use verified suppression/redirection or a disposable copy, labeling its coverage. A passing exit or unchanged Git status does not establish no writes. Investigate failures before continuing dependent verification.
 2. For a fix, repeat the reported operation with its relevant input or payload shape. Include affected callers after shared-contract changes.
 3. For packaging or copied installations, inspect or execute that actual artifact and compare it with source. A source pass alone does not establish artifact parity.
 4. For requested host behavior, verify loading/reloading and invocation in that host. For visible UI behavior, inspect and exercise the rendered state.
