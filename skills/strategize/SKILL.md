@@ -1,6 +1,6 @@
 ---
 name: strategize
-description: Clarify an idea and choose a workable design before detailed planning or implementation. Use for new projects, features, components, workflows, or behavior changes whose purpose, requirements, or approach need decisions; also for brainstorming, exploring options, "think this through", "what should we build", and feasibility questions. An approved design needing task breakdown belongs to planning; an established defect needing diagnosis belongs to debugging.
+description: Clarify an idea and choose a workable design before detailed planning or implementation. Use for new projects, features, components, workflows, or behavior changes whose purpose, requirements, or approach need decisions; also for brainstorming, exploring options, "think this through", "what should we build", and feasibility questions. An approved design needing task breakdown belongs to planning; a specified change or proven correction needing implementation belongs to development; an uncertain failure cause belongs to diagnosis.
 license: MIT
 ---
 
@@ -22,9 +22,9 @@ Use the row matching the requested result; linked examples are optional.
 | --- | --- | --- |
 | [Outcome or approach unsettled](references/worked-examples.md#local-only-search) | Recover intent and constraints; resolve consequential unknowns; recommend an approach with an acceptance example. | Scoped design through sections 2–5; implementation only within existing authority. |
 | [Feasibility only](references/worked-examples.md#unavailable-lifecycle-observation) | Identify the uncertain claim and one distinguishing observation; record its result or why unavailable. | Bounded conclusion and next observation; no forced full design. |
-| [Settled design needing tasks](references/worked-examples.md#settled-design-or-small-change) | Carry known decisions and acceptance into dependency-ordered planning. | Plan; no new discovery interview or unauthorized implementation. |
-| Clear small change, implementation authorized | Inspect its contract, state meaningful choices, and develop with scoped checks. | Verified change or named gap; skip full design. |
-| Expected behavior known and broken | Capture actual/expected behavior and the failing boundary. | Diagnosis; reopen design only if evidence exposes a material choice. |
+| [Settled design needing tasks](references/worked-examples.md#settled-design-or-specified-change) | Carry known decisions and acceptance into dependency-ordered planning. | Plan; no new discovery interview or unauthorized implementation. |
+| Specified change or proven correction, implementation authorized | Inspect the settled contract and consumers; develop with scoped checks and a delivery outline when substantial. | Verified authorized work or named gap; size alone does not reopen design or diagnosis. |
+| Broken behavior, cause uncertain | Capture actual/expected behavior and the failing boundary. | Diagnosis; reopen design only if evidence exposes a material choice. |
 
 ## 1. Identify the decision to make
 

@@ -16,9 +16,11 @@ These are hypothetical walkthroughs, not results observed in your checkout. Use 
 - **Decision and action:** Identify the lifecycle observation: start indexing, close the UI, and observe whether the task survives. Inspect available lifecycle documentation, separating it from a live observation. Do not run a standalone worker and claim it proves host behavior.
 - **Result and limit:** Feasibility remains conditional on the missing lifecycle check. Recommend in-process work while the application is open, if that operating limit fits the user; otherwise name the decision needed. Stop without a full design interview or implementation.
 
-## Settled design or small change
+## Settled design or specified change
 
 - **Request:** “The local-search design and compatibility rules are approved. Break them into tasks; do not implement.”
 - **Given evidence:** Interfaces, local-only behavior, and acceptance are settled; only delivery order is missing.
 - **Decision and action:** Carry those choices into planning: characterize existing behavior, implement the index/update contracts, wire real consumers, and specify acceptance/docs checks. Do not reopen storage or ask who the users are again.
-- **Result and limit:** Deliver the plan, not code or an unrequested second spec. If instead the request authorizes a small specified flag change, inspect its contract and proceed directly through development/checks; neither direct route requires sections 2–5's full design checklist.
+- **Result and limit:** Deliver the plan, not code or an unrequested second spec. If instead the request authorizes a specified flag change or proven byte-counting correction across several consumers, inspect its settled contract and proceed through development/checks. Substantial work may need a delivery outline, not renewed discovery or diagnosis merely because it is large.
+
+A proven cause is not necessarily a settled correction. If the timeout cause is known but buffering or retention behavior remains undecided, resolve those design choices before dependent implementation; do not repeat cause diagnosis or invent the missing behavior. An unknown cause still needs diagnosis. These routes do not require the full design checklist unless material design choices actually remain.
