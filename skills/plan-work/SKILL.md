@@ -15,7 +15,16 @@ Deliver an implementation outline another agent can execute without reconstructi
 - **Core loop:** map the producer and each real consumer → order characterization, implementation and consumer migration → specify acceptance checks and docs. Planning-only scope means describe these implementation steps without executing them, not omit them.
 - **Stop condition:** every requirement has executable steps and a check, or a named unresolved prerequisite. End at the plan unless implementation is already authorized.
 
-“Revise the migration plan for a new constraint” selects planning. “Review the plan for omissions without revising it” selects defect review. “Execute the approved plan” selects execution. An unconfirmed cause gets an investigation task before a promised fix.
+### Route card
+
+Use the row matching the requested result; linked examples are optional.
+
+| Condition | Next action and minimum evidence | Stop or handoff |
+| --- | --- | --- |
+| [Requirements/design ready for task breakdown](references/worked-examples.md#shared-contract-migration) | Map each requirement to owners, consumers, ordered actions, and an observable check. | Executable plan; implement only if separately authorized. |
+| [Cause, command, or API unconfirmed](references/worked-examples.md#unconfirmed-integration-command) | Put investigation before dependent work; name the missing observation and its decision. | Provisional affected tasks, not an invented fix or command. |
+| [Small prose-only plan](references/worked-examples.md#inline-document-plan) | Use a short inline sequence and document/link checks. | No software red or extra artifact. |
+| Review-only or approved execution requested | Preserve the existing contract and scope; route to defect review or execution respectively. | Findings without revision, or authorized delivery; do not substitute another plan. |
 
 ## 1. Establish scope
 

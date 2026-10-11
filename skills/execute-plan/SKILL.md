@@ -16,7 +16,16 @@ Complete authorized planned deliverables inline, including implementation, probe
 - **Core loop:** retain verified tasks with unchanged inputs → implement the next incomplete task → run its relevant checks → update docs and progress → continue through the authorized scope. An absent approval checkpoint is not a blocker; stop only at a requested checkpoint or a material missing prerequisite.
 - **Stop condition:** deliver verified phases through the authorized scope, stopping at requested approval boundaries or missing material prerequisites.
 
-“Continue phase two of the approved plan” selects execution. “Continue investigating the timeout” retains diagnosis. If no approved plan or established phased scope exists, recover the prior task and follow its appropriate workflow; do not invent a plan or approval. Ask only if consequential scope remains unresolved. Do not reopen settled decisions unless new evidence invalidates them.
+### Route card
+
+Use the row matching current work; linked examples are optional.
+
+| Condition | Next action and minimum evidence | Stop or handoff |
+| --- | --- | --- |
+| [Approved phase has an incomplete remainder](references/worked-examples.md#resume-with-unchanged-evidence) | Retain tasks with unchanged inputs; implement the next task and check its promised outcome. | Continue authorized scope; stop at requested checkpoints or material prerequisites. |
+| [Inputs changed or required runtime unavailable](references/worked-examples.md#stale-copy-and-unavailable-host) | Rerun affected checks against current artifacts; keep unavailable observations pending. | Affected requirement incomplete, not falsely verified. |
+| [Only plan progress changed](references/worked-examples.md#record-progress-without-losing-evidence) | Inspect the full old/current diff and check inputs; use optional explicit reconciliation only if unchanged. | Retained check provenance and awaiting-review handoff, not approval. |
+| No approved plan or established phased scope | Recover the prior task and its authority; continue that workflow, asking only for consequential missing scope. | No invented plan or approval; do not reopen valid decisions. |
 
 ## 1. Re-enter the work
 

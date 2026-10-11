@@ -15,7 +15,17 @@ Use test-driven development by default for new and changed software behavior. Ke
 - **Core cycle:** test one contract → observe intended red → implement the outcome → observe green → refactor only when useful, retaining green.
 - **Stop condition:** the promised behavior and affected checks are observed, with unavailable required checks still explicit. Do not claim a red-green cycle for an exception route.
 
-“Implement this specified flag” or “correct this proven byte-counting defect” selects development. “Find why it fails” selects diagnosis first. “Rewrite the README” needs document checks, not a software test cycle.
+### Route card
+
+Choose the current check route; linked examples are optional.
+
+| Condition | Next action and minimum evidence | Stop or handoff |
+| --- | --- | --- |
+| [Specified new/change behavior or established fix](references/worked-examples.md#byte-budget-cycle) | Select one independent expected result; observe intended red, implement, then run the same and affected checks. | Delivered contract with observed green, or an explicit gap. |
+| [Test fails before reaching behavior](references/worked-examples.md#unrelated-import-failure) | Repair unrelated setup and rerun; inspect the actual failure. | No production change until meaningful red or an honest exception route. |
+| [Refactor or implementation already present](references/worked-examples.md#characterize-existing-behavior) | Preserve work; establish current/characterization coverage first. | Refactor stays green; missing pre-implementation red is disclosed. |
+| Required host inaccessible | Test reachable contracts and retain setup/invocation/observation/cleanup for a live check. | Host requirement pending; mocks do not establish it. |
+| Prose-only or cause uncertain | Use document checks, or diagnose the unknown cause before implementation. | No manufactured red or speculative fix. |
 
 ## 1. Select one behavior
 
@@ -78,15 +88,7 @@ Apply the checks relevant to the selected contract; do not turn every item below
 - **Check test sensitivity:** ask which plausible bug would fail this test. When uncertainty matters, try a deliberate wrong implementation in an isolated disposable copy and confirm the test catches it. Never mutate user work merely to prove the test.
 - **Use coverage as a locator:** unexercised branches can reveal missing scenarios, but high line coverage or test count does not establish correct assertions or host behavior.
 
-Example test design, using a hypothetical UTF-8 byte-budget contract:
-
-| Scenario | Independent expected observation | Mistake detected |
-| --- | --- | --- |
-| Two `é` characters, budget 3 bytes | Reject: the known encoded input occupies 4 bytes. | Counting characters instead of bytes |
-| Same input, budget 4 bytes | Accept at the exact limit. | Rejecting equality with the cap |
-| Same input, budget 5 bytes | Accept below the limit. | An implementation that rejects every input |
-
-The fixture expectations come from the stated byte contract, not a call to the implementation to generate expected answers. Add invalid-budget cases only after defining how the public contract handles them.
+The optional [byte-budget walkthrough](references/worked-examples.md#byte-budget-cycle) shows independent boundary expectations that catch plausible wrong implementations. Define invalid-input contracts before adding their cases.
 
 ## Retain evidence and complete the phase
 

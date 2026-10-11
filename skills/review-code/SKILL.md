@@ -14,7 +14,16 @@ Produce findings tied to actual behavior and scope. Do not change files in an as
 - **First action:** establish the contract and requested surfaces before judging differences.
 - **Stop condition:** return supported findings or no actionable findings, executed checks, and coverage gaps. Assessment completion is not product readiness.
 
-“Review the migration plan for missing checks” selects review. “Revise the plan to include another adapter” selects planning. “Are all deliverables ready?” selects verification. Review can support verification or execution without replacing their requirements. Use inline equivalents when companion guidance is unavailable.
+### Route card
+
+Choose the requested assessment; linked examples are optional. Supporting review retains the active workflow's scope; no companion skill is required.
+
+| Condition | Next action and minimum evidence | Stop or handoff |
+| --- | --- | --- |
+| [Defect review of code/docs/changes](references/worked-examples.md#supported-default-regression) | Establish the contract; trace a concrete trigger through owner, caller, and guards. | Supported location/trigger/consequence finding or no actionable findings; no edits inferred. |
+| [Review feedback to evaluate](references/worked-examples.md#rejected-empty-input-feedback) | Test the claimed mismatch against current code and evidence before accepting it. | Reject unsupported feedback; propose supported remedies without unauthorized fixes. |
+| [Plan omissions, no revision](references/worked-examples.md#plan-review-not-revision) | Compare requirements/consumers with planned steps and checks. | Findings; proposed checks are not executed evidence, and the plan stays unchanged. |
+| Plan revision or readiness decision requested | Route to planning or requirement-level verification respectively. | Do not substitute defect findings for a revised plan or readiness coverage. |
 
 - Check existing specs and plans against current code and newer user corrections. Inspect ignored working artifacts directly; Git diffs omit them.
 - Update findings, decisions, or verification gaps in those artifacts only when edits are authorized. Assessment-only and no-file requests remain inline unless report writing is separately requested; do not create a plan or spec for every review.

@@ -14,26 +14,24 @@ Produce a design grounded in the user's intended outcome, with visible choices a
 - **First action:** choose unsettled-design, feasibility, or direct-handoff routing below. Reuse supplied answers.
 - **Stop condition:** deliver the scoped design or feasibility conclusion with evidence and open decisions. Continue implementation only within existing authorization.
 
-“Think through offline search; the approach is undecided” selects design exploration. “Break the approved search design into tasks” selects planning. “Find why existing search crashes” selects diagnosis.
+### Route card
+
+Use the row matching the requested result; linked examples are optional.
+
+| Condition | Next action and minimum evidence | Stop or handoff |
+| --- | --- | --- |
+| [Outcome or approach unsettled](references/worked-examples.md#local-only-search) | Recover intent and constraints; resolve consequential unknowns; recommend an approach with an acceptance example. | Scoped design through sections 2–5; implementation only within existing authority. |
+| [Feasibility only](references/worked-examples.md#unavailable-lifecycle-observation) | Identify the uncertain claim and one distinguishing observation; record its result or why unavailable. | Bounded conclusion and next observation; no forced full design. |
+| [Settled design needing tasks](references/worked-examples.md#settled-design-or-small-change) | Carry known decisions and acceptance into dependency-ordered planning. | Plan; no new discovery interview or unauthorized implementation. |
+| Clear small change, implementation authorized | Inspect its contract, state meaningful choices, and develop with scoped checks. | Verified change or named gap; skip full design. |
+| Expected behavior known and broken | Capture actual/expected behavior and the failing boundary. | Diagnosis; reopen design only if evidence exposes a material choice. |
 
 ## 1. Identify the decision to make
 
 1. Read the request, prior decisions, existing requirements, and applicable project instructions. Identify what the user wants to achieve, rather than treating a named technology as the goal.
 2. Inspect the relevant existing work, entrypoints, docs, and current changes. For a new project, use supplied examples and constraints; do not invent an existing architecture.
 3. Record what is known, what you are assuming, and which unanswered questions would change the result.
-4. Use the route below. State the immediate next action briefly; do not explain a long process before addressing the idea.
-
-| Situation | Action |
-| --- | --- |
-| Clear, small change with implementation authorized | State any meaningful implementation choice and proceed through normal development; skip a discovery interview. |
-| Outcome or approach is unsettled | Clarify the missing intent, compare viable approaches, and produce the design below. |
-| Feasibility is the question | Identify the uncertain claim and the smallest observation that can answer it; report a recommendation and its limits. |
-| Design is already agreed and only tasks are needed | Carry it into detailed planning without reopening settled choices. |
-| Expected behavior is known and broken | Investigate the failure; return to design only if the evidence exposes a genuine product or architecture decision. |
-
-- **Unsettled outcome:** follow the full design procedure in sections 2–5.
-- **Feasibility:** inspect or run the smallest authorized distinguishing check. Return observation, recommendation, uncertainty, and next action; stop unless broader design is requested.
-- **Direct handoff:** carry clear authorized changes, agreed designs, or known defects into development, planning, or diagnosis using available guidance or inline equivalents. Skip the full design checklist.
+4. Use the entry route card. State the immediate next action briefly; do not explain a long process before addressing the idea. For a direct handoff, use available guidance or an inline equivalent; skip the full design checklist.
 
 ## 2. Resolve the consequential unknowns
 

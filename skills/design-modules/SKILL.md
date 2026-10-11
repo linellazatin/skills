@@ -15,7 +15,16 @@ Reduce the number of places needed to change one rule while preserving the contr
 - **Migration gate:** run existing tests and add missing characterization for every affected consumer before moving its code. Keep those tests green during migration; do not postpone missing coverage until after the move.
 - **Stop condition:** assessment delivers supported ownership choices and compatibility checks; migration additionally needs verified consumers and artifact wiring. Retain the current structure when no concrete problem justifies change.
 
-“Assess which module should own this duplicated rule” selects ownership analysis. “Plan the already-agreed migration” selects planning. “Find why the adapter fails” selects diagnosis unless evidence establishes an ownership problem.
+### Route card
+
+Choose the requested ownership outcome; linked examples are optional.
+
+| Condition | Next action and minimum evidence | Stop or handoff |
+| --- | --- | --- |
+| [Concrete ownership/interface problem, assessment requested](references/worked-examples.md#shared-rule-and-host-boundaries) | Trace one operation; map owners, caller obligations, and compatibility checks before recommending a boundary. | Supported proposal or uncertainty; no migration. |
+| [Similar code, no shared-policy problem established](references/worked-examples.md#similar-code-different-contracts) | Compare actual contracts and host obligations; test whether one rule truly needs multiple edits. | Retain existing structure when similarity alone is the justification. |
+| [Agreed migration, implementation authorized](references/worked-examples.md#characterize-before-migration) | Characterize each affected consumer before moving code; preserve public compatibility and keep checks green. | Verified migration or named gap; no new package authority inferred. |
+| Only task breakdown or unexplained failure requested | Carry settled ownership into planning, or investigate the failure first. | No reopened architecture or invented ownership defect. |
 
 Read relevant existing specs and plans before reopening design choices. Reconcile them with current callers and user corrections; update decisions, migration steps, and checks only when artifact edits are authorized. An architectural assessment does not automatically create a new spec or plan. Carry approved consequential design into the existing artifact or an authorized written deliverable without duplicating it.
 
