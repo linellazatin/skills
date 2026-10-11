@@ -100,7 +100,7 @@ If the user requested approval between phases, stop at that boundary. Otherwise 
 
 ## Optional checkpoint helper
 
-For longer work, read [helper usage and evidence limits](references/checkpoints.md) before using it. Resolve the script relative to this skill folder; use an existing plan with any text format, including a plan under `.your/plans/`. The helper's logs supplement the written plan. Permanent regression tests stay in normal project test locations; disposable probes use temporary workspaces, with no default `.your/tests/`.
+For longer work, read [helper usage and evidence limits](references/checkpoints.md) before using it. Resolve the script relative to this skill folder; use an existing plan with any text format, including a plan under `.your/plans/`. The helper's logs supplement the written plan. Its writing commands create checkpoint JSON, plan snapshots, and check logs in `.workflow/` beside the selected plan, wherever that plan lives. Manual tracking needs no such directory; `status` creates no files. Permanent regression tests stay in normal project test locations; disposable probes use temporary workspaces, with no default `.your/tests/`.
 
 ```sh
 python /path/to/execute-plan/scripts/checkpoints.py start /project/plan.md phase-one --workdir /project --summary "Approved phase outcome"
