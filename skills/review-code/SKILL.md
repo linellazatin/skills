@@ -26,7 +26,7 @@ Choose the requested assessment; linked examples are optional. Supporting review
 | Plan revision or readiness decision requested | Route to planning or requirement-level verification respectively. | Do not substitute defect findings for a revised plan or readiness coverage. |
 
 - Check existing specs and plans against current code and newer user corrections. Inspect ignored working artifacts directly; Git diffs omit them.
-- Update findings, decisions, or verification gaps in those artifacts only when edits are authorized. Assessment-only and no-file requests remain inline unless report writing is separately requested; do not create a plan or spec for every review.
+- Update findings, decisions, or verification gaps in active same-scope artifacts only when edits are authorized. Closed task records remain history, not a destination for new work; a linked successor needs persistence need and authorization. Living canonical specs may receive authorized contract updates. Assessment-only and no-file requests remain inline unless report writing is separately requested; do not create a plan or spec for every review.
 
 ## 1. Define the review surface
 

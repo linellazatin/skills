@@ -16,6 +16,13 @@ These are hypothetical walkthroughs, not results observed in your checkout. Use 
 - **Decision and action:** Identify the lifecycle observation: start indexing, close the UI, and observe whether the task survives. Inspect available lifecycle documentation, separating it from a live observation. Do not run a standalone worker and claim it proves host behavior.
 - **Result and limit:** Feasibility remains conditional on the missing lifecycle check. Recommend in-process work while the application is open, if that operating limit fits the user; otherwise name the decision needed. Stop without a full design interview or implementation.
 
+## Living spec versus closed task spec
+
+- **Request:** “Design the authorized offline-search update. Preserve the existing product contract and save the design where appropriate.”
+- **Given evidence:** `docs/search-contract.md` is the living canonical spec; a dated task spec for an earlier accepted migration is closed.
+- **Decision and action:** Update the canonical spec for authorized contract changes, without creating a competing product contract or appending a new workstream to the closed task spec. If this consequential design also warrants a separate task spec, use the established convention or `.your/specs/YYYY-MM-DD-search-update.md`, link the canonical contract and predecessor, and retain its creation date during later edits.
+- **Result and limit:** Living contract ownership and task history remain distinct. Resume an unfinished same-scope task spec across sessions instead of replacing it. Record task closure with outcome, actual acceptance state and gaps; do not hide pending decisions or required evidence behind completed steps.
+
 ## Settled design or specified change
 
 - **Request:** “The local-search design and compatibility rules are approved. Break them into tasks; do not implement.”

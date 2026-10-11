@@ -30,7 +30,7 @@ Choose the acceptance scope; linked examples are optional. During execution, ret
 | [Document-only verification](references/worked-examples.md#document-only-scope) | Check affected commands, defaults, and links against the document contract. | Scoped document result; no unrelated host gate or corrective edit inferred. |
 | Defect review only | Trace the requested surface against its contract and report findings. | Review, not a readiness claim; review alone cannot establish all requirement coverage. |
 
-Include relevant existing specs and plans in the requirement map, including ignored working files that Git reports omit. Check their claims against current code and user corrections. When artifact updates are authorized, record actual results and pending observations in the existing plan; assessment-only work reports discrepancies inline. Do not create a separate planning document merely to perform verification.
+Include relevant existing specs and plans in the requirement map, including ignored working files that Git reports omit. Check their claims against current code and user corrections. When artifact updates are authorized, record actual results and pending observations in the active same-scope plan, including cross-session work; assessment-only work reports discrepancies inline. Closed task records remain history; new work uses a linked successor only when persistence is warranted and authorized. Update living canonical specs only for authorized contract changes. Do not create a separate planning document merely to perform verification.
 
 ## 1. Build the verification map
 

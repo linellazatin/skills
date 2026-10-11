@@ -5,8 +5,8 @@ These are hypothetical walkthroughs, not results observed in your checkout. Use 
 ## Resume with unchanged evidence
 
 - **Request:** “Resume the approved phase. Keep work inline; no commits.”
-- **Given evidence:** Task one has observed passing checks against unchanged inputs. Task two remains unimplemented. The plan authorizes both tasks and specifies no approval stop between them.
-- **Decision and action:** Inspect current artifacts to confirm task one's evidence still applies; retain its verified status. Implement task two through the appropriate test route, run its consumer checks, update affected docs and existing progress notes, and review the delivered phase.
+- **Given evidence:** An earlier session saved an active plan at `.your/plans/2026-10-10-policy-migration.md`. Task one has observed passing checks against unchanged inputs. Task two remains unimplemented. The plan authorizes both tasks and specifies no approval stop between them.
+- **Decision and action:** Resume that same plan without renaming its creation date or creating a second plan because the session changed. Inspect current artifacts to confirm task one's evidence still applies; retain its verified status. Implement task two through the appropriate test route, run its consumer checks, update affected docs and existing progress notes, and review the delivered phase.
 - **Result and limit:** Continue the authorized remainder without redoing task one or inventing a fresh approval gate. Completion still needs task two's actual evidence; a progress note alone cannot establish it. Do not commit.
 
 ## Stale copy and unavailable host

@@ -32,15 +32,15 @@ Use the row matching current work; linked examples are optional.
 1. Read the selected plan, its governing spec when present, current requirements, project instructions, and latest user corrections. Reconcile stale notes with actual artifacts; newer explicit user corrections control, and unresolved material conflicts stop only dependent work.
 2. Inspect the working tree and relevant artifacts. Identify completed, incomplete, and uncertain deliverables using current files and check results.
 3. If a previous result's inputs changed, mark its evidence stale and rerun the affected check. Do not restart completed work merely because a progress note is missing.
-4. Record all remaining phases in the existing task list or plan. Mark the next phase active; preserve unrelated edits. Update a written plan in place when one exists instead of maintaining competing progress files.
+4. Record remaining phases in the active same-scope task list or plan, even when resuming from another session. Mark the next phase active; preserve unrelated edits. Do not append newly authorized work to a closed plan; select a successor only when a written plan is warranted.
 5. Confirm prerequisites for that phase. If a required decision or dependency is missing, resolve it before dependent implementation; continue independent authorized work where possible.
 
 ## 2. Deliver the active phase
 
 Select working artifacts before delivery:
 
-1. Update the existing plan in its existing location. Link its governing spec when present.
-2. If substantial approved work has only an inline plan and persistence is authorized, use the requested or established location; otherwise `.your/plans/<descriptive-name>.md`.
+1. Resume unfinished same-scope work in its existing plan and location. For new authorized work after closure, use a linked successor when persistence is warranted; preserve the closed record. Link its governing spec when present. Update a living canonical spec for authorized contract changes rather than creating competing specs.
+2. If substantial approved work has only an inline plan and persistence is authorized, use the requested or established location and naming convention; otherwise `.your/plans/YYYY-MM-DD-<descriptive-name>.md`, using the creation date. Retain that date during updates; do not automatically rename existing files or overwrite a namesake. A new plan path has separate checkpoint storage; do not transfer old checks as verification of the new scope.
 3. Create only missing directories and `.your/.gitignore` containing `*`, preserving existing rules. This local setup, including the ignore file, is not carried into fresh checkouts.
 4. For versioned handoffs, use the requested tracked location. Do not manufacture a spec, migrate artifacts, or infer Git authority.
 5. With no-file, assessment-only, or no-write scope, track inline unless separately authorized. Report any required persistence as pending.
@@ -63,7 +63,7 @@ Choose the check route for each task before changing it:
 6. Update related documentation and the changelog before phase handoff. Apply a version change only when required or requested; preserve historical release entries.
 7. Review the phase inline against its requirements, including relevant new files, installed or generated copies, and unintended scope changes.
 8. Update task status as each deliverable is verified. Failed or unrun required checks leave affected tasks incomplete.
-9. Before handoff, update the existing plan with status, deviations, executed evidence and limits, remaining work, and pending observations. Keep approval separate from completion. Update the governing spec only for authorized design changes; a file edit is not approval.
+9. Before handoff, update the active plan concisely with status, deviations, evidence links and limits, remaining work, and pending observations; do not accumulate transcripts or repeat historical reports. At closure, record outcome, actual acceptance state, and remaining gaps once. Checked steps do not close unresolved required work, evidence, or acceptance. Keep approval separate from completion. Update the governing spec only for authorized design changes; a file edit is not approval.
 
 ## 3. Handle deviations
 

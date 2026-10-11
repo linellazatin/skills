@@ -76,10 +76,11 @@ Handoff: <deliverables; stop for approval only if requested>
 ### Select and save the artifact
 
 - Keep small, clear, single-session plans inline or in the existing task record. Save substantial, multi-phase, resumable, or reviewable plans within authorization.
-- Update the existing relevant plan first. Link its governing spec when present; a settled routine fix needs no separate spec.
+- Resume the existing plan for unfinished same-scope work, including across sessions. For [newly authorized work after closure](references/worked-examples.md#successor-after-closure), create a linked successor when a written plan is warranted; do not append a new workstream to the closed plan. Link its governing spec when present; a settled routine fix needs no separate spec.
+- Keep the active plan concise: actionable phases, acceptance checks, status, blockers, and evidence links rather than transcripts or repeated historical reports. At closure, record the outcome, actual acceptance state, and remaining gaps once. Checked steps do not establish closure while required work, evidence, or acceptance remains pending.
 - Record outcome, scope, decisions, dependencies, paths, ordered tests/implementation, checks, phase status, deviations, and unresolved observations. Specs define intent; plans track delivery.
 
-1. Use the requested or established location first. For an authorized new local plan, the fallback is `.your/plans/<descriptive-name>.md`; date prefixes are optional.
+1. Use the requested or established location and naming convention first. For an authorized new local plan, the fallback is `.your/plans/YYYY-MM-DD-<descriptive-name>.md`, using its creation date. Keep that date during updates; do not automatically rename existing files. A same-day name collision needs a distinct descriptive name, not overwriting another record.
 2. Create only missing directories and `.your/.gitignore` containing `*`. Preserve existing ignore rules. All local artifacts, including the ignore file, need setup again in a fresh checkout.
 3. For versioned collaboration, use the requested tracked location. Do not migrate files or infer Git authority.
 4. File creation needs an explicit request, project convention, or the authorized deliverable. For assessment-only, no-file, or no-write work, keep the result inline unless separately authorized; report required persistence as pending.

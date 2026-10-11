@@ -24,7 +24,7 @@ Choose the evidence/scope route; linked examples are optional.
 | [Prediction contradicted or runtime unavailable](references/worked-examples.md#contradicted-timeout-explanation) | Reject unsupported hypotheses; name the next distinguishing observation and what is missing. | Stop speculative retries; do not invent a cause or runtime result. |
 | [Cause already established](references/worked-examples.md#established-byte-counting-cause) | Verify evidence still applies; carry it into regression-first correction only when remediation is authorized. | Diagnosis proposal if read-only; otherwise fix with original/consumer checks. |
 
-Use relevant existing specs or plans to recover intended behavior and prior evidence, then verify against current artifacts and user corrections. In authorized remediation, update the existing record with the supported cause, correction, checks, and gaps when artifact edits are within scope. Diagnosis-only work does not create or update planning files unless report writing is separately authorized.
+Use relevant existing specs or plans to recover intended behavior and prior evidence, then verify against current artifacts and user corrections. In authorized remediation, update the active same-scope record with the supported cause, correction, checks, and gaps when artifact edits are within scope. Resume unfinished work across sessions; do not append new work to a closed task record. A linked successor needs both persistence need and authorization; update living canonical specs only for authorized contract changes. Diagnosis-only work does not create or update planning files unless report writing is separately authorized.
 
 ## Select the mode
 

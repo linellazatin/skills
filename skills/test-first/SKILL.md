@@ -29,7 +29,7 @@ Choose the current check route; linked examples are optional.
 
 ## 1. Select one behavior
 
-Use acceptance examples in existing specs and plans as test inputs, checking them against current requirements. Record cycle evidence and missing observations in the existing authorized plan when present; do not create a planning file for every test cycle. Permanent regression tests belong in the project's normal test locations, while disposable probes use temporary workspaces rather than a default `.your/tests/`.
+Use acceptance examples in existing specs and plans as test inputs, checking them against current requirements. Record cycle evidence and missing observations in the active same-scope authorized plan when present, including cross-session work; do not create a planning file for every test cycle. Preserve closed task records; new work needs a linked successor only when persistence is warranted and authorized. Living canonical specs remain the owner of authorized contract updates. Permanent regression tests belong in the project's normal test locations, while disposable probes use temporary workspaces rather than a default `.your/tests/`.
 
 1. Read the requirement, actual caller, existing implementation, project instructions, and test commands. Reuse the established framework and test location.
 2. Write the contract as an input or condition and an observable result. Include errors and side effects when they are part of the promise.
