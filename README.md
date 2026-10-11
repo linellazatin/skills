@@ -1,6 +1,6 @@
 # Lines' skills
 
-Portable Agent Skills for planning, development, debugging, review, and verification, plus a meta skill for creating and evaluating skills. The collection follows two design goals:
+Portable Agent Skills for planning, development, debugging, review, and verification, plus a meta skill for creating and evaluating skills. The collection follows three design goals:
 
 1. **Single source, any harness.** Core instructions stay independent of platform integrations. Optional helpers declare their runtime and provider requirements; discovery depends on the client.
 2. **Concrete instructions.** Skills provide ordered steps, failure branches, evidence records, and completion checks. Skills reuse supplied context and respect authorization. Performance across model sizes still needs separate evaluation.
@@ -13,10 +13,10 @@ All skill folders live under `skills/`. Install individual folders; keep their i
 | Skill | Description |
 |-------|-------------|
 | [craft-skill](skills/craft-skill/SKILL.md) | Meta skill for creating Agent Skills. Three modes: **Extract** (capture from conversation history), **Design** (build from scratch), **Refine** (improve an existing skill). Includes a bundled eval and description-optimization pipeline. |
-| [debug-systematically](skills/debug-systematically/SKILL.md) | Reproduce the actual symptom, isolate its cause, and verify the fix. |
+| [debug-systematically](skills/debug-systematically/SKILL.md) | Diagnose failures with evidence; apply and verify fixes only when authorized. |
 | [design-modules](skills/design-modules/SKILL.md) | Assess or migrate ownership and interfaces using caller obligations, change locality, dependency-aware verification, and compatibility checks. |
 | [execute-plan](skills/execute-plan/SKILL.md) | Execute and resume approved plans or established phased work inline, with optional check logs, handoffs, and Git review reports. |
-| [plan-work](skills/plan-work/SKILL.md) | Turn requirements into a scoped design and executable tasks with acceptance checks. |
+| [plan-work](skills/plan-work/SKILL.md) | Turn requirements or an agreed design into dependency-ordered steps and acceptance checks. |
 | [review-code](skills/review-code/SKILL.md) | Assess code, docs, and implementation plans against requirements; report findings and verify review feedback. |
 | [strategize](skills/strategize/SKILL.md) | Clarify intent, compare viable approaches, and settle a buildable design before detailed planning; no visual companion or required tooling. |
 | [test-first](skills/test-first/SKILL.md) | Develop behavior through red-green-refactor cycles, design diagnostic and isolated tests, and protect refactors with characterization coverage. |
@@ -46,20 +46,25 @@ Entry routes state required context, first actions, and stop conditions. The eig
 
 An unavailable host leaves its acceptance check unverified; it does not establish a product failure. Verification alone does not authorize fixes. Migration starts with coverage for affected consumers, and an extra plan or spec needs both a concrete purpose and writing authority. Under no-write scope, inspect checks' cache/output effects and use verified suppression/redirection or disposable copies with explicit coverage limits; a passing exit or unchanged Git status does not establish no writes.
 
-## Working specs and plans
+## Working with `specs` and `plans`
 
-Keep small, clear, single-session work inline. Use written specs for substantial designs, consequential decisions, or compatibility obligations. Use written plans for substantial, multi-phase, resumable, or reviewable implementation when file writing is authorized. Update existing artifacts first and follow the project's established or requested location. The local fallback is:
+Small tasks usually stay in the conversation. Specs help capture substantial designs and compatibility decisions; plans make multi-phase work easier to resume and review. Unfinished work keeps its existing record across sessions. Your project's chosen location and naming convention come first; otherwise, new files use `YYYY-MM-DD-<descriptive-name>.md`. The date marks creation, not the latest edit, and existing files are neither renamed nor overwritten to fit that convention. The local layout is:
 
 ```text
 .your/
   .gitignore   # contents: *
   specs/
+    YYYY-MM-DD-<descriptive-name>.md
   plans/
+    YYYY-MM-DD-<descriptive-name>.md
+    .workflow/ # optional: execute-plan checkpoint helper storage
 ```
 
-Specs capture behavior, constraints, decisions, acceptance criteria, and review state. Plans link the governing spec and track execution order, affected paths, checks, phase status, deviations, evidence, and gaps. On first authorized use, the skills create missing directories and the wildcard ignore file, preserving existing ignore rules. The wildcard ignores `.gitignore` too, so fresh checkouts need this local setup recreated. For versioned collaboration, use a requested tracked location. Invoking a skill does not authorize migration, Git actions, or files prohibited by an assessment-only or no-file request.
+**Specs** describe intended behavior, constraints, decisions, acceptance, and review state. **Plans** link that design to delivery: steps, affected files, checks, progress, and gaps. This local layout is created only when writing is authorized, preserving existing ignore rules. Its wildcard ignores everything, including `.gitignore`, so a fresh checkout needs the setup again. Shared, versioned records can live in a chosen tracked location instead. Selecting a skill doesn't grant permission to create or move files, change Git state, or override a read-only request.
 
-Keep regression tests in the project's test directories and disposable probes in temporary workspaces. No default `.your/tests/` is needed. The optional execution helper stores `.workflow/` beside the selected plan: `.your/plans/.workflow/` with this layout. Ignored artifacts need direct inspection when in scope; shipped documentation stays separate.
+**These records are working notes, not running journals**: actionable decisions, status, blockers, and evidence links are more useful than transcripts. A closed task records its outcome, actual acceptance, and remaining gaps; checked steps alone don't settle missing requirements, evidence, or acceptance. **Closed records remain history**. New authorized work gets a linked successor only when another written record is useful, while small follow-ups stay inline. Living product specs receive authorized contract updates rather than becoming a series of competing documents.
+
+The optional `execute-plan` checkpoint helper adds `.workflow/` beside the selected plan, storing** checkpoint JSON, snapshots, and check logs**. Manual tracking needs none, and `status` creates no files. Each new plan path has separate storage; old checks don't verify new work. Regression tests still belong in the project's test directories, with disposable probes in temporary workspaces. Ignored working records remain available for direct inspection, separate from shipped documentation.
 
 ## How these came to be
 
