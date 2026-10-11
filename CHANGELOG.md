@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.2.1
+
+### Changed
+
+- Added explicit progress-only reconciliation to the optional execution checkpoint helper, with saved plan snapshots, bounded status diffs, exact revision binding, caller-attested reasons, and retained check/log provenance. Material plan changes still require restarting and rerunning checks; reconciliation neither verifies checkout freshness nor grants approval.
+- Updated execution guidance and helper regression coverage for reconciliation, stale-plan gates, legacy state, and snapshot integrity.
+- Added compact route cards to all eight engineering skills and optional, decision-linked worked examples within each skill. Preserved entrypoint scope/safety gates and standalone use; examples and authored walkthroughs do not establish model performance or native activation.
+- Clarified no-write check handling in review, diagnosis, ownership assessment, planning, and verification: account for ignored caches/outputs, use verified suppression or disposable copies, and retain coverage limits.
+
+### Fixed
+
+- Clarified `strategize` routing for substantial specified changes and proven corrections: size alone does not reopen discovery, and diagnosis is for uncertain causes. Preserved design exploration when the cause is known but the correction or behavior remains undecided.
+- Prevented checkpoint Git review queries from refreshing the index; added a public-CLI regression for stale stat-cache preservation and meaningful report output. Clarified that authorized local workflow/report writes remain separate from read-only Git inspection.
+
+- Included the existing repository MIT notice in the standalone `craft-skill` package without changing its interfaces or metadata.
+
+### Validation
+
+- Covered exact 0.2.1 release-note extraction while retaining 0.2.0 fixtures and historical-release coverage.
+- Source, helper, package and author-executed fixture checks retain explicit coverage limits; controlled model performance and native activation remain unmeasured.
+
 ## 0.2.0
 
 ### New

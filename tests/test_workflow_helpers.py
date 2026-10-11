@@ -49,6 +49,15 @@ class ReleaseNotesTests(unittest.TestCase):
         self.assertEqual(notes, expected)
         self.assertNotIn("First beta release", notes)
 
+    def test_021_changelog_excludes_previous_release(self):
+        changelog = (ROOT / "CHANGELOG.md").read_text()
+        notes = release.extract_notes(changelog, "v0.2.1")
+        expected = changelog.split("## 0.2.1\n", 1)[1].split("\n## ", 1)[0].strip() + "\n"
+        self.assertEqual(notes, expected)
+        self.assertIn("progress-only reconciliation", notes)
+        self.assertNotIn("Added eight standalone engineering skills:", notes)
+        self.assertNotIn("First beta release", notes)
+
 
 class FrontmatterTests(unittest.TestCase):
     def check(self, content):
