@@ -34,7 +34,7 @@ Treat a function, class, package, or larger slice as a module with a caller-faci
 
 1. Use **assess/propose** when the user requests an architectural assessment or recommendation. Use **refactor/migrate** only when implementation is already authorized.
 2. Record the problem, affected boundaries, evidence, allowed scope, and requested output. A supporting review investigation inherits the original assessment scope; finding a design problem does not authorize a refactor.
-3. In assess/propose mode, inspect and run appropriate non-destructive checks without changing source, contracts, configuration, packaging, or documentation. Keep any necessary experiment isolated from the target checkout.
+3. In assess/propose mode, inspect without changing source, contracts, configuration, packaging, or documentation. Inspect checks' cache/output effects; use verified suppression/redirection or a disposable copy for required writes, labeling its coverage. A passing exit or unchanged Git status does not establish no writes.
 4. Follow sections 1 and 2 in either mode. Use the matching section 3 branch and completion checklist; do not require an implemented migration to complete a recommendation.
 
 ## 1. Map the current ownership

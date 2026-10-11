@@ -39,7 +39,7 @@ Choose the requested assessment; linked examples are optional. Supporting review
 
 1. Trace important inputs through changed code and affected consumers. Check compatibility, errors, configuration defaults, ownership, and host/lifecycle behavior where relevant.
 2. Compare README, manuals, settings, commands, installation steps, and diagrams in scope with current implementation. Verify actual defaults and paths rather than trusting neighboring prose.
-3. Run appropriate non-destructive checks or reproductions when they add evidence. A source-derived finding can stand without runtime access; label it as such.
+3. Run appropriate checks or reproductions when they add evidence. Inspect their cache/output effects first; use verified suppression/redirection or a disposable copy under no-write scope, labeling its coverage. A passing exit or unchanged Git status does not establish no writes. A source-derived finding can stand without runtime access; label it as such.
 4. For each suspected problem, identify the concrete trigger and consequence. Inspect enough surrounding code to rule out an existing guard or intentional contract.
 5. Exclude cosmetic preferences unless requested or necessary for correctness. Keep optional improvements separate from confirmed regressions.
 

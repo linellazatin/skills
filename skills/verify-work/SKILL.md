@@ -45,7 +45,7 @@ Requirement/surface | Current artifact | Check and expected observation | Actual
 
 ## 2. Obtain current evidence
 
-1. Run the required project checks and read their results. Investigate failures before continuing dependent verification.
+1. Run the required project checks and read their results. Under no-write scope, inspect their cache/output effects; use verified suppression/redirection or a disposable copy, labeling its coverage. A passing exit or unchanged Git status does not establish no writes. Investigate failures before continuing dependent verification.
 2. For a fix, repeat the reported operation with its relevant input or payload shape. Include affected callers after shared-contract changes.
 3. For packaging or copied installations, inspect or execute that actual artifact and compare it with source. A source pass alone does not establish artifact parity.
 4. For requested host behavior, verify loading/reloading and invocation in that host. For visible UI behavior, inspect and exercise the rendered state.

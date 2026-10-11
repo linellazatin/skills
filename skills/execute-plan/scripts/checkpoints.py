@@ -175,7 +175,8 @@ def main(argv=None):
                                     ("staged", ["diff", "--cached", "--no-ext-diff", "--no-textconv"]),
                                     ("unstaged", ["diff", "--no-ext-diff", "--no-textconv"]),
                                     ("untracked_paths", ["ls-files", "--others", "--exclude-standard"])]:
-                result = subprocess.run(["git"] + git_args, cwd=state["workdir"], capture_output=True, text=True)
+                result = subprocess.run(["git", "--no-optional-locks", "-c", "diff.autoRefreshIndex=false"] + git_args,
+                                        cwd=state["workdir"], capture_output=True, text=True)
                 if result.returncode:
                     raise RuntimeError(result.stderr.strip())
                 reports[label] = result.stdout

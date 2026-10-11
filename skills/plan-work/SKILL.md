@@ -30,7 +30,7 @@ Use the row matching the requested result; linked examples are optional.
 
 1. Read the request, existing plan, applicable project instructions, and relevant source entrypoints.
 2. Record the requested outcome, affected users or callers, supported environments, and explicit exclusions.
-3. Identify the assignment: assessment, planning, or implementation. If only planning is requested, do not edit implementation files.
+3. Identify the assignment: assessment, planning, or implementation. If only planning is requested, do not edit implementation files. Under no-write scope, inspect checks' cache/output effects; use verified suppression/redirection or a disposable copy, labeling its coverage. A passing exit or unchanged Git status does not establish no writes.
 4. Carry forward decisions and authorization already supplied. Ask only for missing choices that change supported behavior, compatibility, architecture, or cost.
 5. Inspect the current working tree; identify existing work and unrelated edits. Plan around them rather than assuming a clean checkout.
 

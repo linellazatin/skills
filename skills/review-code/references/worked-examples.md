@@ -7,7 +7,7 @@ These are hypothetical walkthroughs, not results observed in your checkout. Use 
 - **Request:** “Review these changes for defects; no edits.”
 - **Given evidence:** In this fixture, `adapter.py:12` changes the default from disabled to enabled. The documented caller omits that option and requires disabled behavior. Tracing the caller finds no later guard or deliberate contract change.
 - **Decision and action:** Report the concrete mismatch: omission now enables behavior that the caller expects disabled. Attach the changed location, caller/contract evidence, and user-visible consequence; rank using the project's severity vocabulary. Propose restoring the default or resolving an intentional compatibility change.
-- **Result and limit:** The source trace supports a finding without pretending to have run the host. The proposed remedy and regression check remain unperformed. Do not patch or infer product readiness from completing the review.
+- **Result and limit:** The source trace supports a finding without pretending to have run the host. The proposed remedy and regression check remain unperformed. If a check is useful under strict no-write scope, inspect its outputs first: Python imports can create ignored bytecode despite a passing exit and unchanged Git status. Python's `-B` suppresses import bytecode only, not arbitrary test writes; otherwise use a disposable copy and label the narrower evidence. Do not patch or infer product readiness from completing the review.
 
 ## Rejected empty-input feedback
 

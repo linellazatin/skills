@@ -1,6 +1,7 @@
 """Exercise checkpoint behavior through the public CLI in isolated directories."""
 import hashlib
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -293,6 +294,35 @@ class Checkpoints(unittest.TestCase):
         for args in (["--progress-only"], ["--from-revision", "old"], ["--to-revision", "new"]):
             self.run_cli("status", *args, ok=False)
             self.assertEqual(self.files(), before)
+
+    def test_review_preserves_checkout_and_index_with_stale_stat_cache(self):
+        checkout = self.root / "checkout"
+        checkout.mkdir()
+        subprocess.run(["git", "init", "-q", str(checkout)], check=True)
+        subprocess.run(["git", "config", "diff.autoRefreshIndex", "true"], cwd=checkout, check=True)
+        tracked = checkout / "tracked.txt"
+        tracked.write_text("staged\n")
+        modified = checkout / "modified.txt"
+        modified.write_text("before\n")
+        subprocess.run(["git", "add", "."], cwd=checkout, check=True)
+        modified.write_text("user edit\n")
+        (checkout / "user-notes.txt").write_text("untracked user work\n")
+        timestamps = tracked.stat()
+        os.utime(tracked, ns=(timestamps.st_atime_ns, timestamps.st_mtime_ns - 2000000000))
+        self.run_cli("start", "phase", "--summary", "Read-only Git report", "--workdir", str(checkout))
+        before = {str(path.relative_to(checkout)): path.read_bytes()
+                  for path in checkout.rglob("*") if path.is_file()}
+        report = self.run_cli("review")
+        after = {str(path.relative_to(checkout)): path.read_bytes()
+                 for path in checkout.rglob("*") if path.is_file()}
+        self.assertEqual(hashlib.sha256(before[".git/index"]).hexdigest(),
+                         hashlib.sha256(after[".git/index"]).hexdigest(), "review refreshed the Git index")
+        self.assertEqual(before, after)
+        data = json.loads(Path(report["review"]).read_text())
+        self.assertIn("staged", data["staged"])
+        self.assertIn("user edit", data["unstaged"])
+        self.assertIn("user-notes.txt", data["untracked_paths"])
+        self.assertEqual(Path(report["review"]).parents[1], (self.root / ".workflow").resolve())
 
     def test_review_includes_untracked_and_staged_without_mutation(self):
         subprocess.run(["git", "init", "-q", str(self.root)], check=True)

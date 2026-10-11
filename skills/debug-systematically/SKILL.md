@@ -30,7 +30,7 @@ Use relevant existing specs or plans to recover intended behavior and prior evid
 
 1. Read the requested outcome and existing authorization. Use **diagnosis-only** for investigation or assessment requests; use **diagnose-and-fix** when remediation is already authorized.
 2. Record the problem, relevant evidence, allowed scope, and requested output in the existing task notes. A review handoff inherits the review's scope; discovering a defect does not authorize fixing it.
-3. Keep diagnosis-only work read-only in the target checkout and persistent environment. Run appropriate non-destructive checks; use a disposable workspace for experiments that require changes. Do not alter product code, tests, docs, or settings to finish a diagnosis.
+3. Keep diagnosis-only work read-only in the target checkout and persistent environment. Inspect checks' cache/output effects; use verified suppression/redirection or a disposable workspace for required writes, labeling its coverage. A passing exit or unchanged Git status does not establish no writes. Do not alter product code, tests, docs, or settings to finish a diagnosis.
 4. Follow sections 1 and 2 while a cause needs investigation, then the matching section 3 branch. If existing evidence already establishes the cause, verify that it still applies and enter the authorized fix branch directly. Diagnosis completion never requires an implementation.
 
 ## 1. Capture the failure
