@@ -40,15 +40,15 @@ Choose the primary skill by the result you need:
 | Establish completion or readiness against requirements | `verify-work` |
 | Create, assess, refine, or package reusable skills | `craft-skill` |
 
-Testing, diagnosis, review, and verification can support the primary workflow without restarting it or expanding authorization. “Continue” retains the established task; it does not establish plan approval. Reviewing a plan reports findings; revising it changes the plan. Prose-only work uses document checks rather than software test cycles. Each skill stands alone. Use context or focused clarification for ambiguous requests; domain/tool guidance can be primary or supporting without changing the requested outcome. Large specified changes and proven corrections do not restart discovery or diagnosis; a known cause with an undecided correction can still need design.
+Supporting checks do not restart the primary workflow or expand authorization. “Continue” retains the task but does not approve a plan; reviewing reports findings, while revising changes the plan. Prose uses document checks, and each skill stands alone. Clarify ambiguity with context or focused questions; domain/tool guidance can support any workflow. Specified changes and proven corrections proceed without restarting discovery or diagnosis, though an undecided correction may still need design.
 
-Entry routes state required context, first actions, and stop conditions. The eight engineering skills include compact route cards: condition, next action/minimum evidence, and stop or handoff. Optional worked examples live in each skill's `references/worked-examples.md`, linked at the relevant decision; core scope and safety gates stay in `SKILL.md`. Examples are hypothetical, not executed checkout results. Conditional branches cover existing implementation, assessment-only work, and unavailable runtimes. Actual activation and instruction-following performance require model/harness trials; authored walkthroughs do not establish those results. Author-executed disposable fixtures establish only their observed tool/file/claim scope, not independent model compliance.
+Each skill's entry route gives required context, first action, and stop condition. The eight engineering skills also have compact route cards (condition, action/minimum evidence, stop or handoff) and optional hypothetical examples in `references/worked-examples.md`; scope and safety gates remain in `SKILL.md`. Branches cover existing implementations, assessment-only work, and unavailable runtimes. Authored examples are not checkout results; disposable fixtures prove only their observed scope. Activation and instruction-following require model/harness trials.
 
-An unavailable host leaves its acceptance check unverified; it does not establish a product failure. Verification alone does not authorize fixes. Migration starts with coverage for affected consumers, and an extra plan or spec needs both a concrete purpose and writing authority. Under no-write scope, inspect checks' cache/output effects and use verified suppression/redirection or disposable copies with explicit coverage limits; a passing exit or unchanged Git status does not establish no writes.
+An unavailable host leaves acceptance unverified, not failed. Verification does not authorize fixes. Migrations start with coverage for affected consumers; extra plans/specs need purpose and writing authority. Under no-write scope, inspect checks for cache/output effects and use verified suppression, redirection, or disposable copies with explicit limits. Passing checks or unchanged Git status do not prove no writes.
 
 ## Working with `specs` and `plans`
 
-Small tasks usually stay in the conversation. Specs help capture substantial designs and compatibility decisions; plans make multi-phase work easier to resume and review. Unfinished work keeps its existing record across sessions. Your project's chosen location and naming convention come first; otherwise, new files use `YYYY-MM-DD-<descriptive-name>.md`. The date marks creation, not the latest edit, and existing files are neither renamed nor overwritten to fit that convention. The local layout is:
+Keep small tasks in conversation. Use specs for substantial designs and compatibility decisions, and plans for resumable, reviewable multi-phase work. Resume unfinished work in its existing record. Follow project locations and naming; otherwise use `YYYY-MM-DD-<descriptive-name>.md` for new files. The date is the creation date; don't rename or overwrite existing files to fit the convention. Local layout:
 
 ```text
 .your/
@@ -60,11 +60,11 @@ Small tasks usually stay in the conversation. Specs help capture substantial des
     .workflow/ # optional: execute-plan checkpoint helper storage
 ```
 
-**Specs** describe intended behavior, constraints, decisions, acceptance, and review state. **Plans** link that design to delivery: steps, affected files, checks, progress, and gaps. This local layout is created only when writing is authorized, preserving existing ignore rules. Its wildcard ignores everything, including `.gitignore`, so a fresh checkout needs the setup again. Shared, versioned records can live in a chosen tracked location instead. Selecting a skill doesn't grant permission to create or move files, change Git state, or override a read-only request.
+**Specs** record behavior, constraints, decisions, acceptance, and review state. **Plans** connect the design to delivery: steps, files, checks, progress, and gaps. Create the local layout only with writing authority, preserving ignore rules. Its wildcard ignores everything, including `.gitignore`, so recreate it in fresh checkouts; shared records can instead use a chosen tracked location. Selecting a skill does not authorize file creation/moves or Git changes, or override read-only scope.
 
-**These records are working notes, not running journals**: actionable decisions, status, blockers, and evidence links are more useful than transcripts. A closed task records its outcome, actual acceptance, and remaining gaps; checked steps alone don't settle missing requirements, evidence, or acceptance. **Closed records remain history**. New authorized work gets a linked successor only when another written record is useful, while small follow-ups stay inline. Living product specs receive authorized contract updates rather than becoming a series of competing documents.
+Keep records concise without losing context or technical detail. Write shared context once: specs own behavior and decisions; plans link those decisions and track delivery; notes capture new observations; handoffs summarize results, evidence, and material gaps. Use bullets for parallel items, checklists for tracked work, numbered steps for required order, and prose for connected explanations. Omit empty fields and repeated summaries; link detailed evidence instead of copying logs. Close with outcome, actual acceptance, and remaining gaps; checked steps alone don't establish completion. Preserve closed records. Create a linked successor only when authorized and useful; keep small follow-ups inline and update living specs rather than creating competing contracts.
 
-The optional `execute-plan` checkpoint helper adds `.workflow/` beside the selected plan, storing** checkpoint JSON, snapshots, and check logs**. Manual tracking needs none, and `status` creates no files. Each new plan path has separate storage; old checks don't verify new work. Regression tests still belong in the project's test directories, with disposable probes in temporary workspaces. Ignored working records remain available for direct inspection, separate from shipped documentation.
+The optional `execute-plan` helper stores checkpoint JSON, snapshots, and check logs in `.workflow/` beside each plan. Manual tracking needs no helper; `status` creates no files. Each plan path has separate storage, and old checks don't verify new work. Put regression tests in project test directories and disposable probes in temporary workspaces. Ignored records remain inspectable and are not shipped documentation.
 
 ## How these came to be
 
@@ -76,7 +76,7 @@ The engineering set began as an exploration of my own workflows - literally writ
 
 1. **Start with observed work.** Ground instructions in user requests, corrections, project artifacts, and supported outcomes. Distinguish these from injected context, synthetic tasks, and unverified model claims.
 2. **Define the result and scope.** Give each skill a focused responsibility, matching and neighboring trigger cases, required inputs, and side-effect boundaries. Assessment, design, planning, and authorized implementation stay distinct; existing decisions carry forward.
-3. **Write procedures.** Put the route, inputs, first action, and stop condition near the top. Split consequential actions and state exceptions beside the affected steps. Use matching and neighboring examples where workflows overlap. Each skill works independently, with optional supporting guidance.
+3. **Write procedures.** Put the route, inputs, first action, and stop condition near the top. Split consequential actions and state exceptions beside them. Separate internal inspection from required written output; adapt templates to the task while preserving contracts, acceptance, and material gaps. Keep paragraphs unwrapped. Use matching and neighboring examples where workflows overlap. Each skill works independently, with optional supporting guidance.
 4. **Keep capabilities portable.** Base instructions on file access, commands, and runtime observations. Helpers handle justified deterministic work, declare their requirements, and retain manual fallbacks. Execution stays inline; Git actions need separate authority.
 5. **Validate the claim.** Review normal, failure, and boundary cases. Distinguish author review from execution evidence. Metadata, references, packages, and helpers get separate checks. Activation and performance comparisons need controlled harness/model runs; without them, those claims remain unmeasured.
 6. **Revise from evidence.** Tie changes to concrete failures or instruction gaps, update the relevant artifacts and docs, and repeat affected checks. Prefer coherent corrections over accumulating rules or adding files just to fit a layout.
@@ -145,23 +145,30 @@ mklink /d "X:\client\skills\skill-name" "X:\checkout\skills\skill-name"
 
 ### Bundled tooling tiers
 
-Bundled helpers fall into two tiers:
+Bundled helpers have two tiers:
 
-**Tier 1: standard-library Python, with command execution:**
+**Tier 1: standard-library Python (command execution required):**
 
-- `skills/craft-skill/scripts/quick_validate.py` - check supported metadata and structural constraints; not a complete YAML/spec or behavioral validator
-- `skills/craft-skill/scripts/aggregate_benchmark.py` - aggregate eval results into a benchmark report
-- `skills/craft-skill/scripts/package_skill.py` - zip a skill into a distributable `.skill` file
-
-`skills/execute-plan/scripts/checkpoints.py` requires Python 3.9+ standard library and provides `status`, `start`, `check`, `reconcile`, `handoff`, and `review`. Saved plan snapshots and bounded diffs support explicit progress-only reconciliation with unchanged check inputs; material changes still require restarting and rerunning checks. Reconciliation records a caller attestation, not checkout freshness or approval. Only `review` requires Git; its queries disable optional locks and diff index refresh, but the helper still writes authorized local report/workflow files and is not a no-file command. See [helper usage and evidence limits](skills/execute-plan/references/checkpoints.md). It works without a particular agent API, shell, or provider; environments without Python can follow the skill manually.
+- `skills/craft-skill/scripts/quick_validate.py` checks supported metadata and structure, not full YAML/spec validity or behavior.
+- `skills/craft-skill/scripts/aggregate_benchmark.py` aggregates eval results into a report.
+- `skills/craft-skill/scripts/package_skill.py` creates a distributable `.skill` ZIP.
+- `skills/execute-plan/scripts/checkpoints.py` requires Python 3.9+ and provides `status`, `start`, `check`, `reconcile`, `handoff`, and `review`. Snapshots and bounded diffs allow explicitly attested progress-only reconciliation when check inputs are unchanged; material changes require restarting and rerunning checks. Attestation is not proof of checkout freshness or approval. Only `review` needs Git; it disables optional locks and diff index refresh, but writes authorized local report/workflow files. It is not a no-file command. See [usage and evidence limits](skills/execute-plan/references/checkpoints.md). No agent API, shell, or provider is required; without Python, follow the skill manually.
 
 **Tier 2: optional harness/provider integrations:**
 
-- `skills/craft-skill/scripts/run_eval.py` - Claude Code CLI trigger evaluation using a temporary command surrogate
-- `skills/craft-skill/scripts/improve_description.py` - description proposals using Anthropic, an OpenAI-compatible endpoint, or Claude Code CLI
-- `skills/craft-skill/scripts/run_loop.py` - configurable train/validation optimization loop; requires Claude Code CLI for evaluation and a supported provider for improvement
+- `skills/craft-skill/scripts/run_eval.py` uses Claude Code CLI and a temporary command surrogate for trigger evaluation.
+- `skills/craft-skill/scripts/improve_description.py` proposes descriptions via Anthropic, an OpenAI-compatible endpoint, or Claude Code CLI.
+- `skills/craft-skill/scripts/run_loop.py` runs configurable train/validation optimization; evaluation requires Claude Code CLI, improvement a supported provider.
 
-Provider detection for `improve_description.py`: `ANTHROPIC_API_KEY` → `OPENAI_API_KEY` → `claude -p` fallback. `OPENAI_API_BASE` selects the OpenAI-compatible endpoint. Trigger scores do not establish full skill execution or activation in other harnesses. Execution errors are unscored and block optimization. Paths above are relative to the checkout; resolve absolute helper paths when running from another directory. Validation and packaging use only standard-library Python; evaluation is optional.
+`improve_description.py` detects `ANTHROPIC_API_KEY`, then `OPENAI_API_KEY`, then `claude -p`; `OPENAI_API_BASE` selects the compatible endpoint. Trigger scores don't prove full execution or activation in other harnesses. Execution errors are unscored and block optimization. Helper paths are checkout-relative; resolve them when running elsewhere. Validation and packaging use standard-library Python; evaluation is optional.
+
+## Unreleased - On-going Tests
+
+Prototypes live under `tests/unreleased/`, outside the installable skill collection.
+
+| Prototype | Scope and status |
+| --- | --- |
+| [Skill Buffer](tests/unreleased/skill-buffer/README.md) | Portable wrapper and Python 3.13+/PyYAML 6.0.3 CLI for inspection, frozen paired evaluation, response imports, evidence-backed author grading, comparison and separate candidate revisions. Includes 20 offline/mock-HTTP tests and a synthetic walkthrough; native activation, tool execution, automatic grading/revision, installation and publishing are deferred. |
 
 ## References
 
