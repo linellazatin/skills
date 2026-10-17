@@ -1,5 +1,12 @@
 # Worked review decisions
 
+## Concise review reports
+
+- Supported finding: “High: `adapter.py:12` enables behavior when the option is omitted, violating the caller's disabled default. The source trace shows no later guard. Restore the default or explicitly resolve the compatibility change; host execution was not observed.”
+- No actionable findings: “No actionable findings in the default/empty-input paths inspected. The existing guard handles empty input; unrelated callers and host reload were outside this review.”
+
+These hypothetical reports retain location, trigger, consequence, evidence, and coverage without empty categories or a copied investigation log.
+
 These are hypothetical walkthroughs, not results observed in your checkout. Use only the example relevant to an unclear decision; the entry route card is sufficient for routine work.
 
 ## Supported default regression

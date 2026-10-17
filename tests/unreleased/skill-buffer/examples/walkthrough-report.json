@@ -1,0 +1,154 @@
+{
+  "fingerprint": "16c571c931fa667020d5296f215e2fb39bf752709caabff035280290d089fe7f",
+  "invalid_attempts": [],
+  "limitations": [
+    "Semantic grading is author review; evidence-location validation does not validate judgment.",
+    "Response simulations show proposed decisions, not executed tasks, absence of writes, native activation or host readiness.",
+    "Missing telemetry and cache observations remain unknown; imports do not prove fresh inference."
+  ],
+  "matched_pairs": [
+    {
+      "baseline": {
+        "critical_failures": [],
+        "passed": true,
+        "score": 1
+      },
+      "candidate": {
+        "critical_failures": [],
+        "passed": true,
+        "score": 1
+      },
+      "case_id": "route",
+      "delta": 0,
+      "partition": "development",
+      "repeat": 0
+    },
+    {
+      "baseline": {
+        "critical_failures": [
+          "evidence"
+        ],
+        "passed": false,
+        "score": 0.0
+      },
+      "candidate": {
+        "critical_failures": [],
+        "passed": true,
+        "score": 1.0
+      },
+      "case_id": "procedure",
+      "delta": 1.0,
+      "partition": "development",
+      "repeat": 0
+    },
+    {
+      "baseline": {
+        "critical_failures": [
+          "evidence"
+        ],
+        "passed": false,
+        "score": 0.0
+      },
+      "candidate": {
+        "critical_failures": [],
+        "passed": true,
+        "score": 1.0
+      },
+      "case_id": "held-out",
+      "delta": 1.0,
+      "partition": "acceptance",
+      "repeat": 0
+    }
+  ],
+  "missing": [],
+  "provenance": {
+    "held-out:0:baseline": {
+      "label": "external-import",
+      "supplied": {
+        "cache_observation": "unknown",
+        "kind": "synthetic-authored"
+      }
+    },
+    "held-out:0:candidate": {
+      "label": "external-import",
+      "supplied": {
+        "cache_observation": "unknown",
+        "kind": "synthetic-authored"
+      }
+    },
+    "procedure:0:baseline": {
+      "label": "external-import",
+      "supplied": {
+        "cache_observation": "unknown",
+        "kind": "synthetic-authored"
+      }
+    },
+    "procedure:0:candidate": {
+      "label": "external-import",
+      "supplied": {
+        "cache_observation": "unknown",
+        "kind": "synthetic-authored"
+      }
+    },
+    "route:0:baseline": {
+      "label": "external-import",
+      "supplied": {
+        "cache_observation": "unknown",
+        "kind": "synthetic-authored"
+      }
+    },
+    "route:0:candidate": {
+      "label": "external-import",
+      "supplied": {
+        "cache_observation": "unknown",
+        "kind": "synthetic-authored"
+      }
+    }
+  },
+  "results": {
+    "held-out:0:baseline": {
+      "critical_failures": [
+        "evidence"
+      ],
+      "passed": false,
+      "score": 0.0
+    },
+    "held-out:0:candidate": {
+      "critical_failures": [],
+      "passed": true,
+      "score": 1.0
+    },
+    "procedure:0:baseline": {
+      "critical_failures": [
+        "evidence"
+      ],
+      "passed": false,
+      "score": 0.0
+    },
+    "procedure:0:candidate": {
+      "critical_failures": [],
+      "passed": true,
+      "score": 1.0
+    },
+    "route:0:baseline": {
+      "critical_failures": [],
+      "passed": true,
+      "score": 1
+    },
+    "route:0:candidate": {
+      "critical_failures": [],
+      "passed": true,
+      "score": 1
+    }
+  },
+  "telemetry": {
+    "held-out:0:baseline": null,
+    "held-out:0:candidate": null,
+    "procedure:0:baseline": null,
+    "procedure:0:candidate": null,
+    "route:0:baseline": null,
+    "route:0:candidate": null
+  },
+  "transport_failures": [],
+  "version": 1
+}

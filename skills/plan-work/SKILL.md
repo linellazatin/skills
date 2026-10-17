@@ -59,26 +59,24 @@ Use the row matching the requested result; linked examples are optional.
 | Implementation already present | Preserve it; check the contract and disclose any missing pre-change observation. |
 | Prose or formatting only | Relevant document, link, example, or formatting checks; no manufactured software failure. |
 
-Use this record for each substantial phase; shorten it for small tasks:
+Write shared outcome, scope, and consequential decisions once. Link governing spec sections instead of copying their contracts; retain enough context to understand the plan independently. Keep prose concise without losing context or technical detail. Use bullets for parallel actions, checkboxes for tracked work, and numbered steps when order matters.
+
+Use this adaptable phase outline:
 
 ```text
-Phase: <name and priority>
-Status: <pending, active, complete, or blocked; do not imply approval>
-Outcome: <observable behavior>
-Depends on: <prerequisites or none>
-Paths/contracts: <existing owners, consumers, proposed additions>
-Steps: <ordered implementation actions>
-Verification: <setup; command/interaction; expected result; coverage limit>
-Docs/version: <affected documents and authorized version work>
-Handoff: <deliverables; stop for approval only if requested>
+## <Phase and observable outcome>
+- [ ] <Action on the relevant path/consumer>
+- [ ] Verify: <inspected command/interaction and expected result>
 ```
+
+Add dependencies, setup, compatibility handling, documentation/version work, status, limits, or review boundaries only where applicable, beside the affected action. Omit empty fields and routine statements such as “Depends on: none.” Keep material prerequisites and pending acceptance explicit; retain all required consumers and checks.
 
 ### Select and save the artifact
 
 - Keep small, clear, single-session plans inline or in the existing task record. Save substantial, multi-phase, resumable, or reviewable plans within authorization.
 - Resume the existing plan for unfinished same-scope work, including across sessions. For [newly authorized work after closure](references/worked-examples.md#successor-after-closure), create a linked successor when a written plan is warranted; do not append a new workstream to the closed plan. Link its governing spec when present; a settled routine fix needs no separate spec.
 - Keep the active plan concise: actionable phases, acceptance checks, status, blockers, and evidence links rather than transcripts or repeated historical reports. At closure, record the outcome, actual acceptance state, and remaining gaps once. Checked steps do not establish closure while required work, evidence, or acceptance remains pending.
-- Record outcome, scope, decisions, dependencies, paths, ordered tests/implementation, checks, phase status, deviations, and unresolved observations. Specs define intent; plans track delivery.
+- Specs own behavior and design decisions; plans own delivery and progress. Update status in place; record deviations and new observations where they affect remaining work, with detailed evidence linked once.
 
 1. Use the requested or established location and naming convention first. For an authorized new local plan, the fallback is `.your/plans/YYYY-MM-DD-<descriptive-name>.md`, using its creation date. Keep that date during updates; do not automatically rename existing files. A same-day name collision needs a distinct descriptive name, not overwriting another record.
 2. Create only missing directories and `.your/.gitignore` containing `*`. Preserve existing ignore rules. All local artifacts, including the ignore file, need setup again in a fresh checkout.
@@ -97,7 +95,7 @@ Keep permanent regression tests in the project's normal test locations and dispo
 - [ ] Unresolved material decisions and unavailable checks are visible.
 - [ ] Artifact selection matches the task; a saved plan links any governing spec and records actual phase/review state.
 
-Return the outcome, chosen design, phases, remaining decisions, and saved plan/spec paths when present. If implementation is also authorized and no required decision remains, proceed inline. Otherwise end at the requested planning deliverable.
+Return the inline plan or saved plan path with any material decision or blocker; do not repeat saved phases in full. If implementation is also authorized and no required decision remains, proceed inline. Otherwise end at the requested planning deliverable.
 
 ## Failure branches
 

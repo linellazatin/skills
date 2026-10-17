@@ -1,0 +1,12 @@
+{
+  "catalog": [
+    {
+      "description": "Assess or migrate module interfaces, responsibilities, and shared-rule ownership when duplicated policy, unclear boundaries, caller burden, or difficult test setup creates a concrete maintenance problem. Use for ownership/interface recommendations or authorized structural migration. Producing a task plan, diagnosing an unknown failure, and open-ended product discovery have different primary outcomes.",
+      "directory": "design-modules",
+      "name": "design-modules"
+    }
+  ],
+  "semantic_review": "not performed",
+  "structural_findings": [],
+  "version": 1
+}

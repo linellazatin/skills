@@ -1,5 +1,9 @@
 # Worked diagnostic decisions
 
+## Concise unresolved diagnosis
+
+Hypothetical report: “TL;DR: cause unresolved; size alone does not explain the timeout. Comparable small and large payloads both timed out. Next observation: trace whether the request reaches the service before the timeout; host traces are currently unavailable. No remediation performed.” Keep detailed probe records in the linked notes rather than repeating them here.
+
 These are hypothetical walkthroughs, not results observed in your checkout. Use only the example relevant to an unclear decision; the entry route card is sufficient for routine work.
 
 ## Reload registration boundary

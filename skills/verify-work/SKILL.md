@@ -76,14 +76,12 @@ Requirement/surface | Current artifact | Check and expected observation | Actual
 - [ ] Failed, unverified, and partial results are visible.
 - [ ] The conclusion matches the evidence without implying approval, a Git action, or publication.
 
-Return:
+Maintain full requirement coverage in the working verification map; the final report need not reproduce it. Keep prose concise without losing context or technical detail, using bullets for parallel results. Adapt this report and omit empty fields:
 
 ```text
 Readiness: <ready for the named scope, or incomplete>
 Established: <requirements and supporting observations>
 Blockers/gaps: <failed, partial, or unrun requirements; next observation>
-Docs: <surfaces checked or updated>
-Limits: <host, artifact, timing, or evaluation limits>
 ```
 
-Shorten the record for a small change, but retain any material gap. Do not start a separately checkpointed next phase through a readiness claim.
+Include relevant documentation in the established scope and put each material limit beside its affected claim or gap, once. Link detailed evidence instead of copying logs. Do not start a separately checkpointed next phase through a readiness claim.

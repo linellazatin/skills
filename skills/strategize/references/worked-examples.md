@@ -1,5 +1,16 @@
 # Worked decisions
 
+## Concise search spec
+
+Hypothetical design excerpt:
+
+- Outcome: find documents locally without uploading their contents.
+- Decision: use an embedded index to preserve offline operation; remote search is outside scope.
+- Behavior: index supported documents, update changed entries, and report unreadable files without discarding searchable entries.
+- Acceptance: a document containing “oauth” is returned for that query; an unrelated document is excluded. Verify update/error behavior and absence of document uploads.
+
+This records design intent, not passing evidence. Implementation steps belong in the linked plan; no empty “Open decisions” section is needed.
+
 These are hypothetical walkthroughs, not results observed in your checkout. Use only the example relevant to an unclear decision; the entry route card is sufficient for routine work.
 
 ## Local-only search

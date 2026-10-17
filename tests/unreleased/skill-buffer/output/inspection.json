@@ -1,0 +1,12 @@
+{
+  "catalog": [
+    {
+      "description": "A synthetic skill for planning a simple check.",
+      "directory": "sample",
+      "name": "sample"
+    }
+  ],
+  "semantic_review": "not performed",
+  "structural_findings": [],
+  "version": 1
+}

@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.3.0
+
+### New
+
+- Added the unreleased `skill-buffer` prototype under `tests/unreleased/skill-buffer/`: a portable skill wrapper and Python CLI for inspection, frozen baseline/candidate evaluation, response imports, evidence-backed author grading, paired comparison and separate candidate revisions.
+- Added versioned JSON contracts, synthetic examples, JSON/Markdown reports and an offline walkthrough. HTTP evaluation uses explicit endpoint/model settings, credential redaction and explicit resume without automatic retries.
+
+### Changed
+
+- Made plan, spec, note, and report guidance concise and adaptive across all nine skills: useful bullets/checklists, shared context recorded once, evidence links, and omission of empty fields while preserving technical detail and material gaps. Added concise worked examples and prose-quality comparison criteria.
+
+### Validation
+
+- Passed 20 prototype tests, repository/helper checks and a copied-directory synthetic walkthrough without inference credentials or paid calls.
+
 ## 0.2.1
 
 ### New
