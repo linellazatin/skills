@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "cases": [
+    {"id": "route", "type": "routing", "prompt": "Plan a simple check.", "acceptable_primary": ["sample"], "assertions": []},
+    {"id": "procedure", "type": "procedure", "skill": "sample", "prompt": "Propose a check for a file parser.", "resources": ["guide.txt"], "assertions": [{"id": "evidence", "text": "States expected evidence.", "critical": true}]},
+    {"id": "held-out", "type": "procedure", "partition": "acceptance", "skill": "sample", "prompt": "Propose a check for a configuration reader.", "assertions": [{"id": "evidence", "text": "States expected evidence.", "critical": true}]}
+  ]
+}
