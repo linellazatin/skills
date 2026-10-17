@@ -1,5 +1,9 @@
 # Worked verification decisions
 
+## Concise incomplete-readiness report
+
+Hypothetical report: “Readiness incomplete: current source/core, CLI, and documentation checks passed; details are in the verification map. Copied-installation reload remains unverified because the host is inaccessible. Next observation: reload and invoke the copied artifact in that host.” The host gap appears once; the underlying map still accounts for every required surface.
+
 These are hypothetical walkthroughs, not results observed in your checkout. Use only the example relevant to an unclear decision; the entry route card is sufficient for routine work.
 
 ## Source, package, and doc evidence

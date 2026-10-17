@@ -1,5 +1,9 @@
 # Worked test decisions
 
+## Concise cycle note
+
+Hypothetical note: “UTF-8 cap regression: `éé` under a 3-byte cap failed as expected before the fix; the same check and 4-byte equality case passed afterward. Details: linked regression log.” No refactor field is needed when none occurred. This evidence establishes the tested contract, not unobserved host behavior.
+
 These are hypothetical walkthroughs, not results observed in your checkout. Use only the example relevant to an unclear decision; the entry route card is sufficient for routine work.
 
 ## Byte-budget cycle

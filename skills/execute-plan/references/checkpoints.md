@@ -1,6 +1,6 @@
 # Inline checkpoint helper
 
-Use Python 3.9+ with the standard library. Resolve the script's path from this skill directory; commands can run from any directory. No host bootstrap or agent API is involved. The existing plan can use any text format. Without command access, record the same phase outcome, named check results, documentation updates, and remaining work manually in the existing plan.
+Use Python 3.9+ with the standard library. Resolve the script's path from this skill directory; commands can run from any directory. No host bootstrap or agent API is involved. The existing plan can use any text format. Without command access, record the phase outcome, named check results, relevant documentation updates, and remaining work in the existing plan. Keep summaries concise and link logs rather than copying them; preserve required helper fields, check labels, revisions, and evidence provenance.
 
 ```sh
 python /path/to/execute-plan/scripts/checkpoints.py status /project/plan.md

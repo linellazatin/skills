@@ -1,5 +1,17 @@
 # Worked plans
 
+## Concise migration outline
+
+Hypothetical plan excerpt; commands must come from the inspected project:
+
+- Outcome: move the byte-cap rule to its shared owner; preserve the error and byte-counting contract linked in the governing spec.
+- [ ] Characterize consumers A and B before moving the rule; B lacks boundary coverage.
+- [ ] Move the rule, migrate both callers, and retain the public forwarding entrypoint.
+- [ ] Run inspected shared-rule and consumer checks; verify unchanged cap/error behavior, packaging, and affected docs.
+- Pending: actual-host acceptance needs host access; source checks cannot close it.
+
+Shared context appears once; empty dependency, version, and approval fields add nothing.
+
 These are hypothetical walkthroughs, not results observed in your checkout. Use only the example relevant to an unclear decision; the entry route card is sufficient for routine work.
 
 ## Shared-contract migration

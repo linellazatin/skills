@@ -66,7 +66,7 @@ Proceed to implementation only after the selected behavior has an understood fai
 ## 4. Refactor: improve structure with green evidence
 
 1. Inspect the implementation and tests for duplication, unclear naming, avoidable coupling, or excessive setup introduced by the cycle.
-2. If cleanup improves the delivered code, make a behavior-preserving change and rerun affected tests after each meaningful edit. If no cleanup is useful, record that and continue.
+2. If cleanup improves the delivered code, make a behavior-preserving change and rerun affected tests after each meaningful edit. Otherwise continue without adding a routine no-cleanup note.
 3. If a refactor breaks a test, establish whether it changed the public contract or exposed a test tied to private arrangement. Fix the actual defect; do not discard an assertion that protects required behavior.
 4. Repeat red-green-refactor for the next meaningful example. Add boundary and failure cases that distinguish plausible wrong implementations.
 5. At the phase boundary, run required regression and consumer checks against the final state. Repeat the reported operation when focused tests cover a narrower layer.
@@ -92,14 +92,14 @@ The optional [byte-budget walkthrough](references/worked-examples.md#byte-budget
 
 ## Retain evidence and complete the phase
 
-Record meaningful cycles in the existing task notes; do not create a separate ledger for every assertion:
+Keep concise evidence in the existing task notes without losing context or technical detail. Group cycles sharing a command or result, link detailed logs once, and use bullets where easier to scan. Do not create a ledger for every assertion or repeat the log at handoff. Adapt this record; omit irrelevant fields while retaining observed red/green results, exception routes, and material gaps:
 
 ```text
 Behavior: <input/condition and independent expected outcome>
 Test/entrypoint: <focused command and boundary reached>
 Red: <observed intended failure, or named special-case route>
 Green: <same test and observed passing outcome>
-Refactor: <cleanup and rerun, or no useful cleanup>
+Refactor: <cleanup and rerun, if performed>
 Final checks: <affected consumers, regressions, original scenario>
 Limits: <unobserved host/runtime behavior or existing failures>
 ```
@@ -115,4 +115,4 @@ Before declaring the phase ready:
 - [ ] Green and any refactor checks were observed against the final relevant inputs.
 - [ ] Required consumers, regressions, documentation, and live observations are established; pending checks remain visible and keep the affected requirement incomplete.
 
-Return the behavior delivered, red/green/refactor evidence, final checks, and remaining gaps. Do not claim a test-driven cycle or a live-host result that was not actually observed.
+Return delivered behavior, a brief evidence summary or link, and material remaining gaps. Do not claim a test-driven cycle or a live-host result that was not actually observed.

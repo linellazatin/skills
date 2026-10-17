@@ -50,7 +50,7 @@ Use relevant existing specs or plans to recover intended behavior and prior evid
 5. If the prediction fails, discard or revise the explanation using the new evidence. Remove your failed experimental change before trying another; preserve the user's work.
 6. If repeated attempts add no distinguishing evidence, stop speculative experiments. Summarize ruled-out explanations and seek the missing observation, reference, or material user decision. Do not claim a cause merely to close the investigation.
 
-Record each meaningful probe in the existing task notes:
+Record meaningful new probe evidence in the existing task notes, grouping related observations and linking detailed logs once. Keep prose concise without losing context or technical detail; use bullets where useful. Adapt this outline and omit irrelevant fields; do not repeat the probe log in the conclusion:
 
 ```text
 Symptom: <operation; expected; observed>
@@ -94,4 +94,4 @@ Diagnose-and-fix completion:
 - [ ] Affected consumers and required documentation are checked.
 - [ ] Unavailable runtime checks or intermittent limits are explicit.
 
-Return `TL;DR`, mode, cause or bounded uncertainty, proposed/applied correction, executed checks, planned checks, and gaps. A workaround needs its operating conditions and unresolved cause stated. Diagnosis completion can leave a cause unresolved or a defect unfixed; a direct runner pass never establishes an unobserved host result.
+Lead with `TL;DR`: supported cause or bounded uncertainty and proposed/applied correction. Follow with decisive evidence and material gaps or next observations; include mode and future checks only where needed to clarify scope or action. A workaround needs its operating conditions and unresolved cause stated. Diagnosis completion can leave a cause unresolved or a defect unfixed; a direct runner pass never establishes an unobserved host result.

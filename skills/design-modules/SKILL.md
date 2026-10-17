@@ -49,7 +49,7 @@ Treat a function, class, package, or larger slice as a module with a caller-faci
 
 ## 2. Compare ownership choices
 
-Build a small table for the rules affected by the proposed change:
+Map the rules affected by the proposed change. Use a small table when multiple owners or consumers are easier to compare; a bullet or sentence can cover a single rule:
 
 ```text
 Rule | Current owner(s) | Proposed owner | Consumers | Compatibility check
@@ -69,7 +69,7 @@ Rule | Current owner(s) | Proposed owner | Consumers | Compatibility check
 
 ### Assess/propose
 
-1. Return the current ownership map and expected contracts before describing a proposed arrangement. Label proposed owners and caller changes explicitly.
+1. Explain the observed ownership problem and supported recommendation, including the current owner and relevant contract. Include the ownership map when needed to understand multiple rules or consumers; label proposed owners and caller changes explicitly.
 2. Recommend retaining the current structure or making a specific change, justified by the observed maintenance problem and compatibility costs. Separate confirmed defects from optional improvements and uncertain concerns.
 3. Identify affected consumers, intentional contract changes, migration order, and checks that would establish compatibility. Distinguish checks already executed from a future verification plan.
 4. If the evidence cannot support a choice, report the competing explanations and next observation or user decision. Do not invent a refactor to fill the recommendation.
@@ -104,4 +104,4 @@ Refactor/migrate completion:
 - [ ] Verification reaches the promised dependency boundaries; retired tests leave no required behavior uncovered.
 - [ ] Generated/installed wiring and related docs agree with the result.
 
-Return mode, observed problem, current/proposed/implemented ownership, caller obligations, locality tradeoffs, rejected alternatives, executed/planned checks, and limits. Say when the current structure is adequate. Assessment completion can include unresolved gaps; it certifies neither the product nor an unperformed migration.
+Return the supported recommendation or migration result with decisive ownership, caller, compatibility evidence, and material gaps. Keep prose concise without losing context or technical detail; use bullets for parallel changes. Include maps, alternatives, and migration detail only when they explain the decision or enable the next action; do not reproduce the investigation checklist. Separate proposed changes/checks from implemented changes/executed checks. Say when the current structure is adequate. Assessment completion certifies neither the product nor an unperformed migration.

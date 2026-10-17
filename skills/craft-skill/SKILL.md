@@ -77,8 +77,8 @@ Track inline or in an existing record by default. A requested skill file is the 
 3. Use numbered steps where order matters. Start steps with actions and name their input or target, expected observation, and next decision when failure is plausible.
 4. Write explicit branches for consequential choices: if a prerequisite is missing, how to obtain it; if a check fails, what to investigate; if scope changes, which work to reopen.
 5. Keep user authorization and execution mode intact. Do not add mandatory delegation, Git actions, plugins, or redundant approval stops.
-6. Include a concise record or output format when it prevents omissions. Add completion checks that establish the promised result; do not use word-count or heading checks as behavioral proof.
-7. Include concrete gotchas only for failure modes supported by evidence. Cut background prose and advice that does not change an agent's actions.
+6. Keep instructions and generated prose concise without losing context or technical detail. Use bullets for parallel items, checkboxes for tracked actions, numbered steps for required order, and connected prose for explanations. Keep paragraphs unwrapped; add headings/tables only when useful. Make output formats adaptive: omit empty or irrelevant fields, preserve required machine-readable schema fields, and separate internal inspection requirements from written deliverables.
+7. Write each fact once in its authoritative location and link supporting evidence. Specs own behavior/decisions; plans own delivery/progress; notes capture new observations; handoffs summarize results and material gaps. Cut repeated summaries, routine process narration, and advice that does not change an action. Preserve constraints, exact contracts/commands, consequential decisions, acceptance, and evidence limits. Include gotchas only for supported failure modes.
 8. Keep common instructions in the entrypoint. Move substantial conditional procedures into existing or justified references; link each where it becomes relevant. Do not create extra files to fill a standard layout.
 9. Use capability names in core instructions. Put optional provider or harness requirements beside the integrations that actually need them.
 10. Check references, examples, command flags, and script paths against their implementation. Present placeholder commands as templates, not runnable commands with invented APIs.
@@ -86,7 +86,7 @@ Track inline or in an existing record by default. A requested skill file is the 
 ## 4. Validate decisions with realistic cases
 
 1. Choose cases before judging the result: a normal request, a likely failure, and a boundary or neighboring request that should take a different path. Add cases only when another meaningful risk needs coverage.
-2. Define observable success for each case, including artifacts and prohibited side effects. Do not grade merely by matching generated wording.
+2. Define observable success for each case, including artifacts and prohibited side effects. For prose, check retained context, decisions, technical detail, executability, and unnecessary repetition. Completion checks establish the promised result; word counts, heading counts, and matching wording do not prove behavior. Prefer the concise complete output; brevity that hides a required detail is a failure.
 3. Inspect available execution capabilities and authorization. If the user requests inline work, keep all testing and review inline. Use an isolated agent only when available and authorized; never make delegation a requirement.
 4. Apply the draft to the cases in a temporary or otherwise authorized workspace. Capture decisions, outputs, checks, and mistakes. If doing an instruction walkthrough rather than executing a task, label it explicitly.
 5. If comparing variants, hold the task, inputs, capabilities, and scoring criteria fixed. Separate independent runs from author walkthroughs influenced by this conversation.
@@ -135,4 +135,4 @@ Optional provider integrations:
 - [ ] License notices accompany any retained material that requires them.
 - [ ] Packaging was inspected if requested; no publication or Git action was inferred.
 
-Return findings or changes, affected skill paths, validation method/results, and evaluation limits. For assessment-only work, state that no paths changed. Distinguish readiness for the requested use from any pending model or harness trial. Do not force repeated approval for authorized revisions.
+Return findings or changes, affected paths, and a concise validation summary with material limits; link detailed evidence rather than repeating it. Omit empty report categories. For assessment-only work, state that no paths changed. Distinguish readiness for the requested use from pending model or harness trials. Do not force repeated approval for authorized revisions.

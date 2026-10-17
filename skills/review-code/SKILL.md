@@ -60,7 +60,7 @@ Return: <conclusion; executed checks; proposed correction; planned checks; limit
 
 ## 3. Record findings
 
-Use the project's severity vocabulary. Rank by effect on users, likelihood under supported use, and scope of impact; do not invent precision without evidence.
+Use the project's severity vocabulary. Rank by effect on users, likelihood under supported use, and scope of impact; do not invent precision without evidence. Keep prose concise without losing context or technical detail. Inspection steps and completion checks guide the review; do not reproduce them as report sections. Use bullets for parallel findings and combine related details without losing location, trigger, consequence, or evidence.
 
 ```text
 <priority> <short finding title>
@@ -68,10 +68,11 @@ Location: <file_path:line_number>
 Trigger: <supported input, operation, or condition>
 Expected/actual: <contract and mismatch>
 Consequence: <user-visible impact or maintenance failure>
-Evidence: <reproduced check, source trace, or observation still needed>
-Correction: <smallest supported remedy; no unauthorized edit>
+Evidence: <reproduced check or source trace; material uncertainty if present>
+Correction: <smallest supported remedy, when useful; no unauthorized edit>
 ```
 
+- Adapt the finding format; omit irrelevant fields and empty categories. Put each coverage limit beside its claim once; link detailed evidence rather than copying logs.
 - If the contract or trigger is uncertain, report an investigation question rather than a confirmed bug.
 - If behavior is intentional and accurately documented, do not report it as missing solely because an alternative seems preferable.
 - If a check fails during review, determine whether it exposes the proposed change, unrelated existing behavior, or test setup before assigning blame.
@@ -94,4 +95,4 @@ Correction: <smallest supported remedy; no unauthorized edit>
 - [ ] Supporting investigations preserve the original scope; proposed remedies and planned checks are distinct from work performed.
 - [ ] Validation scope and remaining runtime gaps are disclosed.
 
-Return prioritized findings, executed checks, planned verification, and gaps. State coverage and material questions. Label author self-review honestly; do not imply independence or product readiness. End assessment-only work at the report; planning or remediation needs an explicit request or existing authorization.
+Return prioritized findings with a brief coverage statement and material gaps. Include proposed checks only where needed to act on a finding; distinguish them from executed evidence. For no actionable findings, say so with coverage and material limits, without empty finding sections. Label author self-review honestly; do not imply independence or product readiness. End assessment-only work at the report; planning or remediation needs an explicit request or existing authorization.

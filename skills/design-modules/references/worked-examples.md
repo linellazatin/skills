@@ -7,7 +7,7 @@ These are hypothetical walkthroughs, not results observed in your checkout. Use 
 - **Request:** “Assess CLI and adapter policy owners; no refactor.”
 - **Given evidence:** CLI and adapter independently implement the same documented byte cap and error condition. Changing that rule currently requires two edits. The adapter additionally converts host payloads and registers reload callbacks; CLI argument parsing differs.
 - **Decision and action:** Trace one over-budget input through both callers. Recommend a shared owner for the byte-cap decision/error contract, leaving CLI parsing and adapter payload/lifecycle obligations at their boundaries. Compare retaining duplication against consolidation: consolidation removes two policy-update obligations without moving host registration into shared code.
-- **Result and limit:** Return current/proposed owners, caller obligations, compatibility checks, and a migration order. This is a proposal, not implemented ownership; no new package or SDK dependency follows from the recommendation.
+- **Result and limit:** Recommend the shared byte-cap owner, retaining adapter conversion/lifecycle and CLI parsing at their boundaries; identify both consumer checks and migration order. A compact bullet can express this single-rule proposal without a full ownership table. No migration, new package, or SDK dependency is authorized.
 
 ## Similar code, different contracts
 

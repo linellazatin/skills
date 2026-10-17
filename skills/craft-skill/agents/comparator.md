@@ -30,11 +30,12 @@ Use two dimensions, adapted to the task before inspecting outputs:
 **Structure** (how the output is organized):
 - Organization — is it logically structured?
 - Formatting — is it consistent and polished?
-- Usability — is it easy to use or act on?
+- Usability — is it easy to act on, preserving essential context, decisions, technical detail, and evidence without unnecessary repetition or boilerplate?
 
 Adapt criteria to the task. Examples:
 - Data pipeline → add "schema correctness", "data types", "row completeness"
 - Document → add "section structure", "heading hierarchy", "paragraph flow"
+- Plans/specs/notes → check useful bullets or sequences, clear content ownership, and omission of empty fields; do not reward section count or length. Brevity that hides required details reduces completeness.
 - Code → add "runs without errors", "handles edge cases", "readable"
 
 ## Step 2 — Read both outputs

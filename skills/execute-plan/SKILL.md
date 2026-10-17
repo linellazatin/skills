@@ -84,16 +84,15 @@ Before reporting the phase ready:
 - [ ] Remaining work, deviations, and unavailable observations are visible.
 - [ ] Existing written plan/spec links and authorized updates reflect current decisions and progress; no competing artifact was created.
 
-Use a concise record:
+Update current status in place and link evidence once. Keep prose concise without losing context or technical detail; use bullets for results and checkboxes for remaining actions. Keep design decisions in the spec and delivery progress in the plan. Report changed results, decisive evidence, and material gaps without repeating the plan or routine process history.
+
+Adapt this handoff to the work; omit empty or irrelevant fields:
 
 ```text
 Phase: <name; complete, incomplete, or blocked on a named prerequisite>
 Delivered: <behavior and affected consumers>
 Evidence: <check/interaction; observed result; coverage limit>
-Docs: <updated surfaces>
-Artifacts: <existing plan/spec paths or inline record; actual review state>
-Decisions/gaps: <deviations, deferred findings, unrun required checks>
-Next: <continue authorized phase, requested approval boundary, or missing input>
+Remaining: <material gaps, decisions, or next action, when present>
 ```
 
 If the user requested approval between phases, stop at that boundary. Otherwise continue ordinary authorized work. Implementation approval does not authorize commits, branches, publishing, or a separately checkpointed phase. Keep source and documentation approval distinct when the user does.

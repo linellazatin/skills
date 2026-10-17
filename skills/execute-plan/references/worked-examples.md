@@ -1,5 +1,9 @@
 # Worked execution decisions
 
+## Concise phase handoff
+
+Hypothetical handoff: “Both callers use the shared byte-cap rule; compatibility checks passed against the current source. Details: linked check log. Phase acceptance remains incomplete: required host reload is unverified because the host is unavailable.” Update the phase status in place; do not copy its checklist or earlier reports into this handoff. On resume, retain the source result only if its inputs remain unchanged and keep the host requirement pending.
+
 These are hypothetical walkthroughs, not results observed in your checkout. Use only the example relevant to an unclear decision; the entry route card is sufficient for routine work.
 
 ## Resume with unchanged evidence

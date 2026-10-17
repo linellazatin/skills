@@ -77,9 +77,10 @@ Approach: <chosen option; tradeoff; defaults not explicitly chosen by the user>
 Behavior: <normal operation; boundaries/errors; responsibilities>
 Constraints: <compatibility, resources, migration, dependencies>
 Acceptance: <examples; checks; required host or rendered observations>
-Open decisions: <material questions or none>
-Next: <design review, requested planning, or authorized development>
+Open decisions: <only material unresolved questions>
 ```
+
+Keep prose concise without losing context or technical detail. The outline above is a content guide, not required headings: combine related items and omit empty fields. Use bullets for parallel requirements and numbered steps for required sequences. Retain consequential decisions, failure behavior, constraints, and acceptance. Specs own behavior and decisions; plans own delivery and progress. Link evidence once and include a next action only when needed for a decision or handoff.
 
 ### Store a written design
 
@@ -111,4 +112,4 @@ For feasibility, completion means the claim has evidence or a named unresolved o
 - [ ] The handoff respects the requested scope, existing authorization, and review checkpoints.
 - [ ] The selected inline or written artifact fits the work; saved paths and actual review state are clear.
 
-Return the recommendation and design, important tradeoffs, decisions still needed, and the next authorized action. Keep small decisions brief. Do not add browser tooling, visual-companion resources, mandatory scripts, delegation, or automatic Git actions.
+Return the inline design or saved spec path with the recommendation and any material decision still needed; do not repeat a saved design at handoff. Do not add browser tooling, visual-companion resources, mandatory scripts, delegation, or automatic Git actions.
