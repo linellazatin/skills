@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1
+
+### New
+
+- Added `inspect-code` for balanced, source-backed repository orientation and reading maps, `scc` composition measurements, and behavior-tracing, maintenance-triage, and dependency-mapping investigations; with static/read-only defaults, explicit scope/evidence limits, missing-tool fallbacks, and standalone scc guidance.
+
 ## 0.3.0
 
 ### New
