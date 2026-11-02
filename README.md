@@ -1,6 +1,6 @@
 # Lines' skills
 
-Portable Agent Skills for planning, development, debugging, review, and verification, plus a meta skill for creating and evaluating skills. The collection follows three design goals:
+Portable Agent Skills for repository inspection, planning, development, debugging, review, and verification, plus a meta skill for creating and evaluating skills. The collection follows three design goals:
 
 1. **Single source, any harness.** Core instructions stay independent of platform integrations. Optional helpers declare their runtime and provider requirements; discovery depends on the client.
 2. **Concrete instructions.** Skills provide ordered steps, failure branches, evidence records, and completion checks. Skills reuse supplied context and respect authorization. Performance across model sizes still needs separate evaluation.
@@ -13,12 +13,13 @@ All skill folders live under `skills/`. Install individual folders; keep their i
 | Skill | Description |
 |-------|-------------|
 | [craft-skill](skills/craft-skill/SKILL.md) | Meta skill for creating Agent Skills. Three modes: **Extract** (capture from conversation history), **Design** (build from scratch), **Refine** (improve an existing skill). Includes a bundled eval and description-optimization pipeline. |
-| [debug-systematically](skills/debug-systematically/SKILL.md) | Diagnose failures with evidence; apply and verify fixes only when authorized. |
+| [strategize](skills/strategize/SKILL.md) | Clarify intent, compare viable approaches, and settle a buildable design before detailed planning; no visual companion or required tooling. |
+| [plan-work](skills/plan-work/SKILL.md) | Turn requirements or an agreed design into dependency-ordered steps and acceptance checks. |
 | [design-modules](skills/design-modules/SKILL.md) | Assess or migrate ownership and interfaces using caller obligations, change locality, dependency-aware verification, and compatibility checks. |
 | [execute-plan](skills/execute-plan/SKILL.md) | Execute and resume approved plans or established phased work inline, with optional check logs, handoffs, and Git review reports. |
-| [plan-work](skills/plan-work/SKILL.md) | Turn requirements or an agreed design into dependency-ordered steps and acceptance checks. |
+| [inspect-code](skills/inspect-code/SKILL.md) | Orient in a repository with source-backed structure, entry points, tests, scc measurements, and a reading map; optionally trace behavior, investigate maintenance candidates, or map dependencies. Static and read-only by default. |
 | [review-code](skills/review-code/SKILL.md) | Assess code, docs, and implementation plans against requirements; report findings and verify review feedback. |
-| [strategize](skills/strategize/SKILL.md) | Clarify intent, compare viable approaches, and settle a buildable design before detailed planning; no visual companion or required tooling. |
+| [debug-systematically](skills/debug-systematically/SKILL.md) | Diagnose failures with evidence; apply and verify fixes only when authorized. |
 | [test-first](skills/test-first/SKILL.md) | Develop behavior through red-green-refactor cycles, design diagnostic and isolated tests, and protect refactors with characterization coverage. |
 | [verify-work](skills/verify-work/SKILL.md) | Check completion and readiness against requirements and evidence at the correct scope. |
 
@@ -30,6 +31,7 @@ Choose the primary skill by the result you need:
 
 | Requested result | Primary skill |
 | --- | --- |
+| Understand a repository, measure composition, or map a focused code path/dependency | `inspect-code` |
 | Settle an idea, approach, or feasibility question | `strategize` |
 | Produce or revise an implementation plan | `plan-work` |
 | Execute or resume an approved plan or established authorized phases | `execute-plan` |
@@ -42,7 +44,7 @@ Choose the primary skill by the result you need:
 
 Supporting checks do not restart the primary workflow or expand authorization. “Continue” retains the task but does not approve a plan; reviewing reports findings, while revising changes the plan. Prose uses document checks, and each skill stands alone. Clarify ambiguity with context or focused questions; domain/tool guidance can support any workflow. Specified changes and proven corrections proceed without restarting discovery or diagnosis, though an undecided correction may still need design.
 
-Each skill's entry route gives required context, first action, and stop condition. The eight engineering skills also have compact route cards (condition, action/minimum evidence, stop or handoff) and optional hypothetical examples in `references/worked-examples.md`; scope and safety gates remain in `SKILL.md`. Branches cover existing implementations, assessment-only work, and unavailable runtimes. Authored examples are not checkout results; disposable fixtures prove only their observed scope. Activation and instruction-following require model/harness trials.
+Each skill's entry route gives required context, first action, and stop condition. The original eight engineering workflow skills also have compact route cards (condition, action/minimum evidence, stop or handoff) and optional hypothetical examples in `references/worked-examples.md`; scope and safety gates remain in `SKILL.md`. Branches cover existing implementations, assessment-only work, and unavailable runtimes. Authored examples are not checkout results; disposable fixtures prove only their observed scope. Activation and instruction-following require model/harness trials.
 
 An unavailable host leaves acceptance unverified, not failed. Verification does not authorize fixes. Migrations start with coverage for affected consumers; extra plans/specs need purpose and writing authority. Under no-write scope, inspect checks for cache/output effects and use verified suppression, redirection, or disposable copies with explicit limits. Passing checks or unchanged Git status do not prove no writes.
 
@@ -144,6 +146,8 @@ mklink /d "X:\client\skills\skill-name" "X:\checkout\skills\skill-name"
 ```
 
 ### Bundled tooling tiers
+
+`inspect-code` uses an available [scc executable](skills/inspect-code/references/scc.md) for measurements; without it, static orientation remains available with metrics omitted. Installation is separate and never automatic. Git history analysis is optional; project code, tests, and builds are not executed by default.
 
 Bundled helpers have two tiers:
 
