@@ -44,12 +44,12 @@ Use the row matching the requested result; linked examples are optional.
 
 ## 3. Specify executable phases
 
-1. Order phases by dependencies and priority. Give each phase one reviewable outcome; combine trivial edits that share the same verification.
+1. Order phases by dependencies and priority. Give each phase one reviewable outcome; use one phase when sufficient and combine trivial edits sharing verification. Use parts → phases → steps only for real grouping or dependencies. Retain stable phase identifiers when revising remaining work so earlier evidence and approvals stay unambiguous.
 2. Identify existing source paths and affected contracts. Use a proposed path only when a new file is actually needed; mark it as proposed.
 3. Write steps as actions on those paths, including consumer migration and compatibility handling. Select checks using the routes below.
 4. Define a check for each promised outcome: setup, exact inspected command or interaction, expected observable result, and the surface it reaches.
 5. Include affected README, changelog, manuals, diagrams, and requested version work. Do not add a release or Git action without its separate authorization.
-6. Include the requested review boundary. If phase approval was requested, state what the reviewer will receive and where execution stops; otherwise allow authorized work to continue.
+6. Include phase-completion reassessment: compare delivered work with requirements, resolve in-scope findings and rerun affected checks, then assess consequential effects on remaining phases. Specify requested phase/step approval boundaries and what the reviewer receives; otherwise allow authorized work to continue.
 7. If a required runtime cannot be reached, mark its check as pending and name the setup or access needed. Do not replace a host requirement with a unit test.
 
 | Planned work | Check sequence |
@@ -61,12 +61,15 @@ Use the row matching the requested result; linked examples are optional.
 
 Write shared outcome, scope, and consequential decisions once. Link governing spec sections instead of copying their contracts; retain enough context to understand the plan independently. Keep prose concise without losing context or technical detail. Use bullets for parallel actions, checkboxes for tracked work, and numbered steps when order matters.
 
+Record the execution policy once, with exceptions beside affected phases: authorized scope, technical checks/reassessment, requested approval stops, and permitted next actions. Distinguish approval to begin a phase from acceptance of its completed result. If commits are authorized, preserve their timing and exact allowed file categories/paths, including withheld documentation; do not infer commit or release authority from plan approval. Technical step gates do not require human approval unless requested. Keep unobserved host checks unverified; only an explicit user decision changes whether they block the named acceptance scope. Record that decision without claiming the observation passed. See the [conditional gate example](references/worked-examples.md#conditional-phase-gates).
+
 Use this adaptable phase outline:
 
 ```text
 ## <Phase and observable outcome>
 - [ ] <Action on the relevant path/consumer>
 - [ ] Verify: <inspected command/interaction and expected result>
+- [ ] Reassess: <phase result, findings/disposition, and effects on remaining work>
 ```
 
 Add dependencies, setup, compatibility handling, documentation/version work, status, limits, or review boundaries only where applicable, beside the affected action. Omit empty fields and routine statements such as “Depends on: none.” Keep material prerequisites and pending acceptance explicit; retain all required consumers and checks.
@@ -91,7 +94,7 @@ Keep permanent regression tests in the project's normal test locations and dispo
 - [ ] Every phase has its prerequisites and real consumers identified.
 - [ ] Unconfirmed concerns have investigation steps, rather than invented fixes.
 - [ ] Commands, paths, APIs, and package names were inspected rather than guessed.
-- [ ] Documentation and requested checkpoints are included.
+- [ ] Documentation, phase reassessment, requested checkpoints, and any authorized commit policy are included.
 - [ ] Unresolved material decisions and unavailable checks are visible.
 - [ ] Artifact selection matches the task; a saved plan links any governing spec and records actual phase/review state.
 

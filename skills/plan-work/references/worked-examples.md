@@ -14,6 +14,12 @@ Shared context appears once; empty dependency, version, and approval fields add 
 
 These are hypothetical walkthroughs, not results observed in your checkout. Use only the example relevant to an unclear decision; the entry route card is sufficient for routine work.
 
+## Conditional phase gates
+
+- **Request:** “Plan three maintenance parts with phases and steps. Reassess each phase; after my completion approval, commit source/tests only and proceed. Leave docs uncommitted.”
+- **Decision and action:** Group real outcomes into stable identifiers such as Part 1 / Phase 1.2; order implementation and checks, then phase reassessment and in-scope correction. Record the policy once: completion approval gates eligible commits and the next phase. Phase-entry approval does not accept the work that has yet to be delivered. Include required docs updates while excluding them from commits; do not invent a research-phase commit when no eligible file changed.
+- **Result and limit:** The plan defines the reviewer evidence and permitted transitions. Writing the plan grants no execution, completion approval, or Git authority beyond the user's request. A smaller change with shared verification can remain one phase; nested headings are not mandatory.
+
 ## Shared-contract migration
 
 - **Request:** “Plan the agreed policy migration, preserving public behavior. Keep the plan inline; do not implement.”

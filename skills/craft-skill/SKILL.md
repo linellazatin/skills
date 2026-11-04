@@ -93,6 +93,8 @@ Track inline or in an existing record by default. A requested skill file is the 
 6. Map each failure to a specific instruction. In assessment-only work, report the correction without editing. When revision is authorized, revise and repeat affected cases. Stop when required cases meet their criteria or report a named unresolved limitation.
 7. Do not claim improved model performance from metadata validation or an inline review. Report the actual evaluation method and its limits.
 
+For skills governing phased work, include action-order cases where applicable: entry approval versus completion approval, correction/revalidation before handoff, exact commit exclusions, continuation without invented stops, resumed pending gates, explicit deferrals, and a bounded single-phase request. Check the actions taken or withheld, not just the final report's wording. Preserve the distinction between authored walkthroughs and independently executed behavior trials; trigger scores cannot establish gate compliance.
+
 - Before writing automated evaluation artifacts, read [JSON schemas](references/schemas.md). Use `assertion_results` in `grading.json`; an incorrectly shaped record cannot establish correctness.
 - Load only relevant guidance: [grader](agents/grader.md) for assertions, [comparator](agents/comparator.md) for controlled comparisons, or [analyzer](agents/analyzer.md) for diagnosis. These resources can guide inline review; they do not authorize delegation.
 

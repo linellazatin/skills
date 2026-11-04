@@ -67,6 +67,7 @@ Requirement/surface | Current artifact | Check and expected observation | Actual
 - If the evidence supports only part of a requirement, state the supported part and the remaining gap; do not mark the entire requirement passed.
 - If later edits affect evidence, reopen the relevant requirement and rerun its check.
 - Declare the requested scope ready only when every required item is established. Optional deferred improvements do not become blockers unless they affect a requirement.
+- Record explicit user decisions to defer a check, narrow acceptance, or accept a limitation, including which phase/release claim remains unsupported. Change acceptance scope only when authorized; retain the deferred observation as unverified. [Phase acceptance with a limitation](references/worked-examples.md#accepted-phase-with-deferred-platform-check) neither passes that check nor establishes broader readiness.
 
 ## Completion check
 
@@ -82,6 +83,7 @@ Maintain full requirement coverage in the working verification map; the final re
 Readiness: <ready for the named scope, or incomplete>
 Established: <requirements and supporting observations>
 Blockers/gaps: <failed, partial, or unrun requirements; next observation>
+Acceptance: <pending/granted or explicit scoped user decision, when relevant>
 ```
 
-Include relevant documentation in the established scope and put each material limit beside its affected claim or gap, once. Link detailed evidence instead of copying logs. Do not start a separately checkpointed next phase through a readiness claim.
+Include relevant documentation in the established scope and put each material limit beside its affected claim or gap, once. Link detailed evidence instead of copying logs. Return evidence and limits to the active phase's gate; readiness does not grant user acceptance or start a separately checkpointed next phase.

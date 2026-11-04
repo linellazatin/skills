@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.2
+
+### Changed
+
+- Clarified `inspect-code` and `review-code` as separate outcomes: repository understanding and investigation candidates versus contract-based defect findings. Maintenance triage selects candidates without implying defects or redesign.
+- Documented optional, side-effect-bounded scc measurements during review without requiring `inspect-code`, installation, or repeated reconnaissance. Added a hypothetical maintenance-signal review example and catalog guidance; preserved each skill's execution boundaries and standalone use.
+- Strengthened planning/execution with proportionate phases, stable identifiers, reassessment/correction before handoff, resumed pending gates, and explicit completion-approval/commit timing and file exclusions. Preserved full-run execution without invented approval stops.
+- Aligned review, verification, design, migration, TDD, and skill-evaluation guidance with parent-phase boundaries and explicit user deferrals. Added worked gate/acceptance examples and workflow documentation; clarified that the optional checkpoint helper records evidence rather than enforcing approval.
+
 ## 0.3.1
 
 ### New

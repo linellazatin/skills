@@ -1,13 +1,13 @@
 ---
 name: inspect-code
-description: "Orient yourself in an unfamiliar repository: map its purpose, stack, structure, entry points, tests, and composition, then recommend where to investigate. Also answer focused codebase-size questions or requested behavior-tracing, maintenance-triage, and dependency-mapping questions. Defect/security audits, failure diagnosis, redesign, implementation, and readiness verification are separate workflows."
+description: "Orient yourself in an unfamiliar repository: map its purpose, stack, structure, entry points, tests, and composition, then recommend where to investigate. Also answer focused questions about codebase size, behavior traces, maintenance investigation candidates, and dependencies. Defect/security audits, failure diagnosis, redesign, implementation, and readiness verification are separate workflows."
 license: MIT
 compatibility: Core inspection needs file reading and search. Measurements use an available scc executable through command execution; without it, continue static inspection with metrics omitted. Git history is optional. No project runtime, harness integration, or additional analysis tool is required.
 ---
 
 # Inspect a repository and map the next investigation
 
-Produce a concise, evidence-backed orientation and reading map. Use scc for measurements, not as a substitute for understanding the code.
+Produce a concise, evidence-backed orientation and reading map. Explain what exists, how it connects, and where to investigate; contract-based defect findings belong to review. Use scc for measurements, not as a substitute for understanding the code.
 
 ## Entry route
 
@@ -47,6 +47,8 @@ If a needed capability is absent or its side effects cannot be bounded, continue
 3. Stop at dynamic dispatch, external services, generated/missing code, or ambiguous bindings that static evidence cannot resolve. Report the supported chain with references and the unresolved boundary, not an invented end-to-end execution trace. Reading a test is not running it.
 
 ### Investigate maintenance candidates
+
+Select candidates for further investigation, not confirmed defects or a redesign. If the requested outcome is a judgment against a documented contract, use review; if it is an ownership/interface recommendation, use ownership analysis. Reuse the evidence already gathered; no companion skill is required.
 
 1. Establish the area of interest and use per-file size/complexity as leads. Compare complexity cautiously within a language, not as a universal quality score.
 2. When requested and available, use [bounded scc history reports](references/scc.md#requested-history-analysis). State the committed revision, actual commit/date window, and history completeness separately from working-tree measurements. If history is absent, shallow, unreadable, or unsupported, disclose the limit and retain source-only triage; do not fetch automatically.
