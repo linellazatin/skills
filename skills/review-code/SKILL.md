@@ -23,6 +23,7 @@ Choose the requested assessment; linked examples are optional. Supporting review
 | [Defect review of code/docs/changes](references/worked-examples.md#supported-default-regression) | Establish the contract; trace a concrete trigger through owner, caller, and guards. | Supported location/trigger/consequence finding or no actionable findings; no edits inferred. |
 | [Review feedback to evaluate](references/worked-examples.md#rejected-empty-input-feedback) | Test the claimed mismatch against current code and evidence before accepting it. | Reject unsupported feedback; propose supported remedies without unauthorized fixes. |
 | [Plan omissions, no revision](references/worked-examples.md#plan-review-not-revision) | Compare requirements/consumers with planned steps and checks. | Findings; proposed checks are not executed evidence, and the plan stays unchanged. |
+| [Phase-completion reassessment](references/worked-examples.md#phase-reassessment-before-approval) | Review the delivered phase against current requirements and consequential effects on remaining work; return findings and evidence to its gate. | Reassessment does not grant user acceptance, commit authority, or entry into a checkpointed phase. |
 | Plan revision or readiness decision requested | Route to planning or requirement-level verification respectively. | Do not substitute defect findings for a revised plan or readiness coverage. |
 
 - Check existing specs and plans against current code and newer user corrections. Inspect ignored working artifacts directly; Git diffs omit them.
@@ -59,6 +60,8 @@ Known evidence: <observations and uncertainties>
 Allowed scope: <assessment-only or explicitly authorized remediation>
 Return: <conclusion; executed checks; proposed correction; planned checks; limits>
 ```
+
+For phase reassessment, reuse current check evidence and inspect the phase's real consumers, changed artifacts, and consequential later-plan assumptions. Return in-scope findings for correction and affected revalidation within the active phase; material scope decisions remain explicit. Do not restart unrelated discovery or a full repository audit. “No actionable findings” completes this review, not the parent phase's verification or requested approval.
 
 ## 3. Record findings
 

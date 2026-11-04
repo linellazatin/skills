@@ -20,6 +20,13 @@ These are hypothetical walkthroughs, not results observed in your checkout. Use 
 - **Decision and action:** Record reachable contracts as established only at their scope. Mark host acceptance unverified and retain the live setup, reload/invocation, expected observation, and cleanup procedure. Continue independent reachable checks; propose no corrective edit merely because access is missing.
 - **Result and limit:** Readiness is incomplete. Neither “host reload failed” nor “reload passed” follows from unavailable access. Passing mocks cannot establish the required host observation; a genuinely observed contract mismatch would instead be failed evidence.
 
+## Accepted phase with deferred platform check
+
+- **Request:** “I accept the source-only phase. Defer Windows testing; continue the next authorized source phase, but do not release.”
+- **Given evidence:** Current source checks passed. Windows acceptance is unobserved; the user explicitly narrows phase acceptance rather than claiming cross-platform readiness.
+- **Decision and action:** Record the accepted source scope and user deferral, retaining Windows as unverified with its next observation. Return evidence to the parent execution policy, which governs continuation; verification itself does not implement the next phase.
+- **Result and limit:** Source-phase acceptance can be recorded. Windows and all-platform/release readiness remain unverified, and publication remains unauthorized. Without that explicit scope decision, a required unavailable Windows check would keep the affected phase acceptance incomplete.
+
 ## Document-only scope
 
 - **Request:** “Verify the rewritten installation paragraph and links. No edits.”
