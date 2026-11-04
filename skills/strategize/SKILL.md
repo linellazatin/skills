@@ -97,7 +97,7 @@ Keep prose concise without losing context or technical detail. The outline above
 2. Resolve contradictions, invented APIs, unsupported assumptions, and omitted failure behavior. Inspect available facts before asking the user to supply them.
 3. If a review checkpoint or material user decision remains, present the concrete design and that decision; wait before dependent implementation. If design or planning only was requested, end at that deliverable.
 4. If implementation is already authorized and remaining choices are delegated or routine, state the choices and continue within scope. Do not require repeated approval for the same work or interpret silence as acceptance of a pending decision.
-5. For substantial software work, carry the resolved design into an implementation plan with TDD slices, dependencies, docs, and requested phase boundaries. Use `plan-work` if available; otherwise prepare that outline directly. No companion skill is required.
+5. For substantial software work, carry the resolved design into an implementation plan with TDD slices, dependencies, docs, and requested phase boundaries. Preserve the user's reassessment, approval, and commit policy without adding human gates for routine steps; a small coherent change may need only one phase. Use `plan-work` if available; otherwise prepare that outline directly. No companion skill is required.
 6. If new evidence changes a settled assumption, reopen only the affected decisions and update the design and acceptance conditions. Preserve valid prior work and explain the impact.
 
 ## Completion check

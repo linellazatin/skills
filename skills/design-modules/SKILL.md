@@ -89,7 +89,7 @@ Assess/propose completion:
 
 1. If assessment-only, return the ownership map, recommended option, tradeoffs, and migration checks without editing.
 2. Select coverage before changing the owner: characterize unchanged behavior while it is still present; for intentional behavior changes, observe an intended failing test first. Preserve existing implementation and disclose missing before-change observations. Inaccessible host checks stay pending.
-3. Migrate the owning rule and real consumers in dependency order. Keep characterization checks passing; after intentional changes, establish green before structural cleanup. Preserve unrelated work.
+3. Migrate the owning rule and real consumers in dependency order. Keep characterization checks passing; after intentional changes, establish green before structural cleanup. Preserve unrelated work. Within phased execution, return consumer/compatibility evidence and consequential migration-order changes to the active phase's reassessment; retain its approval and commit boundaries rather than treating green checks as acceptance.
 4. Verify shared behavior through its public contract and check each affected adapter's conversion or lifecycle path.
 5. Inspect generated artifacts and package/install wiring when those boundaries change. Account for copied or cached installations explicitly.
 6. Remove obsolete forwarding or duplicated policy only after checking remaining callers. Do not remove a public entrypoint without the agreed compatibility handling. Retire an old test only after confirming its contractual assertions are covered by retained tests or are intentionally obsolete; keep focused internal tests that protect meaningful behavior.

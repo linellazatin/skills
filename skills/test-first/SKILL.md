@@ -115,4 +115,4 @@ Before declaring the phase ready:
 - [ ] Green and any refactor checks were observed against the final relevant inputs.
 - [ ] Required consumers, regressions, documentation, and live observations are established; pending checks remain visible and keep the affected requirement incomplete.
 
-Return delivered behavior, a brief evidence summary or link, and material remaining gaps. Do not claim a test-driven cycle or a live-host result that was not actually observed.
+Return delivered behavior, a brief evidence summary or link, and material remaining gaps to the active task or phase. A green cycle satisfies its technical gate, not parent-phase reassessment, user acceptance, or commit/next-phase authority. Do not add human approval between test cycles unless requested, or claim a test-driven cycle or live-host result that was not actually observed.
