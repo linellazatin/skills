@@ -6,7 +6,7 @@ license: MIT
 
 # Assess the current work
 
-Produce findings tied to actual behavior and scope. Do not change files in an assessment-only review.
+Produce findings tied to actual behavior and scope. Judge whether observed behavior violates an expected contract; repository orientation, composition measurements, and investigation candidates alone are not defect findings. Do not change files in an assessment-only review.
 
 ## Entry route
 
@@ -42,6 +42,8 @@ Choose the requested assessment; linked examples are optional. Supporting review
 3. Run appropriate checks or reproductions when they add evidence. Inspect their cache/output effects first; use verified suppression/redirection or a disposable copy under no-write scope, labeling its coverage. A passing exit or unchanged Git status does not establish no writes. A source-derived finding can stand without runtime access; label it as such.
 4. For each suspected problem, identify the concrete trigger and consequence. Inspect enough surrounding code to rule out an existing guard or intentional contract.
 5. Exclude cosmetic preferences unless requested or necessary for correctness. Keep optional improvements separate from confirmed regressions.
+
+Optional measurements can help select review targets, not establish findings. If an available scc executable would answer a material question, inspect its version/help and configuration/output effects before using a bounded, stdout-only invocation. Disclose filters and counting conventions; history requires a separate revision/window and scope. Complexity, churn, co-change, and LOC do not establish defects, architectural coupling, or test coverage. Do not install tools automatically or require a separate inspection workflow; omit unavailable measurements and continue contract-based review. Reuse any existing orientation and measurement evidence whose scope still applies.
 
 ### Carry scope into supporting investigation
 

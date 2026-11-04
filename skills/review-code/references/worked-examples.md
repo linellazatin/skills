@@ -23,6 +23,13 @@ These are hypothetical walkthroughs, not results observed in your checkout. Use 
 - **Decision and action:** Trace the claimed input through the actual entrypoint and inspect the check's assertion. Reject the crash claim using the guard and passing contract check; do not add another guard merely to accept feedback. If a different entrypoint remains plausible, report that as a question requiring evidence.
 - **Result and limit:** No actionable finding for the demonstrated path; behavior stays unchanged. Do not manufacture cosmetic findings or imply that one public-input check covers unrelated callers.
 
+## Maintenance signal, not a finding
+
+- **Request:** “Review this module for defects; the inspection report flags high complexity and churn.”
+- **Given evidence:** Measurements identify a candidate file, but provide no supported input that violates its contract. Source inspection finds expected source/test co-changes, not proof of architectural coupling.
+- **Decision and action:** Reuse the measurements to prioritize reading, then inspect callers, guards, and relevant tests. Report a defect only if a concrete contract mismatch is supported; otherwise retain any material uncertainty without turning the metric into a finding. Missing scc does not block source review or authorize installation.
+- **Result and limit:** The candidate is not a confirmed defect. Reading tests does not establish a passing runtime check, and no redesign or remediation is inferred.
+
 ## Plan review, not revision
 
 - **Request:** “Review the migration plan for omissions. Don't revise it.”
