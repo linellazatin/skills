@@ -13,7 +13,7 @@ Complete authorized planned deliverables inline, including implementation, probe
 
 - **Inputs:** approved written or inline plan, established phase scope, current artifacts, and latest corrections.
 - **First action:** recover the plan and authorization, then reconcile progress with current files and evidence.
-- **Core loop:** retain verified tasks with unchanged inputs → implement the next incomplete task → run its relevant checks → update docs and progress → continue through the authorized scope. An absent approval checkpoint is not a blocker; stop only at a requested checkpoint or a material missing prerequisite.
+- **Core loop:** retain verified tasks with unchanged inputs → implement the next incomplete task → run its relevant checks → reassess and correct findings → update docs and progress → apply the requested gate policy → continue through the authorized scope. An absent approval checkpoint is not a blocker; stop only at a requested checkpoint or a material missing prerequisite.
 - **Stop condition:** deliver verified phases through the authorized scope, stopping at requested approval boundaries or missing material prerequisites.
 
 ### Route card
@@ -32,7 +32,7 @@ Use the row matching current work; linked examples are optional.
 1. Read the selected plan, its governing spec when present, current requirements, project instructions, and latest user corrections. Reconcile stale notes with actual artifacts; newer explicit user corrections control, and unresolved material conflicts stop only dependent work.
 2. Inspect the working tree and relevant artifacts. Identify completed, incomplete, and uncertain deliverables using current files and check results.
 3. If a previous result's inputs changed, mark its evidence stale and rerun the affected check. Do not restart completed work merely because a progress note is missing.
-4. Record remaining phases in the active same-scope task list or plan, even when resuming from another session. Mark the next phase active; preserve unrelated edits. Do not append newly authorized work to a closed plan; select a successor only when a written plan is warranted.
+4. Recover stable phase identifiers, remaining work, pending approval, and the permitted next action in the active same-scope task list or plan, even across sessions. Mark a phase active only when entry is authorized; preserve unrelated edits. Do not append newly authorized work to a closed plan; select a successor only when a written plan is warranted.
 5. Confirm prerequisites for that phase. If a required decision or dependency is missing, resolve it before dependent implementation; continue independent authorized work where possible.
 
 ## 2. Deliver the active phase
@@ -61,9 +61,9 @@ Choose the check route for each task before changing it:
 4. After each meaningful change, run the checks that can expose its failure. Read the output and compare it with the expected behavior; an exit code alone does not establish coverage.
 5. For a bug fix, preserve a regression example and rerun the reported scenario. For accessible host or UI behavior, perform the requested actual-host or rendered check; otherwise retain the pending observation.
 6. Update related documentation and the changelog before phase handoff. Apply a version change only when required or requested; preserve historical release entries.
-7. Review the phase inline against its requirements, including relevant new files, installed or generated copies, and unintended scope changes.
+7. Reassess the phase inline against current requirements, including relevant new files, installed/generated copies, and unintended scope changes. Correct supported in-scope findings and rerun affected checks before handoff. Check whether new evidence changes later prerequisites, scope, ordering, consumers, or acceptance checks; update only affected remaining work. Resolve material decisions before dependent work, without restarting unaffected design or a repository-wide audit.
 8. Update task status as each deliverable is verified. Failed or unrun required checks leave affected tasks incomplete.
-9. Before handoff, update the active plan concisely with status, deviations, evidence links and limits, remaining work, and pending observations; do not accumulate transcripts or repeat historical reports. At closure, record outcome, actual acceptance state, and remaining gaps once. Checked steps do not close unresolved required work, evidence, or acceptance. Keep approval separate from completion. Update the governing spec only for authorized design changes; a file edit is not approval.
+9. Before handoff, update the active plan concisely with status, deviations, evidence links and limits, remaining work, and pending observations; do not accumulate transcripts or repeat historical reports. At closure, record outcome, actual acceptance state, and remaining gaps once. Checked steps do not close unresolved required work, evidence, or acceptance. Distinguish implementation, verification, reassessment, pending/granted user acceptance, and any authorized commit status where consequential. Record explicit user deferrals and their effect on the accepted scope; unobserved checks remain unverified. Update the governing spec only for authorized design changes; a file edit is not approval.
 
 ## 3. Handle deviations
 
@@ -95,7 +95,13 @@ Evidence: <check/interaction; observed result; coverage limit>
 Remaining: <material gaps, decisions, or next action, when present>
 ```
 
-If the user requested approval between phases, stop at that boundary. Otherwise continue ordinary authorized work. Implementation approval does not authorize commits, branches, publishing, or a separately checkpointed phase. Keep source and documentation approval distinct when the user does.
+### Apply the gate policy
+
+1. Recover the requested phase/step stops and permitted next actions from the plan and latest user instructions. Approval to start a phase does not accept its eventual result or authorize a completion-gated commit. At a requested boundary, present the reassessed result, evidence/gaps, and proposed next actions, then wait. Interpret replies in the context of the pending request; no special approval keyword is required.
+2. Record any approval with the phase/result and actions it covers. If commits are separately authorized and their requested conditions are satisfied, inspect the proposed diff and stage only approved changes in permitted paths, preserving source/test/configuration/documentation exclusions and repository commit style. Leave withheld docs uncommitted even when updated; skip commits when no eligible change exists. Do not infer branches, tags, publication, or future-phase acceptance.
+3. Continue only through authorized scope and satisfied prerequisites. With full-run authorization and no requested approval stop, perform each phase's checks/reassessment and continue without asking again. Material changes to an accepted result require renewed affected checks and, where approval is required, acceptance of the changed result; progress-only notes do not reopen approval.
+
+A green task, no review findings, or a helper handoff is not user acceptance. Preserve the pending gate on resume rather than treating a checked task list as permission to commit or enter another checkpointed phase. See [completion approval and commit timing](references/worked-examples.md#completion-approval-before-commit) and [full-run reassessment](references/worked-examples.md#full-run-with-reassessment).
 
 ## Optional checkpoint helper
 
@@ -109,5 +115,5 @@ python /path/to/execute-plan/scripts/checkpoints.py handoff /project/plan.md pha
 
 - If a check returns nonzero, inspect its log, resolve the cause, and repeat the affected check; do not hand off as ready.
 - If the plan changes, inspect the saved/current diff. Use the reference's explicit reconciliation route only for progress-only edits with unchanged check inputs; material changes require a fresh start and rerun. Preserve valid implementation work; reconciliation is a caller attestation, not verification.
-- `awaiting_review` records a handoff, not approval. Its Git report lists current staged/unstaged changes and untracked paths; inspect committed changes and untracked contents separately when in scope.
+- `awaiting_review` records a handoff, not approval. Keep approval history and the permitted next action in the existing plan; the helper does not enforce transitions between phases. Its Git report lists current staged/unstaged changes and untracked paths; inspect committed changes and untracked contents separately when in scope.
 - Without Python or command access, maintain the same named checks and handoff record manually. The helper is optional.

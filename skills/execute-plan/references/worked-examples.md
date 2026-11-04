@@ -13,6 +13,20 @@ These are hypothetical walkthroughs, not results observed in your checkout. Use 
 - **Decision and action:** Resume that same plan without renaming its creation date or creating a second plan because the session changed. Inspect current artifacts to confirm task one's evidence still applies; retain its verified status. Implement task two through the appropriate test route, run its consumer checks, update affected docs and existing progress notes, and review the delivered phase.
 - **Result and limit:** Continue the authorized remainder without redoing task one or inventing a fresh approval gate. Completion still needs task two's actual evidence; a progress note alone cannot establish it. Do not commit.
 
+## Completion approval before commit
+
+- **Request:** “Approve each completed phase before its source-only commit and the next phase; leave tests and docs uncommitted.”
+- **Given evidence:** Phase A was accepted and committed before authorized entry into B. B now passes checks, but reassessment finds an omitted consumer.
+- **Decision and action:** Finish B's consumer correction and rerun affected checks. Update B's evidence and consequential later-plan changes, present its reassessed result, and wait before committing B or entering C. On resume, recover B's pending approval rather than interpreting its green checks as acceptance. A reply approving B and its proposed actions permits only those actions; excluded tests/docs stay uncommitted.
+- **Result and limit:** Entry approval for B never becomes completion approval for B. A later material change to B needs affected revalidation and renewed acceptance where required; a progress-note edit alone does not.
+
+## Full run with reassessment
+
+- **Request:** “Implement all phases, reassess and address findings after each, and do not commit.”
+- **Given evidence:** Phase 1's reassessment exposes an in-scope caller mismatch and changes a Phase 2 prerequisite; no human stop was requested.
+- **Decision and action:** Correct the mismatch, rerun affected checks, and update the remaining prerequisite and docs. Record the reassessment and continue into Phase 2 without asking for redundant approval. Preserve unchanged evidence and do not broaden the review into unrelated work.
+- **Result and limit:** The technical gate is satisfied before continuation; Git actions remain unauthorized. A material decision outside scope still stops dependent work, not independent authorized tasks.
+
 ## Stale copy and unavailable host
 
 - **Request:** “Finish this phase; verify the installed copy and host reload.”
