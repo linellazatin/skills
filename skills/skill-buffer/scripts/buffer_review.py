@@ -4,7 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from buffer_core import attempt_store, freeze, inspect, inventory, load_workspace, read_json, version, write_json
+from buffer_core import attempt_store, freeze, inspect, inventory, load_workspace, new_output, read_json, version, write_json
 
 
 LIMITATIONS = ['Semantic grading is author review; evidence-location validation does not validate judgment.', 'Response simulations show proposed decisions, not executed tasks, absence of writes, native activation or host readiness.', 'Missing telemetry and cache observations remain unknown; imports do not prove fresh inference.']
@@ -49,8 +49,20 @@ def grade(workspace, payload, output):
     manifest = load_workspace(workspace)
     attempts = attempt_store(workspace, manifest)['attempts']
     validated = validate_grades(manifest, attempts, payload)
-    write_json(output, validated)
+    output = new_output(output, Path(workspace) / 'snapshots')
+    write_json(output, validated, exclusive=True)
     return {'version': 1, 'validated_grades': len(validated['grades']), 'semantic_review': 'author review'}
+
+
+def assessment_gap(job, case, attempt, judgment):
+    entry = {'job_id': job['id']}
+    if attempt is None:
+        return dict(entry, reason='missing attempt')
+    if attempt['classification'] != 'valid':
+        return dict(entry, classification=attempt['classification'])
+    if case['type'] == 'procedure' and judgment is None:
+        return dict(entry, reason='missing author grade')
+    return None
 
 
 def compare(workspace, grades, output):
@@ -63,11 +75,9 @@ def compare(workspace, grades, output):
     for job in manifest['jobs']:
         case = next(c for c in manifest['suite']['cases'] if c['id'] == job['case_id'])
         attempt = by_job.get(job['id'])
-        if not attempt:
-            missing.append({'job_id': job['id'], 'reason': 'missing attempt'})
-            continue
-        if attempt['classification'] != 'valid':
-            invalid.append({'job_id': job['id'], 'classification': attempt['classification']})
+        gap = assessment_gap(job, case, attempt, judgments.get(job['id']))
+        if gap:
+            (invalid if 'classification' in gap else missing).append(gap)
             continue
         critical = []
         if case['type'] == 'routing':
@@ -75,9 +85,6 @@ def compare(workspace, grades, output):
             score = int(passed)
             critical = [a['id'] for a in case['assertions'] if a.get('critical') and not passed]
         else:
-            if job['id'] not in judgments:
-                missing.append({'job_id': job['id'], 'reason': 'missing author grade'})
-                continue
             assertions = judgments[job['id']]['assertion_results']
             critical_ids = {a['id'] for a in case['assertions'] if a.get('critical')}
             critical = [a['id'] for a in assertions if a['id'] in critical_ids and not a['verdict']]
@@ -91,15 +98,28 @@ def compare(workspace, grades, output):
             if all(j in results for j in ids):
                 pairs.append({'case_id': case['id'], 'partition': case.get('partition', 'development'), 'repeat': repeat, 'baseline': results[ids[0]], 'candidate': results[ids[1]], 'delta': results[ids[1]]['score'] - results[ids[0]]['score']})
     report = {'version': 1, 'fingerprint': manifest['fingerprint'], 'results': results, 'matched_pairs': pairs, 'invalid_attempts': invalid, 'missing': missing, 'telemetry': {a['job_id']: a.get('telemetry') for a in attempts}, 'provenance': {a['job_id']: a['provenance'] for a in attempts}, 'transport_failures': read_json(Path(workspace) / 'failures.json')['failures'] if (Path(workspace) / 'failures.json').exists() else [], 'limitations': LIMITATIONS}
-    output = Path(output)
-    if output.exists():
-        raise ValueError('report output must be new')
+    output = new_output(output, Path(workspace) / 'snapshots')
     output.mkdir(parents=True)
     write_json(output / 'report.json', report)
-    lines = ['# Skill Buffer comparison', '', f'Valid matched pairs: {len(pairs)}. Invalid attempts: {len(invalid)}. Missing: {len(missing)}.', '', '| Case | Repeat | Baseline | Candidate | Delta |', '| --- | --- | --- | --- | --- |']
-    lines.extend(f'| {p["case_id"]} | {p["repeat"]} | {p["baseline"]["score"]:.2f} | {p["candidate"]["score"]:.2f} | {p["delta"]:+.2f} |' for p in pairs)
-    lines += ['', '## Critical failures', ''] + [f'- {jid}: {", ".join(r["critical_failures"])}' for jid, r in results.items() if r['critical_failures']]
-    lines += ['', '## Invalid and missing', '', json.dumps({'invalid': invalid, 'missing': missing}), '', '## Telemetry', '', json.dumps(report['telemetry']), '', '## Provenance', '', json.dumps(report['provenance']), '', f'Transport failures: {len(report["transport_failures"])}.', '', '## Limits', ''] + ['- ' + x for x in LIMITATIONS]
+    lines = ['# Skill Buffer comparison']
+    for partition in ('development', 'acceptance'):
+        case_ids = {c['id'] for c in manifest['suite']['cases'] if c.get('partition', 'development') == partition}
+        if not case_ids:
+            continue
+        job_ids = {j['id'] for j in manifest['jobs'] if j['case_id'] in case_ids}
+        partition_pairs = [p for p in pairs if p['partition'] == partition]
+        partition_invalid = [x for x in invalid if x['job_id'] in job_ids]
+        partition_missing = [x for x in missing if x['job_id'] in job_ids]
+        lines += ['', f'## {partition.capitalize()}', '', f'Valid matched pairs: {len(partition_pairs)}. Invalid attempts: {len(partition_invalid)}. Missing: {len(partition_missing)}.']
+        if partition_pairs:
+            lines += ['', '| Case | Repeat | Baseline | Candidate | Delta |', '| --- | --- | --- | --- | --- |']
+            lines.extend(f'| {p["case_id"]} | {p["repeat"]} | {p["baseline"]["score"]:.2f} | {p["candidate"]["score"]:.2f} | {p["delta"]:+.2f} |' for p in partition_pairs)
+        critical = [f'- {jid}: {", ".join(r["critical_failures"])}' for jid, r in results.items() if jid in job_ids and r['critical_failures']]
+        if critical:
+            lines += ['', '### Critical failures', ''] + critical
+        if partition_invalid or partition_missing:
+            lines += ['', '### Invalid and missing', '', json.dumps({'invalid': partition_invalid, 'missing': partition_missing})]
+    lines += ['', '## Telemetry', '', json.dumps(report['telemetry']), '', '## Provenance', '', json.dumps(report['provenance']), '', f'Transport failures: {len(report["transport_failures"])}.', '', '## Limits', ''] + ['- ' + x for x in LIMITATIONS]
     (output / 'report.md').write_text('\n'.join(lines) + '\n')
     return report
 
@@ -109,18 +129,24 @@ def brief(workspace, grades, output):
     attempts = attempt_store(workspace, manifest)['attempts']
     validate_grades(manifest, attempts, grades)
     judgments = {g['job_id']: g for g in grades['grades']}
-    jobs = {j['id']: j for j in manifest['jobs']}
-    failures = []
-    for attempt in attempts:
-        job = jobs[attempt['job_id']]
+    by_job = {a['job_id']: a for a in attempts}
+    failures, gaps = [], []
+    for job in manifest['jobs']:
         case = next(c for c in manifest['suite']['cases'] if c['id'] == job['case_id'])
-        if case.get('partition') == 'acceptance' or attempt['classification'] != 'valid':
+        if case.get('partition') == 'acceptance':
             continue
-        failed = (json.loads(attempt['response'])['primary'] not in case['acceptable_primary']) if case['type'] == 'routing' else any(not r['verdict'] for r in judgments.get(job['id'], {}).get('assertion_results', []))
+        attempt, judgment = by_job.get(job['id']), judgments.get(job['id'])
+        gap = assessment_gap(job, case, attempt, judgment)
+        if gap:
+            gaps.append(gap)
+            continue
+        assertions = judgment['assertion_results'] if judgment else None
+        failed = (json.loads(attempt['response'])['primary'] not in case['acceptable_primary']) if case['type'] == 'routing' else any(not r['verdict'] for r in assertions)
         if failed:
-            failures.append({'finding_id': job['id'], 'case': case, 'quoted_response': attempt['response'], 'assertion_results': judgments.get(job['id'], {}).get('assertion_results'), 'relevant_instructions': job['prompt']})
-    result = {'version': 1, 'fingerprint': manifest['fingerprint'], 'failures': failures, 'constraints': ['Author revisions inline in a separate candidate directory.', 'Preserve licenses and resource links; never apply edits to source skills.', 'Reuse frozen development cases; exclude acceptance cases from revision briefs.'], 'limitations': LIMITATIONS}
-    write_json(output, result)
+            failures.append({'finding_id': job['id'], 'case': case, 'quoted_response': attempt['response'], 'assertion_results': assertions, 'relevant_instructions': job['prompt']})
+    result = {'version': 1, 'fingerprint': manifest['fingerprint'], 'failures': failures, 'assessment_gaps': gaps, 'constraints': ['Author revisions inline in a separate candidate directory.', 'Preserve licenses and resource links; never apply edits to source skills.', 'Reuse frozen development cases; exclude acceptance cases from revision briefs.'], 'limitations': LIMITATIONS}
+    output = new_output(output, Path(workspace) / 'snapshots')
+    write_json(output, result, exclusive=True)
     return result
 
 
@@ -149,9 +175,10 @@ def record(workspace, candidate, findings, output):
             raise ValueError('retained license/notice must not change or disappear')
     # Freeze the candidate with exactly the existing development cases/settings.
     suite = {'version': 1, 'cases': [c for c in manifest['suite']['cases'] if c['id'] in development]}
+    output = new_output(output, workspace / 'snapshots')
     new = freeze(workspace / 'snapshots/baseline', candidate, suite, output, manifest['settings'])
     oldroot = workspace / 'snapshots/candidate'
-    newroot = Path(output) / 'snapshots/candidate'
+    newroot = output / 'snapshots/candidate'
     old, current = inventory(oldroot), inventory(newroot)
     changes = []
     for name in sorted(set(old) | set(current)):

@@ -1,12 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:skill-buffer:contracts:v1",
-  "description": "Select a contract with #/$defs/suite, manifest, imports, attempts, grading or findings. Domain constraints are enforced by the CLI.",
+  "description": "Select a contract with #/$defs/suite, manifest, imports, attempts, grading, brief or findings. Domain constraints are enforced by the CLI.",
   "$defs": {
     "assertion": {"type": "object", "required": ["id", "text"], "properties": {"id": {"type": "string", "minLength": 1}, "text": {"type": "string", "minLength": 1}, "critical": {"type": "boolean"}}},
     "case": {
       "type": "object", "required": ["id", "type", "prompt", "assertions"],
-      "properties": {"id": {"type": "string", "pattern": "^[\\w-]+$"}, "type": {"enum": ["routing", "procedure"]}, "prompt": {"type": "string", "minLength": 1}, "fixture": {}, "partition": {"enum": ["development", "acceptance"]}, "assertions": {"type": "array", "items": {"$ref": "#/$defs/assertion"}}, "acceptable_primary": {"type": "array", "minItems": 1, "items": {"type": "string"}}, "skill": {"type": "string"}, "resources": {"type": "array", "items": {"type": "string"}}},
+      "properties": {"id": {"type": "string", "pattern": "^[\\w-]+$"}, "type": {"enum": ["routing", "procedure"]}, "prompt": {"type": "string", "minLength": 1}, "fixture": {}, "partition": {"enum": ["development", "acceptance"]}, "assertions": {"type": "array", "items": {"$ref": "#/$defs/assertion"}}, "acceptable_primary": {"type": "array", "minItems": 1, "items": {"type": ["string", "null"]}}, "skill": {"type": "string"}, "resources": {"type": "array", "items": {"type": "string"}}},
       "allOf": [{"if": {"properties": {"type": {"const": "routing"}}}, "then": {"required": ["acceptable_primary"]}, "else": {"required": ["skill"], "properties": {"assertions": {"minItems": 1}}}}]
     },
     "suite": {"type": "object", "required": ["version", "cases"], "properties": {"version": {"const": 1}, "cases": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/case"}}}},
@@ -21,6 +21,9 @@
     "assertion_result": {"type": "object", "required": ["id", "text", "verdict", "evidence"], "properties": {"id": {"type": "string"}, "text": {"type": "string"}, "verdict": {"type": "boolean"}, "evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/evidence"}}}},
     "grade": {"type": "object", "required": ["job_id", "case_id", "fingerprint", "response_sha256", "assertion_results"], "properties": {"job_id": {"type": "string"}, "case_id": {"type": "string"}, "fingerprint": {"type": "string"}, "response_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "assertion_results": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/assertion_result"}}}},
     "grading": {"type": "object", "required": ["version", "grades"], "properties": {"version": {"const": 1}, "grades": {"type": "array", "items": {"$ref": "#/$defs/grade"}}}},
+    "assessment_gap": {"type": "object", "required": ["job_id"], "properties": {"job_id": {"type": "string"}, "reason": {"enum": ["missing attempt", "missing author grade"]}, "classification": {"enum": ["transport-error", "truncated", "malformed-output", "invalid-output"]}}, "oneOf": [{"required": ["reason"]}, {"required": ["classification"]}]},
+    "brief_failure": {"type": "object", "required": ["finding_id", "case", "quoted_response", "assertion_results", "relevant_instructions"], "properties": {"finding_id": {"type": "string"}, "case": {"$ref": "#/$defs/case"}, "quoted_response": {"type": "string"}, "assertion_results": {"type": ["array", "null"], "items": {"$ref": "#/$defs/assertion_result"}}, "relevant_instructions": {"type": "string"}}},
+    "brief": {"type": "object", "required": ["version", "fingerprint", "failures", "assessment_gaps", "constraints", "limitations"], "properties": {"version": {"const": 1}, "fingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "failures": {"type": "array", "items": {"$ref": "#/$defs/brief_failure"}}, "assessment_gaps": {"type": "array", "items": {"$ref": "#/$defs/assessment_gap"}}, "constraints": {"type": "array", "items": {"type": "string"}}, "limitations": {"type": "array", "items": {"type": "string"}}}},
     "findings": {"type": "object", "required": ["version", "findings_addressed"], "properties": {"version": {"const": 1}, "findings_addressed": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}}}
   }
 }

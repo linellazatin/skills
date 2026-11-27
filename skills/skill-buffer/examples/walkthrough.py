@@ -8,19 +8,22 @@ import subprocess
 import sys
 
 sys.dont_write_bytecode = True
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
+EXAMPLES = Path(__file__).resolve().parent
+FIXTURES = EXAMPLES / 'fixtures'
+SCRIPTS = EXAMPLES.parent / 'scripts'
+sys.path.insert(0, str(SCRIPTS))
 from buffer_core import inventory, read_json, write_json
 
 
 def run(output):
     output = Path(output).resolve()
     output.mkdir(parents=True, exist_ok=False)
-    before = {'baseline': inventory(ROOT / 'examples/baseline'), 'candidate': inventory(ROOT / 'examples/candidate')}
+    baseline, candidate = FIXTURES / 'baseline', FIXTURES / 'candidate'
+    before = {'baseline': inventory(baseline), 'candidate': inventory(candidate)}
     def cli(*args):
-        subprocess.run([sys.executable, '-B', str(ROOT / 'skill_buffer.py'), *map(str, args)], cwd=output, check=True)
-    cli('inspect', '--input', ROOT / 'examples/baseline', '--output', output / 'inspection.json')
-    cli('freeze', '--baseline', ROOT / 'examples/baseline', '--candidate', ROOT / 'examples/candidate', '--suite', ROOT / 'examples/suite.json', '--output', output / 'run')
+        subprocess.run([sys.executable, '-B', str(SCRIPTS / 'skill_buffer.py'), *map(str, args)], cwd=output, check=True)
+    cli('inspect', '--input', baseline, '--output', output / 'inspection.json')
+    cli('freeze', '--baseline', baseline, '--candidate', candidate, '--suite', FIXTURES / 'suite.json', '--output', output / 'run')
     def assess(workspace, report):
         manifest = read_json(workspace / 'manifest.json')
         responses, grades = [], []
@@ -37,12 +40,12 @@ def run(output):
         cli('compare', '--workspace', workspace, '--input', workspace / 'grades.json', '--output', report)
     assess(output / 'run', output / 'report')
     cli('enhance', 'brief', '--workspace', output / 'run', '--input', output / 'run/grades.json', '--output', output / 'brief.json')
-    shutil.copytree(ROOT / 'examples/candidate', output / 'authored-candidate')
+    shutil.copytree(candidate, output / 'authored-candidate')
     (output / 'authored-candidate/sample/guide.txt').write_text('Identify the target. State the expected fixture result and record observed evidence separately.\n')
     write_json(output / 'findings.json', {'version': 1, 'findings_addressed': ['procedure:0:baseline']})
     cli('enhance', 'record', '--workspace', output / 'run', '--candidate', output / 'authored-candidate', '--input', output / 'findings.json', '--output', output / 'enhanced')
     assess(output / 'enhanced', output / 'enhanced-report')
-    after = {'baseline': inventory(ROOT / 'examples/baseline'), 'candidate': inventory(ROOT / 'examples/candidate')}
+    after = {'baseline': inventory(baseline), 'candidate': inventory(candidate)}
     if before != after:
         raise AssertionError('source changed')
     write_json(output / 'inventories.json', {'version': 1, 'before': before, 'after': after, 'limitation': 'Inventories detect persistent changes, not transient writes.'})
