@@ -1,29 +1,28 @@
 # Lines' skills
 
-Portable Agent Skills for repository inspection, planning, development, debugging, review, and verification, plus a meta skill for creating and evaluating skills. The collection follows three design goals:
+I put these Agent Skills together from my own development workflow. They cover repository inspection, planning, development, debugging, review, and verification. The collection also includes skills for writing and evaluating other skills.
 
-1. **Single source, any harness.** Core instructions stay independent of platform integrations. Optional helpers declare their runtime and provider requirements; discovery depends on the client.
-2. **Concrete instructions.** Skills provide ordered steps, failure branches, evidence records, and completion checks. Skills reuse supplied context and respect authorization. Performance across model sizes still needs separate evaluation.
-3. **Follows my workflow.** These skills were 'written' based from my own development workflow - so if you happen to relate with how I do stuff, feel free to check these out.
+The same instructions work without platform integrations. Your client handles discovery, and each optional helper lists the runtime and provider it needs. The skills tell you what to do in order, what to check when a step fails, and what evidence to record before calling the work done. They use the context and permissions you already have. How well they work across model sizes still needs testing.
 
 ## Skills
 
-All skill folders live under `skills/`. Install individual folders; keep their internal references and helper paths relative to each skill root.
+Install the folders you need from `skills/`. Keep references and helper paths relative to each skill's own folder.
 
 | Skill | Description |
 |-------|-------------|
-| [craft-skill](skills/craft-skill/SKILL.md) | Meta skill for creating Agent Skills. Three modes: **Extract** (capture from conversation history), **Design** (build from scratch), **Refine** (improve an existing skill). Includes a bundled eval and description-optimization pipeline. |
+| [craft-skill](skills/craft-skill/SKILL.md) | Three modes: Extract from conversation history, Design from scratch, and Refine an existing skill. Includes tools for evaluation and description optimization. |
+| [skill-buffer](skills/skill-buffer/SKILL.md) | Assess an existing skill against realistic cases, compare revisions, and turn findings into a focused candidate change and recheck. [Usage guide](skills/skill-buffer/README.md). |
 | [strategize](skills/strategize/SKILL.md) | Clarify intent, compare viable approaches, and settle a buildable design before detailed planning; no visual companion or required tooling. |
-| [plan-work](skills/plan-work/SKILL.md) | Turn requirements or an agreed design into proportionate phases, ordered steps, checks, reassessment, and requested approval/commit boundaries. |
+| [plan-work](skills/plan-work/SKILL.md) | Break requirements or an agreed design into phases sized to the work. Order the steps, define checks and reassessment, and record when to ask for approval or commit. |
 | [design-modules](skills/design-modules/SKILL.md) | Assess or migrate ownership and interfaces using caller obligations, change locality, dependency-aware verification, and compatibility checks. |
-| [execute-plan](skills/execute-plan/SKILL.md) | Execute and resume authorized phases, reassess and correct findings, preserve pending gates, and continue only through permitted actions; optional evidence logs. |
-| [inspect-code](skills/inspect-code/SKILL.md) | Orient in a repository with source-backed structure, entry points, tests, scc measurements, and a reading map; optionally trace behavior, investigate maintenance candidates, or map dependencies. Static and read-only by default. |
+| [execute-plan](skills/execute-plan/SKILL.md) | Run or resume authorized phases. Reassess the work, fix findings, and keep pending approvals in place. Record evidence if needed. |
+| [inspect-code](skills/inspect-code/SKILL.md) | Map a repository's structure, entry points, and tests from source. Use scc for measurements and get a reading map. Trace behavior, look for maintenance candidates, or map dependencies if needed. Static and read-only by default. |
 | [review-code](skills/review-code/SKILL.md) | Assess code, docs, plans, and completed phases against requirements; report findings and evaluate feedback without granting phase acceptance. |
 | [debug-systematically](skills/debug-systematically/SKILL.md) | Diagnose failures with evidence; apply and verify fixes only when authorized. |
 | [test-first](skills/test-first/SKILL.md) | Develop behavior through red-green-refactor cycles, design diagnostic and isolated tests, and protect refactors with characterization coverage. |
 | [verify-work](skills/verify-work/SKILL.md) | Check scoped readiness against current evidence; distinguish required gaps, explicit user deferrals, and user acceptance. |
 
-The skills use inline execution, user-authorized Git actions, and checks scoped to the requirements.
+Work inline, run only the checks the task calls for, and get permission before taking Git actions.
 
 ## Selecting a workflow
 
@@ -40,73 +39,65 @@ Choose the primary skill by the result you need:
 | Report defects or omissions in code, docs, or plans; evaluate review feedback | `review-code` |
 | Implement specified behavior or an established correction | `test-first` |
 | Establish completion or readiness against requirements | `verify-work` |
-| Create, assess, refine, or package reusable skills | `craft-skill` |
+| Create, extract, rewrite, validate, or package a reusable skill | `craft-skill` |
+| Assess an existing skill against cases, compare revisions, or recheck a fix | `skill-buffer` |
 
-Supporting checks do not restart the primary workflow or expand authorization. A bare “continue” retains the task without establishing plan approval; interpret replies in the context of any pending approval request. Reviewing reports findings, while revising changes the plan. Prose uses document checks, and each skill stands alone. Clarify ambiguity with context or focused questions; domain/tool guidance can support any workflow. Specified changes and proven corrections proceed without restarting discovery or diagnosis, though an undecided correction may still need design.
-
-`inspect-code` explains what exists and selects investigation candidates; `review-code` judges behavior against a contract and reports supported findings. Reuse orientation, traces, and measurements when both outcomes are requested; do not repeat reconnaissance or treat complexity/churn as defects. Review may use available measurement tools without requiring the inspection skill.
-
-Each skill's entry route gives required context, first action, and stop condition. The original eight engineering workflow skills also have compact route cards (condition, action/minimum evidence, stop or handoff) and optional hypothetical examples in `references/worked-examples.md`; scope and safety gates remain in `SKILL.md`. Branches cover existing implementations, assessment-only work, and unavailable runtimes. Authored examples are not checkout results; disposable fixtures prove only their observed scope. Activation and instruction-following require model/harness trials.
-
-An unavailable host leaves acceptance unverified, not failed. Verification does not authorize fixes. Migrations start with coverage for affected consumers; extra plans/specs need purpose and writing authority. Under no-write scope, inspect checks for cache/output effects and use verified suppression, redirection, or disposable copies with explicit limits. Passing checks or unchanged Git status do not prove no writes.
+1. Confirm what the user wants. Ask a focused question if context doesn't settle it. Reviewing a plan produces findings; revising it changes the plan. Implement specified changes and proven fixes directly. If the fix is undecided, design it first. A bare "continue" resumes the task without approving a plan. If approval is pending, read the reply in that context.
+2. Open `SKILL.md` for the inputs, first action, and stopping point. The original eight engineering skills have route cards with the condition, minimum action or evidence, and when to stop or hand off. They also have optional, hypothetical examples in `references/worked-examples.md`. Check for branches covering existing implementations, assessment-only work, and unavailable runtimes. Follow the scope and safety rules in `SKILL.md`.
+3. Use each skill on its own. Bring in domain guidance or supporting checks when useful, within the same workflow and permissions. Reuse traces and measurements: `inspect-code` maps what exists and suggests where to look; `review-code` reports failures against a contract. Complexity and churn aren't evidence of a defect on their own.
+4. Check prose as documentation. Before a migration, cover the affected consumers. If writes are off-limits, check for caches and outputs; verify they're suppressed, redirected, or confined to a disposable copy. Green checks or a clean Git status don't prove there were no writes. Fixture results cover only the behavior you observed. Test activation and instruction-following on the model and harness. If the host is unavailable, leave acceptance unverified. Verification gives no permission to fix the work.
 
 ### Phases, reassessment, and approval
 
-`plan-work` defines outcomes, dependencies, checks, and the execution policy. One phase is enough for a coherent bounded change; parts → phases → steps are useful only for real grouping. Keep phase identifiers stable when revising remaining work. `execute-plan` applies that policy and recovers pending gates and permitted next actions on resume.
+1. Use `plan-work` to define the outcome, dependencies, checks, and when approval is needed. One phase is enough for a bounded change. Add parts or steps only if they help, and keep phase IDs stable when revising what's left.
+2. Use `execute-plan` to do the authorized work and check its real consumers. If you're resuming, find the pending gates and the next action you're allowed to take. Run technical checks like red/green without waiting for human approval unless asked to wait.
+3. Use `review-code` for findings and `verify-work` to check which requirements have current evidence. Fix supported findings within scope, rerun the checks they affect, and update any assumptions the fix changes for later phases. TDD, diagnosis, and migration checks don't replace the phase gate.
+4. Update the affected docs and active plan. Record the evidence, what happened to each finding, what's still open, and what to do next.
+5. Stop for completion approval if required. If the user authorized the full run, continue. Starting approval, green checks, a review with no findings, or a helper handoff don't grant acceptance. If the user explicitly defers some work or accepts a narrower scope, leave the omitted work unverified.
 
-Each phase follows this sequence:
-
-1. Implement the authorized outcome and check its real consumers.
-2. Reassess against current requirements; correct supported in-scope findings and rerun affected checks. Update consequential later-phase assumptions, not unrelated design.
-3. Update affected docs and the active plan with evidence, findings/disposition, gaps, and the next action.
-4. Apply the requested boundary: stop for completion approval when required, or continue through full-run authorization without inventing approval stops.
-
-Technical step gates, such as red/green checks, do not require human approval unless requested. Approval to start a phase does not accept its eventual result. Commits require separate authority and satisfied timing/file-scope conditions; preserve withheld tests/docs and unrelated changes. Updating documentation does not authorize committing it. A research-only phase needs no empty commit.
-
-`review-code` supplies findings or a bounded no-findings result; `verify-work` establishes which promised surfaces have current evidence. TDD, diagnosis, and ownership migration support that active phase without replacing its gate. Passing checks, no findings, and a helper handoff do not grant user acceptance. An explicit user decision can narrow acceptance or defer an observation, but that does not mark it verified or establish broader readiness.
-
-The [worked execution examples](skills/execute-plan/references/worked-examples.md#completion-approval-before-commit) contrast approval-gated and full-run execution. These are instructions and hypothetical walkthroughs, not a harness-enforced state machine or measured model-compliance guarantee.
+Commit only with separate permission and within the requested timing and file scope. Leave out withheld tests or docs and unrelated changes. Permission to update docs isn't permission to commit them. A research phase needs no empty commit. The [worked examples](skills/execute-plan/references/worked-examples.md#completion-approval-before-commit) show both approval-gated and full runs. They don't enforce gates or prove that a model follows them.
 
 ## Working with `specs` and `plans`
 
-Keep small tasks in conversation. Use specs for substantial designs and compatibility decisions, and plans for resumable, reviewable multi-phase work. Resume unfinished work in its existing record. Follow project locations and naming; otherwise use `YYYY-MM-DD-<descriptive-name>.md` for new files. The date is the creation date; don't rename or overwrite existing files to fit the convention. Local layout:
+1. Keep small tasks in the conversation. Write a spec for a substantial design or compatibility decision. Use a plan for work that spans phases and needs to be reviewed or resumed. Pick up an unfinished record where you left off. Create or move files only when you have a reason and permission. Selecting a skill doesn't change write or Git permissions.
+2. Follow the project's naming and location conventions. For shared records, agree on a tracked location. Use the creation date for new files without renaming or overwriting old ones to fit. Keep existing ignore rules. In a fresh checkout, recreate the local `.gitignore` because `*` ignores the file itself.
 
-```text
-.your/
-  .gitignore   # contents: *
-  specs/
-    YYYY-MM-DD-<descriptive-name>.md
-  plans/
-    YYYY-MM-DD-<descriptive-name>.md
-    .workflow/ # optional: execute-plan checkpoint helper storage
-```
+   ```text
+   .your/
+     .gitignore   # contents: *
+     specs/
+       YYYY-MM-DD-<descriptive-name>.md
+     plans/
+       YYYY-MM-DD-<descriptive-name>.md
+       .workflow/ # optional: execute-plan checkpoint helper storage
+   ```
 
-**Specs** record behavior, constraints, decisions, acceptance, and review state. **Plans** connect the design to delivery: steps, files, checks, progress, and gaps. Create the local layout only with writing authority, preserving ignore rules. Its wildcard ignores everything, including `.gitignore`, so recreate it in fresh checkouts; shared records can instead use a chosen tracked location. Selecting a skill does not authorize file creation/moves or Git changes, or override read-only scope.
+3. Put behavior, constraints, decisions, acceptance, and review state in the spec. Link those decisions from the plan and track steps, files, checks, progress, and gaps there. Put new observations in notes. Use handoffs to summarize results, evidence, and gaps that matter. Use bullets for parallel items, checklists to track progress, numbers when order matters, and prose to explain. Link to evidence instead of copying logs. Leave out empty fields and repeated context.
+4. Track checkpoints by hand or use the optional `execute-plan` helper. It stores JSON, snapshots, and check logs in `.workflow/` beside the plan, with separate storage for each plan path. `status` writes nothing. The helper keeps one phase active without enforcing approval of earlier phases. Keep acceptance and allowed next actions in the plan, and run fresh checks for new work.
+5. When closing a record, say what happened, what the user accepted, and what's still open. A checked list alone doesn't establish completion. Leave closed records alone. Link a successor only when it's useful and authorized. Keep small follow-ups in the conversation, and update living specs so there's one contract to follow.
 
-Keep records concise without losing context or technical detail. Write shared context once: specs own behavior and decisions; plans link those decisions and track delivery; notes capture new observations; handoffs summarize results, evidence, and material gaps. Use bullets for parallel items, checklists for tracked work, numbered steps for required order, and prose for connected explanations. Omit empty fields and repeated summaries; link detailed evidence instead of copying logs. Close with outcome, actual acceptance, and remaining gaps; checked steps alone don't establish completion. Preserve closed records. Create a linked successor only when authorized and useful; keep small follow-ups inline and update living specs rather than creating competing contracts.
-
-The optional `execute-plan` helper stores checkpoint JSON, snapshots, and check logs in `.workflow/` beside each plan. Manual tracking needs no helper; `status` creates no files. Each plan path has separate storage, and old checks don't verify new work. The helper retains one active phase and does not enforce predecessor approval; keep acceptance and permitted next actions in the plan. Put regression tests in project test directories and disposable probes in temporary workspaces. Ignored records remain inspectable and are not shipped documentation.
+Keep regression tests in project test directories and disposable probes in temporary workspaces. Ignored records remain inspectable and do not ship.
 
 ## How these came to be
 
-The collection began with `opencraft-skill`, for extracting workflows from completed work, designing skills, and refining existing ones. Now it became `craft-skill`, retaining those three modes while making interviews, provider integrations, and isolated evaluation conditional.
+The collection started with `opencraft-skill`. I used it to pull workflows from finished work, design new skills, and improve the ones I had. It became `craft-skill` and kept those three modes. Interviews, provider integrations, and isolated evaluation are used when needed.
 
-The engineering set began as an exploration of my own workflows - literally written based from all my Pi and Codex sessions. These skills were focused on procedures grounded in actual development requests and corrections from those sessions - grabbing inspirations as well from obra's and mattpocock's.
+I wrote the engineering skills from my own Pi and Codex sessions, using the requests I made and the corrections that came up during development. I also took ideas from obra and mattpocock.
 
 ### Writing methodology
 
-1. **Start with observed work.** Ground instructions in user requests, corrections, project artifacts, and supported outcomes. Distinguish these from injected context, synthetic tasks, and unverified model claims.
-2. **Define the result and scope.** Give each skill a focused responsibility, matching and neighboring trigger cases, required inputs, and side-effect boundaries. Assessment, design, planning, and authorized implementation stay distinct; existing decisions carry forward.
-3. **Write procedures.** Put the route, inputs, first action, and stop condition near the top. Split consequential actions and state exceptions beside them. Separate internal inspection from required written output; adapt templates to the task while preserving contracts, acceptance, and material gaps. Keep paragraphs unwrapped. Use matching and neighboring examples where workflows overlap. Each skill works independently, with optional supporting guidance.
-4. **Keep capabilities portable.** Base instructions on file access, commands, and runtime observations. Helpers handle justified deterministic work, declare their requirements, and retain manual fallbacks. Execution stays inline; Git actions need separate authority.
-5. **Validate the claim.** Review normal, failure, and boundary cases, including action ordering and actions withheld at workflow gates rather than only report wording. Distinguish author review from execution evidence. Metadata, references, packages, and helpers get separate checks. Activation and performance comparisons need controlled harness/model runs; without them, those claims remain unmeasured.
-6. **Revise from evidence.** Tie changes to concrete failures or instruction gaps, update the relevant artifacts and docs, and repeat affected checks. Prefer coherent corrections over accumulating rules or adding files just to fit a layout.
+1. Base instructions on user requests, corrections, project artifacts, and outcomes you can support. Keep injected context, synthetic tasks, and unverified model claims separate from that evidence.
+2. Give the skill one responsibility. Say what should trigger it, which similar requests belong elsewhere, what inputs it needs, and what it can change. Keep assessment, design, planning, and authorized implementation distinct. Carry existing decisions forward.
+3. Put the route, inputs, first action, and stopping point near the top. Give consequential actions their own steps, with exceptions beside them. Separate what to inspect from what to write. Adapt templates to the task without dropping contracts, acceptance conditions, or material gaps. Keep paragraphs unwrapped. Where workflows overlap, show a matching request and a neighboring one. Each skill must work without its optional supporting guidance.
+4. Write for file access, command execution, and runtime observations. Use helpers for deterministic work where they pay off. List their requirements and keep a manual fallback. Work inline and get separate permission for Git actions.
+5. Check normal use, failures, and boundaries. Look at the order of actions and what the workflow withholds at a gate as well as what the report says. Distinguish author review from execution evidence, and check metadata, references, packages, and helpers separately. Until you run controlled model and harness trials, activation and relative performance remain unmeasured.
+6. Tie each change to a failure or a gap in the instructions. Update the affected artifacts and docs, then rerun the relevant checks. Fix the underlying issue before adding rules or files just to fit a layout.
 
 ## Using these skills
 
 ### Skills CLI (recommended)
 
-You can run from this checkout:
+Run these commands from the checkout:
 
 ```bash
 npx skills add . --list
@@ -115,7 +106,8 @@ npx skills add . --skill '*' --agent codex --global
 # Need help?
 npx skills --help
 ```
-or
+
+To install from the remote repository, use the commands below. They do not include local changes; use the checkout commands to try work that has not been pushed.
 
 ```bash
 # Browse available skills without installing
@@ -134,7 +126,9 @@ npx skills add linellazatin/skills --skill '*' --agent codex pi --global
 npx skills add linellazatin/skills --skill '*' --agent codex
 ```
 
-Project scope is the default; `--global` selects user scope. For Codex and Pi, these locations are `.agents/skills/` and `~/.agents/skills/`. Agent-directory symlinks share a canonical installation; add `--copy` for independent copies. Use `--skill '*'` to select all skills while retaining explicit agent selection; `--all` also selects all agents and skips prompts. A detected harness may select non-interactive installation, so specify `--skill` and `--agent` when the destination matters.
+The default is project scope. Use `--global` for user scope. For Codex and Pi, the two locations are `.agents/skills/` and `~/.agents/skills/`, respectively. Agent-directory symlinks point to one shared installation. Add `--copy` if you need independent copies.
+
+Use `--skill '*'` for all skills on the agents you select. `--all` selects every agent too and skips prompts. The installer can detect a harness and run without prompting, so set `--skill` and `--agent` when you need a specific destination.
 
 ### Direct copy
 
@@ -166,38 +160,30 @@ mklink /d "X:\client\skills\skill-name" "X:\checkout\skills\skill-name"
 
 ### Bundled tooling tiers
 
-`inspect-code` uses an available [scc executable](skills/inspect-code/references/scc.md) for measurements; without it, static orientation remains available with metrics omitted. Installation is separate and never automatic. Git history analysis is optional; project code, tests, and builds are not executed by default.
+`inspect-code` uses an available [scc executable](skills/inspect-code/references/scc.md) for measurements. Without it, you can still map the repository from source, without metrics. Install scc separately if you need it; the skill never installs it. Git history analysis is optional. By default, the skill doesn't run project code, tests, or builds.
 
-Bundled helpers have two tiers:
-
-**Tier 1: standard-library Python (command execution required):**
+**Tier 1: Standard-library Python (command execution required)**
 
 - `skills/craft-skill/scripts/quick_validate.py` checks supported metadata and structure, not full YAML/spec validity or behavior.
 - `skills/craft-skill/scripts/aggregate_benchmark.py` aggregates eval results into a report.
 - `skills/craft-skill/scripts/package_skill.py` creates a distributable `.skill` ZIP.
-- `skills/execute-plan/scripts/checkpoints.py` requires Python 3.9+ and provides `status`, `start`, `check`, `reconcile`, `handoff`, and `review`. Snapshots and bounded diffs allow explicitly attested progress-only reconciliation when check inputs are unchanged; material changes require restarting and rerunning checks. Attestation is not proof of checkout freshness or approval. Only `review` needs Git; it disables optional locks and diff index refresh, but writes authorized local report/workflow files. It is not a no-file command. See [usage and evidence limits](skills/execute-plan/references/checkpoints.md). No agent API, shell, or provider is required; without Python, follow the skill manually.
+- `skills/execute-plan/scripts/checkpoints.py` requires Python 3.9+ and provides `status`, `start`, `check`, `reconcile`, `handoff`, and `review`. Use snapshots and bounded diffs to reconcile progress-only plan edits with explicit attestation and unchanged check inputs. For material plan changes, restart and rerun required checks. If only checked inputs changed, rerun the affected checks instead of relying on old results. Attestation doesn't prove the checkout is current or the work approved. Only `review` needs Git. It disables optional locks and diff index refresh, and writes authorized local report and workflow files. See [usage and evidence limits](skills/execute-plan/references/checkpoints.md). You don't need an agent API, shell, or provider. If Python isn't available, follow the skill manually.
 
-**Tier 2: optional harness/provider integrations:**
+**Tier 2: Optional harness and provider integrations**
 
 - `skills/craft-skill/scripts/run_eval.py` uses Claude Code CLI and a temporary command surrogate for trigger evaluation.
 - `skills/craft-skill/scripts/improve_description.py` proposes descriptions via Anthropic, an OpenAI-compatible endpoint, or Claude Code CLI.
 - `skills/craft-skill/scripts/run_loop.py` runs configurable train/validation optimization; evaluation requires Claude Code CLI, improvement a supported provider.
 
-`improve_description.py` detects `ANTHROPIC_API_KEY`, then `OPENAI_API_KEY`, then `claude -p`; `OPENAI_API_BASE` selects the compatible endpoint. Trigger scores don't prove full execution or activation in other harnesses. Execution errors are unscored and block optimization. Helper paths are checkout-relative; resolve them when running elsewhere. Validation and packaging use standard-library Python; evaluation is optional.
+`improve_description.py` looks for `ANTHROPIC_API_KEY`, then `OPENAI_API_KEY`, then `claude -p`. Use `OPENAI_API_BASE` to select the compatible endpoint. Trigger scores don't tell you whether the skill completes the task or activates in another harness. `run_eval.py` leaves execution errors unscored, and `run_loop.py` stops optimization when they occur. Resolve helper paths against the checkout if you run them from elsewhere. You can validate and package with standard-library Python without running evaluation.
 
-## Unreleased - On-going Tests
-
-Prototypes live under `tests/unreleased/`, outside the installable skill collection.
-
-| Prototype | Scope and status |
-| --- | --- |
-| [Skill Buffer](tests/unreleased/skill-buffer/README.md) | Portable wrapper and Python 3.13+/PyYAML 6.0.3 CLI for inspection, frozen paired evaluation, response imports, evidence-backed author grading, comparison and separate candidate revisions. Includes 20 offline/mock-HTTP tests and a synthetic walkthrough; native activation, tool execution, automatic grading/revision, installation and publishing are deferred. |
+To review a skill with Skill Buffer, you only need file access. Its [optional CLI](skills/skill-buffer/README.md#cli-setup) needs Python 3.13+ and PyYAML 6.0.3. For frozen paired simulations, import responses or supply an HTTP endpoint. Neither option ties you to a specific harness.
 
 ## References
 
 ### What are Agent Skills?
 
-Agent Skills are plain Markdown files (`SKILL.md`) that give AI agents reusable, specialized behavior. A skill lives in a named directory and is loaded by the agent when a task matches its description.
+Agent Skills are plain Markdown files (`SKILL.md`) that give AI agents reusable, specialized behavior. A skill lives in a named directory. Clients that support automatic selection use its description to decide when to load it.
 
 ```
 skill-name/
@@ -208,7 +194,7 @@ skill-name/
 └── assets/           # Optional: templates, resources
 ```
 
-The format is an open standard. The spec and guides are available in [`docs/guides/`](docs/guides/).
+Agent Skills use an open standard. Read the spec and guides in [`docs/guides/`](docs/guides/).
 
-- [`docs/guides/agentskills-guide.md`](docs/guides/agentskills-guide.md) - full guide (overview, spec, quickstart, best practices, evals, description optimization, scripts, client implementation)
-- [agentskills.io](https://agentskills.io) - upstream standard
+- [`docs/guides/agentskills-guide.md`](docs/guides/agentskills-guide.md): overview, spec, quickstart, best practices, evals, description optimization, scripts, and client implementation.
+- [agentskills.io](https://agentskills.io): upstream standard.
