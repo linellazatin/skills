@@ -34,6 +34,7 @@ jobs:
         run: |
           python skills/craft-skill/tests/test_run_eval.py
           python skills/execute-plan/tests/test_checkpoints.py
+          python -B -m unittest discover -s skills/skill-buffer/tests -v
       - name: Skills CLI discovery dry run (no installation)
         env:
           DISABLE_TELEMETRY: '1'

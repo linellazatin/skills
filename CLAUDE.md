@@ -1,13 +1,13 @@
 # Project guide
 
-Portable engineering Agent Skills plus `craft-skill` for creating/evaluating skills: standalone Markdown instructions and optional helpers, not an application or harness plugin.
+Portable engineering Agent Skills, plus `craft-skill` for authoring and `skill-buffer` for case-based assessment and revision comparisons. Each skill has standalone Markdown instructions and optional helpers.
 
 ## Layout
 
 - `skills/<name>/SKILL.md`: metadata, triggers, standalone workflow.
 - Each skill's `references/`, `agents/`, `assets/`, `scripts/`: optional shipped resources; `tests/`: deterministic helper regressions where present.
 - `README.md`: catalog, installation, artifact policy, writing methodology.
-- `CHANGELOG.md`: release history; 0.2.0 added eight engineering skills and renamed/refactored `opencraft-skill` as `craft-skill`.
+- `CHANGELOG.md`: release history and the source of tagged release notes. The 0.4.0 section records Skill Buffer's move into `skills/`.
 - `docs/guides/`: Agent Skills format and implementation guidance.
 - `.your/specs/`, `.your/plans/`: ignored local records for substantial work; their wildcard ignore setup is not distributed by Git.
 
@@ -29,18 +29,21 @@ Portable engineering Agent Skills plus `craft-skill` for creating/evaluating ski
 
 Run relevant checks from the repository root:
 
+CI uses Python 3.13 and Node.js 24. The repository validator and Skill Buffer use PyYAML. Install the CI pin below before running their checks; the Skill Buffer CLI requires that exact version.
+
 ```bash
+python3 -m pip install PyYAML==6.0.3
 # Changed skill: supported metadata/structure
 python3 skills/craft-skill/scripts/quick_validate.py skills/plan-work
 # Affected helper regressions
 python3 skills/craft-skill/tests/test_run_eval.py
 python3 skills/execute-plan/tests/test_checkpoints.py
-# Repository CI; PyYAML required only here
-python3 -m pip install PyYAML==6.0.3
+python3 -B -m unittest discover -s skills/skill-buffer/tests -v
+# Repository validation and tests
 python3 scripts/validate_skills.py
 python3 -m unittest discover -s tests -v
 # Discovery without installation
-npx --yes skills add . --list
+DISABLE_TELEMETRY=1 npx --yes skills@1.7.2 add . --list
 # Whitespace
 git diff --check
 ```
@@ -53,4 +56,4 @@ git diff --check
 
 ## Installation
 
-Vercel Labs' `npx skills add` is recommended; manual copy and persistent-checkout symlinks remain supported. No custom npm package or harness bootstrap. Installation checks specify skill, agent and scope; never use broad `--all` against the user's environment. [README](README.md#using-these-skills) covers commands and the current remote publication caveat.
+Vercel Labs' `npx skills add` is recommended; manual copy and persistent-checkout symlinks remain supported. No custom npm package or harness bootstrap. Installation checks specify skill, agent and scope; never use broad `--all` against the user's environment. [README](README.md#using-these-skills) covers local and remote installation. Use a checkout to test changes not in the remote source.

@@ -11,7 +11,7 @@ import yaml
 if yaml.__version__ != '6.0.3':
     raise SystemExit('PyYAML==6.0.3 required')
 
-from buffer_core import DEFAULT_SETTINGS, freeze, import_responses, inspect, read_json, write_json
+from buffer_core import freeze, import_responses, inspect, new_output, read_json, write_json
 from buffer_http import evaluate
 from buffer_review import brief, compare, grade, record
 
@@ -51,8 +51,9 @@ def main(argv=None):
     args = parser.parse_args(argv)
     try:
         if args.command == 'inspect':
+            output = new_output(args.output, args.input)
             result = inspect(args.input)
-            write_json(args.output, result)
+            write_json(output, result, exclusive=True)
         elif args.command == 'freeze':
             result = freeze(args.baseline, args.candidate, read_json(args.suite), args.output, read_json(args.settings) if args.settings else None)
         elif args.command == 'import-responses':

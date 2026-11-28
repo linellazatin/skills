@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.4.0
+
+### New
+
+- Promoted [`skill-buffer`](skills/skill-buffer/README.md) from prototype to installable skill. Review a skill with file access alone, or use the optional CLI for paired response simulations and evidence-backed candidate revisions.
+
+### Changed
+
+- `skill-buffer` protects existing files and frozen snapshots, keeps HTTP and imported responses separate, scores no-match routing, and separates development failures, evidence gaps, and held-out results.
+- Moved the CLI to `scripts/` and grouped example fixtures and reports. The [usage guide](skills/skill-buffer/README.md) covers static review, offline and HTTP assessment, and candidate rechecks.
+- Added skill-buffer's offline and mock-HTTP suite to release validation.
+
 ## 0.3.2
 
 ### Changed

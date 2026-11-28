@@ -1,4 +1,6 @@
+from contextlib import redirect_stdout, redirect_stderr
 import hashlib
+from io import StringIO
 import json
 import os
 from pathlib import Path
@@ -6,8 +8,9 @@ import sys
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import unittest
+from unittest.mock import patch
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 from test_buffer import SkillFixture
 from buffer_core import freeze, import_responses, read_json
 from buffer_http import evaluate
@@ -44,6 +47,62 @@ class Workflows(SkillFixture):
         self.addCleanup(server.server_close)
         self.addCleanup(server.shutdown)
         return f'http://127.0.0.1:{server.server_port}/chat/completions', received
+
+    def test_inspect_output_cannot_write_inside_source(self):
+        from skill_buffer import main
+        entrypoint = self.skill / 'SKILL.md'
+        original = entrypoint.read_bytes()
+        new_file = self.skill / 'inspection.json'
+        alias = self.root / 'source-alias'
+        alias.symlink_to(self.skill, target_is_directory=True)
+        for output in (alias / 'SKILL.md', alias / new_file.name, new_file):
+            with self.subTest(output=output), redirect_stdout(StringIO()), redirect_stderr(StringIO()):
+                self.assertEqual(main(['inspect', '--input', str(self.skill), '--output', str(output)]), 2)
+        self.assertEqual(entrypoint.read_bytes(), original)
+        self.assertFalse(new_file.exists())
+
+    def test_review_outputs_preserve_existing_files_and_snapshots(self):
+        self.frozen()
+        workspace = self.root / 'run'
+        entrypoint = self.skill / 'SKILL.md'
+        original = entrypoint.read_bytes()
+        snapshot = workspace / 'snapshots/baseline/sample'
+        grades = {'version': 1, 'grades': []}
+        for operation in (grade, brief, compare):
+            with self.subTest(operation=operation.__name__):
+                with self.assertRaisesRegex(ValueError, 'output'):
+                    operation(workspace, grades, entrypoint)
+                with self.assertRaisesRegex(ValueError, 'output'):
+                    operation(workspace, grades, snapshot / 'new-output')
+        self.assertEqual(entrypoint.read_bytes(), original)
+        self.assertFalse((snapshot / 'new-output').exists())
+
+    def test_record_output_cannot_modify_parent_snapshots(self):
+        self.frozen()
+        workspace = self.root / 'run'
+        output = workspace / 'snapshots/candidate/revision'
+        with self.assertRaisesRegex(ValueError, 'output'):
+            record(workspace, self.skill, {'version': 1, 'findings_addressed': ['route:0:baseline']}, output)
+        self.assertFalse(output.exists())
+
+    def test_import_rejected_after_http_starts_even_without_completed_attempts(self):
+        manifest = self.frozen()
+        workspace = self.root / 'run'
+        endpoint, _ = self.server('failure')
+        self.assertTrue(evaluate(workspace, endpoint, 'test')['stopped'])
+        with self.assertRaisesRegex(ValueError, 'HTTP'):
+            import_responses(workspace, self.response_rows(manifest))
+        self.assertEqual(read_json(workspace / 'attempts.json')['attempts'], [])
+
+    def test_http_rejected_after_import(self):
+        manifest = self.frozen()
+        workspace = self.root / 'run'
+        import_responses(workspace, self.response_rows(manifest))
+        endpoint, requests = self.server()
+        with self.assertRaisesRegex(ValueError, 'imported'):
+            evaluate(workspace, endpoint, 'test')
+        self.assertEqual(requests, [])
+        self.assertFalse((workspace / 'evaluation.json').exists())
 
     def test_http_parameters_redaction_resume(self):
         manifest = self.frozen()
@@ -172,6 +231,70 @@ class Workflows(SkillFixture):
         self.assertEqual(len(report['matched_pairs']), 2)
         self.assertTrue(all(p['baseline']['score'] == 0 for p in report['matched_pairs']))
 
+    def test_no_match_is_a_valid_routing_outcome(self):
+        self.suite['cases'][0]['acceptable_primary'] = [None]
+        manifest = self.frozen()
+        self.assertIn('null', manifest['jobs'][0]['prompt'])
+        rows = self.response_rows(manifest, '{"primary":null}')
+        rows['attempts'][1]['response'] = '{"primary":"sample"}'
+        workspace = self.root / 'run'
+        import_responses(workspace, rows)
+        report = compare(workspace, {'version': 1, 'grades': []}, self.root / 'report')
+        pair, = report['matched_pairs']
+        self.assertEqual((pair['baseline']['score'], pair['candidate']['score']), (1, 0))
+        exported = brief(workspace, {'version': 1, 'grades': []}, self.root / 'brief.json')
+        self.assertEqual([f['finding_id'] for f in exported['failures']], ['route:0:candidate'])
+        self.assertEqual(exported['assessment_gaps'], [])
+
+    def test_existing_frozen_routing_prompts_keep_original_scoring(self):
+        with patch('buffer_core.ROUTING_TEMPLATE', 'Choose a skill.\n{catalog}\n{prompt}'):
+            manifest = self.frozen()
+        rows = self.response_rows(manifest, '{"primary":null}')
+        data = import_responses(self.root / 'run', rows)
+        self.assertEqual([a['classification'] for a in data['attempts']], ['invalid-output', 'invalid-output'])
+
+    def test_brief_distinguishes_incomplete_development_from_no_failures(self):
+        self.suite['cases'] += [
+            {'id': 'proc', 'type': 'procedure', 'skill': 'sample', 'prompt': 'Do it', 'assertions': [{'id': 'proof', 'text': 'States proof'}]},
+            {'id': 'held', 'type': 'routing', 'partition': 'acceptance', 'prompt': 'Held out', 'acceptable_primary': ['sample'], 'assertions': []},
+        ]
+        manifest = self.frozen()
+        rows = self.response_rows(manifest)
+        selected = [row for row in rows['attempts'] if row['job_id'] in ('route:0:baseline', 'proc:0:baseline')]
+        selected[0]['completion_status'] = 'truncated'
+        workspace = self.root / 'run'
+        import_responses(workspace, {'version': 1, 'attempts': selected})
+        exported = brief(workspace, {'version': 1, 'grades': []}, self.root / 'brief.json')
+        self.assertEqual(exported['failures'], [])
+        self.assertCountEqual(exported['assessment_gaps'], [
+            {'job_id': 'route:0:baseline', 'classification': 'truncated'},
+            {'job_id': 'route:0:candidate', 'reason': 'missing attempt'},
+            {'job_id': 'proc:0:candidate', 'reason': 'missing attempt'},
+            {'job_id': 'proc:0:baseline', 'reason': 'missing author grade'},
+        ])
+        output = self.root / 'report'
+        compare(workspace, {'version': 1, 'grades': []}, output)
+        outcomes = (output / 'report.md').read_text().split('## Telemetry', 1)[0]
+        development, acceptance = outcomes.split('## Acceptance')
+        self.assertIn('Invalid attempts: 1. Missing: 3.', development)
+        self.assertNotIn('held:0:', development)
+        self.assertIn('Invalid attempts: 0. Missing: 2.', acceptance)
+        self.assertNotIn('proc:0:', acceptance)
+
+    def test_markdown_comparison_separates_development_and_acceptance(self):
+        _, grades = self.procedure()
+        output = self.root / 'report'
+        compare(self.root / 'run', grades, output)
+        markdown = (output / 'report.md').read_text()
+        development, acceptance = markdown.split('## Acceptance')
+        self.assertIn('## Development', development)
+        self.assertIn('| proc |', development)
+        self.assertIn('proc:0:baseline: proof', development)
+        self.assertNotIn('held:0:baseline: proof', development)
+        self.assertIn('| held |', acceptance)
+        self.assertIn('held:0:baseline: proof', acceptance)
+        self.assertNotIn('| proc |', acceptance)
+
     def test_metadata_escaping_links_and_settings(self):
         (self.skill / 'SKILL.md').write_text('---\nname: sample\ndescription: x\nmetadata: invalid\n---\n')
         from buffer_core import inspect
@@ -195,8 +318,14 @@ class Workflows(SkillFixture):
         import subprocess
         prototype = self.root / 'prototype'
         shutil.copytree(Path(__file__).resolve().parents[1], prototype, ignore=shutil.ignore_patterns('__pycache__', '.venv', 'runs'))
-        subprocess.run([sys.executable, '-B', str(prototype / 'examples/walkthrough.py'), '--output', str(self.root / 'walkthrough')], cwd=self.root, check=True, capture_output=True, text=True)
-        self.assertTrue(read_json(self.root / 'walkthrough/summary.json')['source_preserved'])
+        cli = prototype / 'scripts/skill_buffer.py'
+        subprocess.run([sys.executable, '-B', str(cli), '--help'], cwd=self.root, check=True, capture_output=True, text=True)
+        output = self.root / 'walkthrough'
+        subprocess.run([sys.executable, '-B', str(prototype / 'examples/walkthrough.py'), '--output', str(output)], cwd=self.root, check=True, capture_output=True, text=True)
+        self.assertTrue(read_json(output / 'summary.json')['source_preserved'])
+        for extension in ('json', 'md'):
+            expected = prototype / f'examples/reports/walkthrough-report.{extension}'
+            self.assertEqual((output / f'report/report.{extension}').read_text(), expected.read_text())
 
     def test_license_retention_before_output_creation(self):
         (self.skill / 'LICENSE').write_text('Retained notice')

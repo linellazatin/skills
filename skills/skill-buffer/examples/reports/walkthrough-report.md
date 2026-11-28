@@ -1,21 +1,29 @@
 # Skill Buffer comparison
 
-Valid matched pairs: 3. Invalid attempts: 0. Missing: 0.
+## Development
+
+Valid matched pairs: 2. Invalid attempts: 0. Missing: 0.
 
 | Case | Repeat | Baseline | Candidate | Delta |
 | --- | --- | --- | --- | --- |
 | route | 0 | 1.00 | 1.00 | +0.00 |
 | procedure | 0 | 0.00 | 1.00 | +1.00 |
-| held-out | 0 | 0.00 | 1.00 | +1.00 |
 
-## Critical failures
+### Critical failures
 
 - procedure:0:baseline: evidence
+
+## Acceptance
+
+Valid matched pairs: 1. Invalid attempts: 0. Missing: 0.
+
+| Case | Repeat | Baseline | Candidate | Delta |
+| --- | --- | --- | --- | --- |
+| held-out | 0 | 0.00 | 1.00 | +1.00 |
+
+### Critical failures
+
 - held-out:0:baseline: evidence
-
-## Invalid and missing
-
-{"invalid": [], "missing": []}
 
 ## Telemetry
 

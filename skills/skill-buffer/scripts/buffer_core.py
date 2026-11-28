@@ -40,8 +40,20 @@ def read_json(path):
     return parse_json(Path(path).read_text())
 
 
-def write_json(path, data):
-    Path(path).write_text(json.dumps(data, indent=2, sort_keys=True, allow_nan=False) + '\n')
+def write_json(path, data, *, exclusive=False):
+    text = json.dumps(data, indent=2, sort_keys=True, allow_nan=False) + '\n'
+    with Path(path).open('x' if exclusive else 'w') as handle:
+        handle.write(text)
+
+
+def new_output(path, *protected):
+    path = Path(path)
+    if path.is_symlink() or path.exists():
+        raise ValueError('output must be new')
+    path = path.resolve()
+    if any(path.is_relative_to(Path(root).resolve()) for root in protected):
+        raise ValueError('output cannot be inside a source or frozen snapshot tree')
+    return path
 
 
 def digest(data):
@@ -120,7 +132,8 @@ def inspect(root):
 
 
 DEFAULT_SETTINGS = {'temperature': 0.6, 'seed': 42, 'max_tokens': 4096, 'repeats': 1, 'timeout': 300, 'provider_parameters': {}}
-ROUTING_TEMPLATE = 'Choose the primary skill for the prompt. Return only JSON with a primary string from the catalog.\nCatalog:\n{catalog}\nPrompt:\n{prompt}'
+NO_MATCH_INSTRUCTION = 'Use null when no catalog skill applies.'
+ROUTING_TEMPLATE = 'Choose the primary skill for the prompt. Return only JSON with a primary string from the catalog, or null. ' + NO_MATCH_INSTRUCTION + '\nCatalog:\n{catalog}\nPrompt:\n{prompt}'
 PROCEDURE_TEMPLATE = 'Propose how you would handle the prompt using these instructions. This is a response simulation, not execution.\n{instructions}\nSelected resources:\n{resources}\nPrompt:\n{prompt}\nFixture:\n{fixture}'
 
 
@@ -175,8 +188,8 @@ def validate_suite(suite, catalogs, roots):
             names = {item['name'] for item in catalog}
             if case['type'] == 'routing':
                 choices = case.get('acceptable_primary')
-                if not isinstance(choices, list) or not choices or any(not isinstance(x, str) or x not in names for x in choices):
-                    raise ValueError('acceptable primary choices must exist in both catalogs')
+                if not isinstance(choices, list) or not choices or any(x is not None and (not isinstance(x, str) or x not in names) for x in choices):
+                    raise ValueError('acceptable primary choices must be null or exist in both catalogs')
             else:
                 if case.get('skill') not in names or not assertions:
                     raise ValueError('procedure needs a known skill and assertions')
@@ -255,7 +268,13 @@ def classify(manifest, job, response, completion):
             answer = parse_json(response)
         except (ValueError, TypeError):
             return 'malformed-output'
-        if not isinstance(answer, dict) or set(answer) != {'primary'} or not isinstance(answer['primary'], str) or answer['primary'] not in {x['name'] for x in manifest['catalogs'][job['variant']]}:
+        if not isinstance(answer, dict) or set(answer) != {'primary'}:
+            return 'invalid-output'
+        primary = answer['primary']
+        if primary is None:
+            # Older frozen prompts did not offer a no-match choice.
+            return 'valid' if NO_MATCH_INSTRUCTION in manifest['templates']['routing'] else 'invalid-output'
+        if not isinstance(primary, str) or primary not in {x['name'] for x in manifest['catalogs'][job['variant']]}:
             return 'invalid-output'
     return 'valid'
 
@@ -278,6 +297,8 @@ def attempt_store(workspace, manifest):
 
 def import_responses(workspace, payload):
     manifest = load_workspace(workspace)
+    if (Path(workspace) / 'evaluation.json').exists():
+        raise ValueError('cannot import into an HTTP evaluation workspace')
     data = attempt_store(workspace, manifest)
     version(payload)
     if not isinstance(payload.get('attempts'), list):
